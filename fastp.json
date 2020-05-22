@@ -31,7 +31,7 @@
 	"duplication": {
 		"rate": 0.0111726,
 		"histogram": [9547,95,3,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-		"mean_gc": [0.481428,0.479876,0.457516,0.490196,0,0.54902,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+		"mean_gc": [0.481367,0.479876,0.457516,0.490196,0,0.54902,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 	},
 	"read1_before_filtering": {
 		"total_reads": 10000,
@@ -213,5 +213,5 @@
 		"overrepresented_sequences": {
 		}
 	},
-	"command": "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/fastpWrapR/fastp -i /Library/Frameworks/R.framework/Versions/3.6/Resources/library/clipR/extdata/Fox3_Std_small.fq.gz -o test.fastq.gz "
+	"command": "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rfastp/fastp -i /Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rfastp/extdata/Fox3_Std_small.fq.gz -o test.fastq.gz "
 }

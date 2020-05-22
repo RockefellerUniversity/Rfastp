@@ -18,9 +18,9 @@ devtools::install_github("RockefellerUniversity/Rfastp")
 ## Usage
 
 ```{r install,eval=FALSE}
-testFQ <- file.path(system.file("extdata/Fox3_Std_small.fq.gz",package="clipR"))
+testFQ <- file.path(system.file("extdata/Fox3_Std_small.fq.gz",package="Rfastp"))
           
 # FastQ_Example <- Fox3_Std_small.fq.gz
-fastpWrapR:::.fastpBin(args=paste0("-i ",testFQ," -o test.fastq.gz"))
+Rfastp:::.fastpBin(args=paste0("-i ",testFQ," -o test.fastq.gz"))
 
 ```

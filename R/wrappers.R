@@ -19,7 +19,7 @@
   }
   args <- gsub("^ *| *$", "", args)
   bin <- match.arg(bin)
-  call <- paste(shQuote(file.path(system.file(package="fastpWrapR"), bin)), args)
+  call <- paste(shQuote(file.path(system.file(package="Rfastp"), bin)), args)
   if (!execute) {
     return(call)
   }

@@ -1,0 +1,26 @@
+---
+title: "README"
+author: "Thomas Carroll"
+date: "5/22/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Install
+
+```{r install,eval=FALSE}
+devtools::install_github("RockefellerUniversity/Rfastp")
+```
+
+## Usage
+
+```{r install,eval=FALSE}
+testFQ <- file.path(system.file("extdata/Fox3_Std_small.fq.gz",package="clipR"))
+          
+# FastQ_Example <- Fox3_Std_small.fq.gz
+fastpWrapR:::.fastpBin(args=paste0("-i ",testFQ," -o test.fastq.gz"))
+
+```

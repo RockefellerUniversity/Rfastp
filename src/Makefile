@@ -1,41 +1,62 @@
-DIR_INC := ./inc
-DIR_SRC := ./
-DIR_OBJ := ./obj
+DIR_INC_FASTP := ./inc
+DIR_SRC_FASTP := ./src_fastp
+DIR_OBJ_FASTP := ./obj_fastp
+DIR_INC_GENCORE := ./inc
+DIR_SRC_GENCORE := ./src_gencore
+DIR_OBJ_GENCORE := ./obj_gencore
 
-PREFIX ?= ./
+PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
 INCLUDE_DIRS ?=
 LIBRARY_DIRS ?=
 
-SRC := $(wildcard ${DIR_SRC}/*.cpp)
-OBJ := $(patsubst %.cpp,${DIR_OBJ}/%.o,$(notdir ${SRC}))
+SRC_FASTP := $(wildcard ${DIR_SRC_FASTP}/*.cpp)
+OBJ_FASTP := $(patsubst %.cpp,${DIR_OBJ_FASTP}/%.o,$(notdir ${SRC_FASTP}))
+SRC_GENCORE = $(wildcard ${DIR_SRC_GENCORE}/*.cpp)  
+OBJ_GENCORE = $(patsubst %.cpp,${DIR_OBJ_GENCORE}/%.o,$(notdir ${SRC_GENCORE})) 
 
-TARGET := ../inst/fastp
+TARGET_FASTP := fastp
+TARGET_GENCORE = gencore
 
-BIN_TARGET := ${TARGET}
+BIN_TARGET_FASTP := ${TARGET_FASTP}
+FINAL_TARGET_FASTP := ../inst/${TARGET_FASTP}
+BIN_TARGET_GENCORE = ${TARGET_GENCORE}
+FINAL_TARGET_GENCORE := ../inst/${TARGET_GENCORE}
+
 
 CXX ?= g++
-CXXFLAGS := -std=c++11 -g -O3 -I${DIR_INC} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) ${CXXFLAGS}
+CXXFLAGS := -std=c++11 -g -O3 -I${DIR_INC_FASTP} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) ${CXXFLAGS}
 LIBS := -lz -lpthread
 LD_FLAGS := $(foreach librarydir,$(LIBRARY_DIRS),-L$(librarydir)) $(LIBS) $(LD_FLAGS)
+CC = g++
+CFLAGS = -std=c++11 -g -I${DIR_INC_GENCORE}
 
-FASTP_BIN_LIST = fastp
+${FINAL_TARGET_GENCORE}: ${BIN_TARGET_GENCORE}
+	mv ${BIN_TARGET_GENCORE} ${FINAL_TARGET_GENCORE}
 
-${BIN_TARGET}:${OBJ}
-	$(CXX) $(OBJ) -o $@ $(LD_FLAGS)
+${BIN_TARGET_GENCORE}:${OBJ_GENCORE} ${FINAL_TARGET_FASTP}
+	$(CXX) $(OBJ_GENCORE) -L. -lhts -lz -lpthread -o $@
+    
+${DIR_OBJ_GENCORE}/%.o:${DIR_SRC_GENCORE}/%.cpp make_obj_dir2 ${FINAL_TARGET_FASTP}
+	$(CXX) $(CFLAGS) -O3 -c $< -o $@
+	
+${FINAL_TARGET_FASTP}: ${BIN_TARGET_FASTP}
+	mv ${BIN_TARGET_FASTP} ${FINAL_TARGET_FASTP}
+	
+${BIN_TARGET_FASTP}:${OBJ_FASTP}
+	$(CXX) $(OBJ_FASTP) -o $@ $(LD_FLAGS)
 
-${DIR_OBJ}/%.o:${DIR_SRC}/%.cpp make_obj_dir
+${DIR_OBJ_FASTP}/%.o:${DIR_SRC_FASTP}/%.cpp make_obj_dir
 	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-.PHONY:clean
-clean:
-	rm obj/*.o
-	rm $(TARGET)
-
 make_obj_dir:
-	@if test ! -d $(DIR_OBJ) ; \
+	@if test ! -d $(DIR_OBJ_FASTP) ; \
 	then \
-		mkdir $(DIR_OBJ) ; \
+		mkdir $(DIR_OBJ_FASTP) ; \
 	fi
 
-
+make_obj_dir2:
+	@if test ! -d $(DIR_OBJ_GENCORE) ; \
+	then \
+		mkdir $(DIR_OBJ_GENCORE) ; \
+	fi

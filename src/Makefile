@@ -16,7 +16,7 @@ PKG_CPPFLAGS=$(RHTSLIB_CPPFLAGS)
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
 INCLUDE_DIRS ?= $(PKG_LIBS)
-LIBRARY_DIRS ?=
+LIBRARY_DIRS ?= 
 
 SRC_FASTP := $(wildcard ${DIR_SRC_FASTP}/*.cpp)
 OBJ_FASTP := $(patsubst %.cpp,${DIR_OBJ_FASTP}/%.o,$(notdir ${SRC_FASTP}))
@@ -39,14 +39,14 @@ LD_FLAGS := $(foreach librarydir,$(LIBRARY_DIRS),-L$(librarydir)) $(LIBS) $(LD_F
 CC = g++
 CFLAGS = -std=c++11 -g -I${DIR_INC_GENCORE} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) ${CXXFLAGS}
 
-${FINAL_TARGET_GENCORE}: ${BIN_TARGET_GENCORE}
-	mv ${BIN_TARGET_GENCORE} ${FINAL_TARGET_GENCORE}
+#${FINAL_TARGET_GENCORE}: ${BIN_TARGET_GENCORE}
+#	mv ${BIN_TARGET_GENCORE} ${FINAL_TARGET_GENCORE}
 
-${BIN_TARGET_GENCORE}:${OBJ_GENCORE} ${FINAL_TARGET_FASTP}
-	$(CXX) $(OBJ_GENCORE) -L. -lhts -lz -lpthread -o $@
+#${BIN_TARGET_GENCORE}:${OBJ_GENCORE} ${FINAL_TARGET_FASTP}
+#	$(CXX) $(OBJ_GENCORE)  '/Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rhtslib/usrlib/libhts.a' -lcurl -lz -lpthread -o $@
     
-${DIR_OBJ_GENCORE}/%.o:${DIR_SRC_GENCORE}/%.cpp make_obj_dir2 ${FINAL_TARGET_FASTP}
-	$(CXX) $(CFLAGS) -O3 -c $< -o $@
+#${DIR_OBJ_GENCORE}/%.o:${DIR_SRC_GENCORE}/%.cpp make_obj_dir2 ${FINAL_TARGET_FASTP}
+#	$(CXX) $(CFLAGS) -D_FILE_OFFSET_BITS=64 -I"/Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rhtslib/include" -O3 -c $< -o $@
 	
 ${FINAL_TARGET_FASTP}: ${BIN_TARGET_FASTP}
 	mv ${BIN_TARGET_FASTP} ${FINAL_TARGET_FASTP}

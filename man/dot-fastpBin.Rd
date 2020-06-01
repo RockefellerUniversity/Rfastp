@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{.fastpBin}
 \alias{.fastpBin}
-\title{Call the HISAT2 binary with additional arguments.}
+\title{Call the fastp binary with additional arguments.}
 \usage{
 .fastpBin(bin = "fastp", args = "", execute = TRUE)
 }
@@ -20,6 +20,6 @@ If \code{execute} is TRUE, returns the console output of running the
   hisat2 command. If \code{execute} is FALSE, returns the shell command.
 }
 \description{
-Adapted from the Rbowtie package
+Call the fastp binary with additional arguments.
 }
 \keyword{internal}

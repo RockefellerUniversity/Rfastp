@@ -20,6 +20,6 @@ If \code{execute} is TRUE, returns the console output of running the
   fastp command. If \code{execute} is FALSE, returns the shell command.
 }
 \description{
-Adapted from the Rbowtie package
+Call the fastp binary with additional arguments.
 }
 \keyword{internal}

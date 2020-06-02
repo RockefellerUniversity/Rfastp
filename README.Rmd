@@ -23,4 +23,9 @@ testFQ <- file.path(system.file("extdata/Fox3_Std_small.fq.gz",package="Rfastp")
 # FastQ_Example <- Fox3_Std_small.fq.gz
 Rfastp:::.fastpBin(args=paste0("-i ",testFQ," -o test.fastq.gz"))
 
+# use rfastq function
+Rfastp::rfastp(read1=testFQ, outputFastq="./test_output")
+
+# for more examples:
+?rfastp
 ```

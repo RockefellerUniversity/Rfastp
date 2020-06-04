@@ -2,7 +2,9 @@
 title: "README"
 author: "Thomas Carroll"
 date: "5/22/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -15,9 +17,23 @@ knitr::opts_chunk$set(echo = TRUE)
 devtools::install_github("RockefellerUniversity/Rfastp")
 ```
 
-## Usage
+## Usage  
 
-```{r install,eval=FALSE}
+ 
+hello
+
+<br/>
+<br/>
+
+tom
+
+hello
+
+&nbsp;
+&nbsp;
+
+tom
+```{r example,eval=FALSE}
 testFQ <- file.path(system.file("extdata/Fox3_Std_small.fq.gz",package="Rfastp"))
           
 # FastQ_Example <- Fox3_Std_small.fq.gz

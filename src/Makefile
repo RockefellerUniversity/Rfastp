@@ -1,21 +1,22 @@
 DIR_INC_FASTP := ./inc
-DIR_SRC_FASTP := ./src_fastp
-DIR_OBJ_FASTP := ./obj_fastp
+DIR_SRC_FASTP := src_fastp
+DIR_OBJ_FASTP := obj_fastp
 DIR_INC_GENCORE := ./inc
-DIR_SRC_GENCORE := ./src_gencore
-DIR_OBJ_GENCORE := ./obj_gencore
+DIR_SRC_GENCORE := src_gencore
+DIR_OBJ_GENCORE := obj_gencore
 
-RHTSLIB_LIBS=$(shell echo 'file.path(dirname(system.file("usrlib",package = "Rhtslib", mustWork = TRUE)),"include")'|\
-    "${R_HOME}/bin/R" --vanilla --slave)
-RHTSLIB_CPPFLAGS=$(shell echo 'file.path(dirname(system.file("usrlib",package = "Rhtslib", mustWork = TRUE)),"include")'|\
-    "${R_HOME}/bin/R" --vanilla --slave)
+RHTSLIB_LIBS=$(shell echo 'cat(file.path(dirname(system.file("usrlib",package = "Rhtslib", mustWork = TRUE)),"include",""))'|\
+    "$(R_HOME)/bin/R" --vanilla --slave)
+RHTSLIB_CPPFLAGS=$(shell echo 'cat(file.path(system.file("usrlib",package = "Rhtslib", mustWork = TRUE),"libhts.a"))'|\
+    "$(R_HOME)/bin/R" --vanilla --slave)
+
 
 PKG_LIBS=$(RHTSLIB_LIBS)
 PKG_CPPFLAGS=$(RHTSLIB_CPPFLAGS)
 
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin
-INCLUDE_DIRS ?= $(PKG_LIBS)
+INCLUDE_DIRS ?= 
 LIBRARY_DIRS ?= 
 
 SRC_FASTP := $(wildcard ${DIR_SRC_FASTP}/*.cpp)
@@ -32,21 +33,21 @@ BIN_TARGET_GENCORE = ${TARGET_GENCORE}
 FINAL_TARGET_GENCORE := ../inst/${TARGET_GENCORE}
 
 
-CXX ?= g++
+CXX = g++
 CXXFLAGS := -std=c++11 -g -O3 -I${DIR_INC_FASTP} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) ${CXXFLAGS}
 LIBS := -lz -lpthread
 LD_FLAGS := $(foreach librarydir,$(LIBRARY_DIRS),-L$(librarydir)) $(LIBS) $(LD_FLAGS)
 CC = g++
-CFLAGS = -std=c++11 -g -I${DIR_INC_GENCORE} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir)) ${CXXFLAGS}
+CFLAGS = -std=c++11 -g -I${DIR_INC_GENCORE} $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir))
 
-#${FINAL_TARGET_GENCORE}: ${BIN_TARGET_GENCORE}
-#	mv ${BIN_TARGET_GENCORE} ${FINAL_TARGET_GENCORE}
+${FINAL_TARGET_GENCORE}: ${BIN_TARGET_GENCORE}
+	mv ${BIN_TARGET_GENCORE} ${FINAL_TARGET_GENCORE}
 
-#${BIN_TARGET_GENCORE}:${OBJ_GENCORE} ${FINAL_TARGET_FASTP}
-#	$(CXX) $(OBJ_GENCORE)  '/Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rhtslib/usrlib/libhts.a' -lcurl -lz -lpthread -o $@
+${BIN_TARGET_GENCORE}:${OBJ_GENCORE} ${FINAL_TARGET_FASTP}
+	$(CXX) $(OBJ_GENCORE) -L. $(RHTSLIB_CPPFLAGS) -lz -lm -lbz2 -llzma -lcurl -lz  -lpthread -o $@
     
-#${DIR_OBJ_GENCORE}/%.o:${DIR_SRC_GENCORE}/%.cpp make_obj_dir2 ${FINAL_TARGET_FASTP}
-#	$(CXX) $(CFLAGS) -D_FILE_OFFSET_BITS=64 -I"/Library/Frameworks/R.framework/Versions/3.6/Resources/library/Rhtslib/include" -O3 -c $< -o $@
+${DIR_OBJ_GENCORE}/%.o:${DIR_SRC_GENCORE}/%.cpp make_obj_dir2 ${FINAL_TARGET_FASTP}
+	$(CXX) $(CFLAGS) -I$(RHTSLIB_LIBS) -O3 -c $< -o $@
 	
 ${FINAL_TARGET_FASTP}: ${BIN_TARGET_FASTP}
 	mv ${BIN_TARGET_FASTP} ${FINAL_TARGET_FASTP}

@@ -518,3 +518,117 @@ rfastp <- function( read1="", read2="", 　outputFastq="", unpaired="",
     system(call, intern=TRUE)
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }
+
+
+
+
+#' R wrap of gencore
+#'
+#' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of fastq files.
+#'
+#' @param inBam read1 input file name of sorted bam/sam [string]
+#' @param outBam file name of output bam/sam [string]
+#' @param ref Path to reference fasta file. [string]
+#' @param bed bedfile to specify the capturing region. [string]
+#' @param umiPrefix the prefix for UMI, if it has. None by default.
+#' @param supportingReads only output consensus reads/pairs that 
+#'     merged by >= `supportingRead` reads/pairs. The valud should be 1~10, and the 
+#'     default value is 1.
+#' @param ratioMajorBase if the ratio of the major base in a cluster is less than 
+#'     `ratioMajorBase`, it will be further compared to the reference. The valud should 
+#'     be 0.5~1.0, and the default value is 0.8
+#' @param scoreMajorBase if the score of the major base in a cluster is less than 
+#'     `scoreMajorBase`, it will be further compared to the reference. The valud should 
+#'     be 1~20, and the default value is 6
+#' @param highQual the threshold for a quality score to be considered as high qulity.
+#'     Default 30 means Q30
+#' @param moderateQual the threshold for a quality score to be considered as moderate 
+#'     qulity. Default 20 means Q20.
+#' @param lowQual the threshold for a quality score to be considered as low qulity.
+#'     Default 15 means Q15.
+#' @param debug a logical indicating output some debug information to STDERR.
+#' @param coverageSampling the sampling ratefor genome scale coverage statistics.
+#'     Default 10000 means 1/10000.
+#' @param quitAfterContig stop when `quitAfterContig` contigs are processed. 
+#'     Only used for fast debugging. Default 0 means no limitation.
+#' 
+#' @return returns a json object of the report.
+#' @author Thomas Carroll, Wei Wang
+#' @export
+#' 
+#' @examples
+#' 
+#' require(rjson)
+#'
+#' # preprare for the input and output files.
+#' # if the output file exists, it will be OVERWRITEN.
+#'
+#' inputbamfile <-  system.file("extdata", "ex1.bam", package="Rsamtools")
+#' outputbamfile <- "ex1_rgencore.bam"
+#' reference <- "myreference.fa"
+#'
+#' # run rgencore 
+#'
+#' rgencore_json_report <- rgencore(inBam=inputbamfile, 
+#'          outBam=outputbamfile,
+#'          ref=reference
+#')
+
+
+rgencore <- function( inbam="", outBam="", ref="", bed="",
+    umiPrefix="", supportingReads=1, ratioMajorBase=0.8,
+    scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
+    coverageSampling=10000, debug=FALSE, quitAfterContig=0) {
+
+    require("rjson")
+
+    args <- ""
+
+    if (inBam == "" | outBam == "" | ref == "") {
+        stop("Please specify the input/output bam file and the reference fasta file.")
+    }
+    else {
+        args <- paste0(args, "-i ", inBam, " -o ", outBam, " -r ", ref)
+    }
+
+    if ( ! bed == "" ) {
+        args <- paste0(args, " -b ", bed)
+    }
+
+    if ( !umiPrefix == "" ) {
+	args <- paste0(args, " -u ", umiPrefix)
+    }
+    if ( supportingReads != 1) {
+	args <- paste0(args, " -s ", supportingReads)
+    }
+    if (ratioMajorBase != 0.8) {
+	args <- paste0(args, " -a ", ratioMajorBase)
+    }
+    if (scoreMajorBase != 6) {
+	args <- paste0(args, " -c ", scoreMajorBase)
+    }
+    if (highQual != 30) {
+	args <- paste0(args, " --high_qual ", highQual)
+    }
+    if (moderateQual != 20) {
+	args <- paste0(args, " --moderate_qual ", moderateQual)
+    }
+    if (highQual != 15) {
+	args <- paste0(args, " --low_qual ", lowQual)
+    }
+    if ( coverageSampling != 10000) {
+	args <- paste0(args, " --coverage_sampling ", coverageSampling)
+    }
+    if (debug) {
+	args <- paste0(args, " --debug")
+    }
+    if (! quitAfterContig == "") {
+	args <- paste0(args, " --quit_after_contig ", quitAfterContig)
+    }
+
+    args <- paste0(args, " -j ", outBam, ".json", " -h ", outbam, ".html")
+    call <- paste(shQuote(file.path(system.file(package="Rfastp"), "gencore")), args)    
+    system(call, intern=TRUE)
+    return(fromJSON(file = paste0(outBam, ".json")))
+}
+

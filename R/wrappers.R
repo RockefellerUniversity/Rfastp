@@ -578,7 +578,7 @@ rfastp <- function( read1="", read2="", 　outputFastq="", unpaired="",
 rgencore <- function( inBam="", outBam="", ref="", bed="",
     umiPrefix="", supportingReads=1, ratioMajorBase=0.8,
     scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
-    coverageSampling=10000, debug=FALSE, quitAfterContig=0) {
+    coverageSampling=10000, debug=FALSE, quitAfterContig="") {
 
     require("rjson")
 
@@ -596,34 +596,34 @@ rgencore <- function( inBam="", outBam="", ref="", bed="",
     }
 
     if ( !umiPrefix == "" ) {
-	args <- paste0(args, " -u ", umiPrefix)
+        args <- paste0(args, " -u ", umiPrefix)
     }
     if ( supportingReads != 1) {
-	args <- paste0(args, " -s ", supportingReads)
+        args <- paste0(args, " -s ", supportingReads)
     }
     if (ratioMajorBase != 0.8) {
-	args <- paste0(args, " -a ", ratioMajorBase)
+        args <- paste0(args, " -a ", ratioMajorBase)
     }
     if (scoreMajorBase != 6) {
-	args <- paste0(args, " -c ", scoreMajorBase)
+        args <- paste0(args, " -c ", scoreMajorBase)
     }
     if (highQual != 30) {
-	args <- paste0(args, " --high_qual ", highQual)
+        args <- paste0(args, " --high_qual ", highQual)
     }
     if (moderateQual != 20) {
-	args <- paste0(args, " --moderate_qual ", moderateQual)
+        args <- paste0(args, " --moderate_qual ", moderateQual)
     }
-    if (highQual != 15) {
-	args <- paste0(args, " --low_qual ", lowQual)
+    if (lowQual != 15) {
+        args <- paste0(args, " --low_qual ", lowQual)
     }
     if ( coverageSampling != 10000) {
-	args <- paste0(args, " --coverage_sampling ", coverageSampling)
+        args <- paste0(args, " --coverage_sampling ", coverageSampling)
     }
     if (debug) {
-	args <- paste0(args, " --debug")
-    }
-    if (! quitAfterContig == "") {
-	args <- paste0(args, " --quit_after_contig ", quitAfterContig)
+        args <- paste0(args, " --debug")
+        if (! quitAfterContig == "") {
+            args <- paste0(args, " --quit_after_contig ", quitAfterContig)
+        }
     }
 
     args <- paste0(args, " -j ", outBam, ".json", " -h ", outBam, ".html")

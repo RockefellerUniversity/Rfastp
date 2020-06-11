@@ -575,7 +575,7 @@ rfastp <- function( read1="", read2="", 　outputFastq="", unpaired="",
 #')
 
 
-rgencore <- function( inbam="", outBam="", ref="", bed="",
+rgencore <- function( inBam="", outBam="", ref="", bed="",
     umiPrefix="", supportingReads=1, ratioMajorBase=0.8,
     scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
     coverageSampling=10000, debug=FALSE, quitAfterContig=0) {
@@ -626,7 +626,7 @@ rgencore <- function( inbam="", outBam="", ref="", bed="",
 	args <- paste0(args, " --quit_after_contig ", quitAfterContig)
     }
 
-    args <- paste0(args, " -j ", outBam, ".json", " -h ", outbam, ".html")
+    args <- paste0(args, " -j ", outBam, ".json", " -h ", outBam, ".html")
     call <- paste(shQuote(file.path(system.file(package="Rfastp"), "gencore")), args)    
     system(call, intern=TRUE)
     return(fromJSON(file = paste0(outBam, ".json")))

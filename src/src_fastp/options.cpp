@@ -393,8 +393,8 @@ bool Options::validate() {
                 error_exit("UMI prefix should be shorter than 10");
             for(int i=0; i<umi.prefix.length(); i++) {
                 char c = umi.prefix[i];
-                if( !(c>='A' && c<='Z') && !(c>='a' && c<='z') && !(c>='0' && c<='9')) {
-                    error_exit("UMI prefix can only have characters and numbers, but the given is: " + umi.prefix);
+                if( !(c>='A' && c<='Z') && !(c>='a' && c<='z') && !(c>='0' && c<='9') && !(c=='#')) {
+                    error_exit("UMI prefix can only have characters, numbers and #, but the given is: " + umi.prefix);
                 }
             }
         }

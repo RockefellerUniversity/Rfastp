@@ -64,6 +64,8 @@ rfastp(
   umiLength = 0,
   umiPrefix = "",
   umiSkipBaseLength = 0,
+  umiNoConnection = FALSE,
+  umiIgnoreSeqNameSpace = FALSE,
   overrepresentationAnalysis = FALSE,
   overrepresentationSampling = 20,
   splitOutput = 0,
@@ -251,11 +253,19 @@ identifier (UMI). Default: `FALSE`}
 
 \item{umiLength}{length of UMI if the UMI is in read1/read2.}
 
-\item{umiPrefix}{an underline will be used to connect prefix and UMI 
-(i.e. prefix=UMI, UMI=AATTCG, final=UMI_AATTCG). No prefix by default}
+\item{umiPrefix}{an string indication the following string is UMI 
+(i.e. prefix=UMI, UMI=AATTCG, final=UMIAATTCG). Only letters, 
+numbers, and '#" allowed. No prefix by default.}
 
 \item{umiSkipBaseLength}{if the UMI is in read1/read2, skip 
 `umiSkipBaseLength` bases following UMI, default is 0.}
+
+\item{umiNoConnection}{an logical indicating remove "_" between the UMI
+prefix string and the UMI string. Default is FALSE.}
+
+\item{umiIgnoreSeqNameSpace}{an logical indicating ignore the space
+in the sequence name. Default is FALSE, the umi tag will be
+inserted into the sequence name before the first SPACE.}
 
 \item{overrepresentationAnalysis}{A logical indicating overrepresentation
 analysis. Default is `FALSE`}

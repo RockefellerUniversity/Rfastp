@@ -5,7 +5,7 @@
 \title{R wrap of gencore}
 \usage{
 rgencore(
-  inbam = "",
+  inBam = "",
   outBam = "",
   ref = "",
   bed = "",
@@ -18,10 +18,12 @@ rgencore(
   lowQual = 15,
   coverageSampling = 10000,
   debug = FALSE,
-  quitAfterContig = 0
+  quitAfterContig = ""
 )
 }
 \arguments{
+\item{inBam}{read1 input file name of sorted bam/sam [string]}
+
 \item{outBam}{file name of output bam/sam [string]}
 
 \item{ref}{Path to reference fasta file. [string]}
@@ -58,8 +60,6 @@ Default 10000 means 1/10000.}
 
 \item{quitAfterContig}{stop when `quitAfterContig` contigs are processed. 
 Only used for fast debugging. Default 0 means no limitation.}
-
-\item{inBam}{read1 input file name of sorted bam/sam [string]}
 }
 \value{
 returns a json object of the report.

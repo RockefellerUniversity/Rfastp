@@ -73,7 +73,7 @@ void UmiProcessor::addUmiToName(Read* r, string umi){
             break;
         }
     }
-    if(spacePos == -1) {
+    if(spacePos == -1 || mOptions->umi.ignore) {
         r->mName = r->mName + tag;
     } else {
         r->mName = r->mName.substr(0, spacePos) + tag + r->mName.substr(spacePos, r->mName.length() - spacePos);

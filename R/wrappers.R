@@ -180,8 +180,14 @@
 #' @param umiLoc specify the location of UMI, can be 
 #'      (index1/index2/read1/read2/per_index/per_read)
 #' @param umiLength length of UMI if the UMI is in read1/read2.
-#' @param umiPrefix an underline will be used to connect prefix and UMI 
-#'      (i.e. prefix=UMI, UMI=AATTCG, final=UMI_AATTCG). No prefix by default
+#' @param umiPrefix an string indication the following string is UMI 
+#'      (i.e. prefix=UMI, UMI=AATTCG, final=UMIAATTCG). Only letters, 
+#'      numbers, and '#" allowed. No prefix by default.
+#' @param umiNoConnection an logical indicating remove "_" between the UMI
+#'      prefix string and the UMI string. Default is FALSE.
+#' @param umiIgnoreSeqNameSpace an logical indicating ignore the space
+#'      in the sequence name. Default is FALSE, the umi tag will be
+#'      inserted into the sequence name before the first SPACE.
 #' @param umiSkipBaseLength if the UMI is in read1/read2, skip 
 #'      `umiSkipBaseLength` bases following UMI, default is 0.
 #' @param overrepresentationAnalysis A logical indicating overrepresentation
@@ -267,6 +273,7 @@ rfastp <- function( read1="", read2="", 　outputFastq="", unpaired="",
     correctionOverlap=FALSE, minOverlapLength=30, maxOverlapMismatch=5,
     maxOverlapMismatchPercentage=20,
     umi=FALSE, umiLoc="", umiLength=0, umiPrefix="", umiSkipBaseLength=0,
+    umiNoConnection=FALSE, umiIgnoreSeqNameSpace=FALSE,
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, splitPrefixPaddingNum=4,  
     reportTitle="Rfastp Report", thread=2, verbose=TRUE) { 
@@ -487,8 +494,17 @@ rfastp <- function( read1="", read2="", 　outputFastq="", unpaired="",
         }
 
         if (umiPrefix != "") {
-            args <- paste0(args, " --umi_prefix ", umiPrefix)
+	    if (umiNoConnection) {
+		args <- paste0(args, " --umi_prefix ", umiPrefix)
+	    }
+	    else {
+                args <- paste0(args, " --umi_prefix ", umiPrefix, "_")
+	    }
         }
+
+	if (umiIgnoreSeqNameSpace) {
+	    args <- paste0(args, " --umi_ignore")
+	}
     }
 
     if (overrepresentationAnalysis) {

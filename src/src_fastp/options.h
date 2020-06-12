@@ -106,12 +106,14 @@ public:
         location = UMI_LOC_NONE;
         length = 0;
         skip = 0;
+	ignore = false;
     }
 public:
     bool enabled;
     int location;
     int length;
     int skip;
+    bool ignore;
     string prefix;
     string separator;
 };

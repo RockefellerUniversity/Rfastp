@@ -1,0 +1,62 @@
+
+---
+title: "Visualization and annotation of read signal over genomic ranges with profileplyr"
+author: "Doug Barrows and Tom Carroll"
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+
+output:
+  BiocStyle::html_document:
+     number_sections: yes
+     toc: true
+# bibliography: library.bib
+vignette: >
+  %\VignetteIndexEntry{Visualization and annotation of read signal over genomic ranges with profileplyr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r setup, echo=FALSE, results="hide"}
+knitr::opts_chunk$set(tidy=FALSE, cache=FALSE,
+                      dev="png",
+                      message=FALSE, error=FALSE, warning=TRUE)
+```
+
+# Introduction
+# Import signal quantification from deepTools or soGGi
+## Starting with output from deepTools ‘computeMatrix’
+## Starting with output from soGGi
+# The profileplyr object
+## Key components of the object
+## Subsetting the profileplyr object
+## Changing sample names
+## Connecting profileplyr functions using the pipe (%>%) operator
+# Export/Conversion of profileplyr object for heatmap visualization of ranges
+## Export to a deepTools matrix
+## Directly generate a customized EnrichedHeatmap with annotated ranges
+## Convert to an EnrichedHeatmap matrix
+# Summarize signal for ggplot or heatmap visualization
+## Matrix output for heatmaps
+## Long output for ggplot
+## profileplyr object output with summarized matrix
+# Annotating of genomic ranges with clusters, genomic regions, and genes
+## K-means and hierarchical clustering of the genomic ranges
+## Output matrix with cluster information to deepTools
+## Generate group-annotated heatmap in R directly with generateEnrichedHeatmap()
+## Visualize mean range signal for each cluster with ggplot
+## Gene annotation of ranges
+### Annotation of ranges with genes and genomic regions using ChIPseeker
+### Annotation of ranges with genes using GREAT
+# Grouping ranges by range metadata, gene list, or additional GRanges
+## Switch output grouping columns within existing range metadata
+## Group by user-supplied GRanges
+## Group by user-supplied gene list
+### Gene set list contains a character data
+### Gene set list with data frames for heatmap annotation (using pipe - %>%)
+# Combining multiple profileplyr functions for heatmap annotation
+# Acknowledgements
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
+```

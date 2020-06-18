@@ -5,11 +5,11 @@
 \title{R wrap of gencore}
 \usage{
 rgencore(
-  inBam = "",
-  outBam = "",
-  ref = "",
-  bed = "",
-  umiPrefix = "",
+  inBam,
+  outBam,
+  ref,
+  bed = NULL,
+  umiPrefix = NULL,
   supportingReads = 1,
   ratioMajorBase = 0.8,
   scoreMajorBase = 6,
@@ -18,7 +18,7 @@ rgencore(
   lowQual = 15,
   coverageSampling = 10000,
   debug = FALSE,
-  quitAfterContig = ""
+  quitAfterContig = NULL
 )
 }
 \arguments{
@@ -32,22 +32,22 @@ rgencore(
 
 \item{umiPrefix}{the prefix for UMI, if it has. None by default.}
 
-\item{supportingReads}{only output consensus reads/pairs that 
-merged by >= `supportingRead` reads/pairs. The valud should be 1~10, and the 
+\item{supportingReads}{only output consensus reads/pairs that
+merged by >= `supportingRead` reads/pairs. The valud should be 1~10, and the
 default value is 1.}
 
-\item{ratioMajorBase}{if the ratio of the major base in a cluster is less than 
-`ratioMajorBase`, it will be further compared to the reference. The valud should 
+\item{ratioMajorBase}{if the ratio of the major base in a cluster is less than
+`ratioMajorBase`, it will be further compared to the reference. The valud should
 be 0.5~1.0, and the default value is 0.8}
 
-\item{scoreMajorBase}{if the score of the major base in a cluster is less than 
-`scoreMajorBase`, it will be further compared to the reference. The valud should 
+\item{scoreMajorBase}{if the score of the major base in a cluster is less than
+`scoreMajorBase`, it will be further compared to the reference. The valud should
 be 1~20, and the default value is 6}
 
 \item{highQual}{the threshold for a quality score to be considered as high qulity.
 Default 30 means Q30}
 
-\item{moderateQual}{the threshold for a quality score to be considered as moderate 
+\item{moderateQual}{the threshold for a quality score to be considered as moderate
 qulity. Default 20 means Q20.}
 
 \item{lowQual}{the threshold for a quality score to be considered as low qulity.
@@ -58,7 +58,7 @@ Default 10000 means 1/10000.}
 
 \item{debug}{a logical indicating output some debug information to STDERR.}
 
-\item{quitAfterContig}{stop when `quitAfterContig` contigs are processed. 
+\item{quitAfterContig}{stop when `quitAfterContig` contigs are processed.
 Only used for fast debugging. Default 0 means no limitation.}
 }
 \value{
@@ -69,18 +69,16 @@ Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of f
 }
 \examples{
 
-require(rjson)
-
 # preprare for the input and output files.
 # if the output file exists, it will be OVERWRITEN.
 
-inputbamfile <-  system.file("extdata", "ex1.bam", package="Rsamtools")
+inputbamfile <-  system.file("extdata", "ex1_sorted.bam", package="Rfastp")
 outputbamfile <- "ex1_rgencore.bam"
-reference <- "myreference.fa"
+reference <- system.file("extdata", "myreference.fa", package="Rfastp")
 
-# run rgencore 
+# run rgencore
 
-rgencore_json_report <- rgencore(inBam=inputbamfile, 
+rgencore_json_report <- rgencore(inBam=inputbamfile,
          outBam=outputbamfile,
          ref=reference
 )

@@ -5,21 +5,21 @@
 \title{R wrap of fastp}
 \usage{
 rfastp(
-  read1 = "",
-  read2 = "",
-  outputFastq = "",
-  unpaired = "",
-  failedOut = "",
+  read1,
+  read2 = NULL,
+  outputFastq,
+  unpaired = NULL,
+  failedOut = NULL,
   merge = FALSE,
-  mergeOut = "",
+  mergeOut = NULL,
   compressLevel = 4,
   phred64 = FALSE,
   interleaved = FALSE,
   fixMGIid = FALSE,
   adapterTrimming = TRUE,
-  adapterSequenceRead1 = "",
-  adapterSequenceRead2 = "",
-  adapterFasta = "",
+  adapterSequenceRead1 = NULL,
+  adapterSequenceRead2 = NULL,
+  adapterFasta = NULL,
   trimFrontRead1 = 0,
   trimTailRead1 = 0,
   trimFrontRead2 = 0,
@@ -52,17 +52,17 @@ rfastp(
   maxReadLength = 0,
   lowComplexityFiltering = FALSE,
   minComplexity = 30,
-  index1Filter = "",
-  index2Filter = "",
+  index1Filter = NULL,
+  index2Filter = NULL,
   maxIndexMismatch = 0,
   correctionOverlap = FALSE,
   minOverlapLength = 30,
   maxOverlapMismatch = 5,
   maxOverlapMismatchPercentage = 20,
   umi = FALSE,
-  umiLoc = "",
+  umiLoc = NULL,
   umiLength = 0,
-  umiPrefix = "",
+  umiPrefix = NULL,
   umiSkipBaseLength = 0,
   umiNoConnection = FALSE,
   umiIgnoreSeqNameSpace = FALSE,
@@ -88,55 +88,55 @@ reads failed to pass the QC [string], default NULL, discard it. [string]}
 
 \item{failedOut}{file to store reads that cannot pass the filters default}
 
-\item{merge}{for PE input, A logical(1) indicating whether merge each pair 
+\item{merge}{for PE input, A logical(1) indicating whether merge each pair
 of reads into a single read if they are overlaped, unmerged reads will
-be write to `output` file. Default is FALSE. the `mergeOut` must be 
+be write to `output` file. Default is FALSE. the `mergeOut` must be
 set if TRUE.}
 
 \item{mergeOut}{under `merge` mode, file to store the merged reads. [string]}
 
-\item{compressLevel}{compression level for gzip output (1 ~ 9). 1 is fastest, 
+\item{compressLevel}{compression level for gzip output (1 ~ 9). 1 is fastest,
 9 is smallest, default is 4.}
 
 \item{phred64}{A logical indicating whether the input is using phred64 scoring
 (it will be converted to phred33, so the output will still be phred33)}
 
-\item{interleaved}{A logical indicating whether <read1> is an interleaved FASTQ 
+\item{interleaved}{A logical indicating whether <read1> is an interleaved FASTQ
 which contains both read1 and read2. Default is FALSE.}
 
-\item{fixMGIid}{the MGI FASTQ ID format is not compatible with many BAM 
+\item{fixMGIid}{the MGI FASTQ ID format is not compatible with many BAM
 operation tools, enable this option to fix it. Default is FALSE}
 
-\item{adapterTrimming}{A logical indicating whether run adapter trimming. 
+\item{adapterTrimming}{A logical indicating whether run adapter trimming.
 Default is `TRUE`}
 
-\item{adapterSequenceRead1}{the adapter for read1. For SE data, if not 
+\item{adapterSequenceRead1}{the adapter for read1. For SE data, if not
 specified, the adapter will be auto-detected. For PE data, this is used
 if R1/R2 are found not overlapped.}
 
-\item{adapterSequenceRead2}{the adapter for read2 (PE data only). This is 
-used if R1/R2 are found not overlapped. If not specified, it will be the 
+\item{adapterSequenceRead2}{the adapter for read2 (PE data only). This is
+used if R1/R2 are found not overlapped. If not specified, it will be the
 same as <adapterSequenceRead1>}
 
-\item{adapterFasta}{specify a FASTA file to trim both read1 and read2 (if PE) 
+\item{adapterFasta}{specify a FASTA file to trim both read1 and read2 (if PE)
 by all the sequences in this FASTA file.}
 
 \item{trimFrontRead1}{trimming how many bases in front for read1, default is 0}
 
 \item{trimTailRead1}{trimming how many bases in tail for read1, default is 0'}
 
-\item{trimFrontRead2}{trimming how many bases in front for read2. If it's not 
+\item{trimFrontRead2}{trimming how many bases in front for read2. If it's not
 specified, it will follow read1's settings}
 
-\item{trimTailRead2}{trimming how many bases in tail for read2. If it's not 
+\item{trimTailRead2}{trimming how many bases in tail for read2. If it's not
 specified, it will follow read1's settings}
 
-\item{maxLengthRead1}{if read1 is longer than maxLengthRead1, then trim read1 
-at its tail to make it as long as maxLengthRead1 Default 0 means no 
+\item{maxLengthRead1}{if read1 is longer than maxLengthRead1, then trim read1
+at its tail to make it as long as maxLengthRead1 Default 0 means no
 limitation.}
 
-\item{maxLengthRead2}{if read2 is longer than maxLengthRead2, then trim read2 
-at its tail to make it as long as maxLengthRead2. Default 0 means no 
+\item{maxLengthRead2}{if read2 is longer than maxLengthRead2, then trim read2
+at its tail to make it as long as maxLengthRead2. Default 0 means no
 limitation. If it's not specified, it will follow read1's settings.}
 
 \item{forceTrimPolyG}{A logical indicating force polyG tail trimming,
@@ -144,120 +144,120 @@ trimming is only automatically enabled for Illumina NextSeq/NovaSeq data.}
 
 \item{disableTrimPolyG}{A logical indicating disable polyG tail trimming.}
 
-\item{minLengthPolyG}{the minimum length to detect polyG in the read tail. 
+\item{minLengthPolyG}{the minimum length to detect polyG in the read tail.
 10 by default.}
 
 \item{trimPolyX}{A logical indicating force polyX tail trimming.}
 
-\item{minLengthPolyX}{the minimum length to detect polyX in the read tail. 
+\item{minLengthPolyX}{the minimum length to detect polyX in the read tail.
 10 by default.}
 
-\item{cutLowQualFront}{A logical indiccating move a sliding window from 
-front (5') to tail, drop the bases in the window if its mean quality 
+\item{cutLowQualFront}{A logical indiccating move a sliding window from
+front (5') to tail, drop the bases in the window if its mean quality
 < threshold, stop otherwise. Default is `FALSE`}
 
 \item{cutLowQualTail}{A logical indiccating move a sliding window from
-tail (3') to front, drop the bases in the window if its mean quality 
+tail (3') to front, drop the bases in the window if its mean quality
 < threshold, stop otherwise. Default is `FALSE`}
 
 \item{cutSlideWindowRight}{A logical indicating move a sliding window from
-front to tail, if meet one window with mean quality < threshold, drop  
-the bases in the window and the right part, and then stop. Default is 
+front to tail, if meet one window with mean quality < threshold, drop
+the bases in the window and the right part, and then stop. Default is
 `FALSE`}
 
 \item{cutWindowSize}{the window size option shared by cutLowQualFront,
 cutLowQualTail, or cutSlideWindowRight. Range: 1~1000, default: 4}
 
-\item{cutMeanQual}{the mean quality requirement option shared by cutLowQualFront, 
+\item{cutMeanQual}{the mean quality requirement option shared by cutLowQualFront,
 cutLowQualTail or cutSlideWindowRight. Range: 1~36 default: 20}
 
-\item{cutFrontWindowSize}{the window size option of cutLowQualFront, default to 
+\item{cutFrontWindowSize}{the window size option of cutLowQualFront, default to
 cutWindowSize if not specified. default: 4}
 
-\item{cutFrontMeanQual}{the mean quality requirement option for cutLowQualFront, 
+\item{cutFrontMeanQual}{the mean quality requirement option for cutLowQualFront,
 default to cutMeanQual if not specified. default: 20}
 
-\item{cutTailWindowSize}{the window size option of cutLowQualTail, default to 
+\item{cutTailWindowSize}{the window size option of cutLowQualTail, default to
 cutWindowSize if not specified. default: 4}
 
-\item{cutTailMeanQual}{the mean quality requirement option for cutLowQualTail, 
+\item{cutTailMeanQual}{the mean quality requirement option for cutLowQualTail,
 default to cutMeanQual if not specified. default: 20}
 
-\item{cutSlideWindowSize}{the window size option of cutSlideWindowRight, 
+\item{cutSlideWindowSize}{the window size option of cutSlideWindowRight,
 default to cutWindowSize if not specified. default: 4}
 
-\item{cutSlideWindowQual}{the mean quality requirement option for 
+\item{cutSlideWindowQual}{the mean quality requirement option for
 cutSlideWindowRight, default to cutMeanQual if not specified. default: 20}
 
-\item{qualityFiltering}{A logical indicating run quality filtering. 
+\item{qualityFiltering}{A logical indicating run quality filtering.
 Default is `TRUE`.}
 
-\item{qualityFilterPhred}{the minimum quality value that a base is qualified. 
+\item{qualityFilterPhred}{the minimum quality value that a base is qualified.
 Default 15 means phred quality >=Q15 is qualified.}
 
-\item{qualityFilterPercent}{Maximum percents of bases are allowed to be 
+\item{qualityFilterPercent}{Maximum percents of bases are allowed to be
 unqualified (0~100). Default 40 means 40\%}
 
-\item{maxNfilter}{maximum number of N allowed in the sequence. read/pair is 
+\item{maxNfilter}{maximum number of N allowed in the sequence. read/pair is
 discarded if failed to pass this filter. Default is 5}
 
 \item{averageQualFilter}{if one read's average quality score < `averageQualFilter`,
 then this read/pair is discarded. Default 0 means no requirement.}
 
-\item{lengthFiltering}{A logical indicating whether run lenght filtering. 
+\item{lengthFiltering}{A logical indicating whether run lenght filtering.
 Default: TRUE}
 
 \item{minReadLength}{reads shorter than minReadLength will be discarded,
 default is 15.}
 
-\item{maxReadLength}{reads longer than maxReadLength will be discarded, 
+\item{maxReadLength}{reads longer than maxReadLength will be discarded,
 default 0 means no limitation.}
 
-\item{lowComplexityFiltering}{A logical indicating whethere run low complexity 
-filter. The complexity is defined as the percentage of base that is 
+\item{lowComplexityFiltering}{A logical indicating whethere run low complexity
+filter. The complexity is defined as the percentage of base that is
 different from its next base (base[i] != base[i+1]). Default is `FALSE`}
 
-\item{minComplexity}{the threshold for low complexity filter (0~100). 
+\item{minComplexity}{the threshold for low complexity filter (0~100).
 Default is 30, which means 30\% complexity is required. (int [=30])}
 
-\item{index1Filter}{specify a file contains a list of barcodes of index1 
+\item{index1Filter}{specify a file contains a list of barcodes of index1
 to be filtered out, one barcode per line.}
 
-\item{index2Filter}{specify a file contains a list of barcodes of index2 
+\item{index2Filter}{specify a file contains a list of barcodes of index2
 to be filtered out, one barcode per line.}
 
-\item{maxIndexMismatch}{the allowed difference of index barcode for 
+\item{maxIndexMismatch}{the allowed difference of index barcode for
 index filtering, default 0 means completely identical.}
 
-\item{correctionOverlap}{A logical indicating run base correction in 
+\item{correctionOverlap}{A logical indicating run base correction in
 overlapped regions (only for PE data), default is `FALSE`}
 
-\item{minOverlapLength}{the minimum length to detect overlapped region of 
-PE reads. This will affect overlap analysis based PE merge, adapter 
+\item{minOverlapLength}{the minimum length to detect overlapped region of
+PE reads. This will affect overlap analysis based PE merge, adapter
 trimming and correction. 30 by default.}
 
 \item{maxOverlapMismatch}{the maximum number of mismatched bases to detect
-overlapped region of PE reads. This will affect overlap analysis 
+overlapped region of PE reads. This will affect overlap analysis
 based PE merge, adapter trimming and correction. 5 by default.}
 
-\item{maxOverlapMismatchPercentage}{the maximum percentage of mismatched 
-bases to detect overlapped region of PE reads. This will affect 
-overlap analysis based PE merge, adapter trimming and correction. 
+\item{maxOverlapMismatchPercentage}{the maximum percentage of mismatched
+bases to detect overlapped region of PE reads. This will affect
+overlap analysis based PE merge, adapter trimming and correction.
 Default 20 means 20\%}
 
 \item{umi}{A logical indicating whethere preprocessing unique molecular
 identifier (UMI). Default: `FALSE`}
 
-\item{umiLoc}{specify the location of UMI, can be 
+\item{umiLoc}{specify the location of UMI, can be
 (index1/index2/read1/read2/per_index/per_read)}
 
 \item{umiLength}{length of UMI if the UMI is in read1/read2.}
 
-\item{umiPrefix}{an string indication the following string is UMI 
-(i.e. prefix=UMI, UMI=AATTCG, final=UMIAATTCG). Only letters, 
+\item{umiPrefix}{an string indication the following string is UMI
+(i.e. prefix=UMI, UMI=AATTCG, final=UMIAATTCG). Only letters,
 numbers, and '#" allowed. No prefix by default.}
 
-\item{umiSkipBaseLength}{if the UMI is in read1/read2, skip 
+\item{umiSkipBaseLength}{if the UMI is in read1/read2, skip
 `umiSkipBaseLength` bases following UMI, default is 0.}
 
 \item{umiNoConnection}{an logical indicating remove "_" between the UMI
@@ -270,19 +270,19 @@ inserted into the sequence name before the first SPACE.}
 \item{overrepresentationAnalysis}{A logical indicating overrepresentation
 analysis. Default is `FALSE`}
 
-\item{overrepresentationSampling}{one in `overrepresentationSampling` 
-reads will be computed for overrepresentation analysis (1~10000), 
+\item{overrepresentationSampling}{one in `overrepresentationSampling`
+reads will be computed for overrepresentation analysis (1~10000),
 smaller is slower, default is 20.}
 
 \item{splitOutput}{number of files to be splitted (2~999). a sequential number
 prefix will be added to output name. Default is 0 (no split)}
 
-\item{splitByLines}{split output by limiting lines of each file(>=1000), a 
-sequential number prefix will be added to output name ( 0001.out.fq, 
+\item{splitByLines}{split output by limiting lines of each file(>=1000), a
+sequential number prefix will be added to output name ( 0001.out.fq,
 0002.out.fq...), default is 0 (disabled).}
 
-\item{splitPrefixPaddingNum}{the digits for the sequential number padding (1~10), 
-default is 4, so the filename will be padded as 0001.xxx, 0 to disable 
+\item{splitPrefixPaddingNum}{the digits for the sequential number padding (1~10),
+default is 4, so the filename will be padded as 0001.xxx, 0 to disable
 padding}
 
 \item{reportTitle}{Title of the report, default: "Rfastp report"}
@@ -299,8 +299,6 @@ Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of f
 }
 \examples{
 
-require(rjson)
-
 # preprare for the input and output files.
 # if the output file exists, it will be OVERWRITEN.
 
@@ -316,9 +314,9 @@ se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
          thread = 4)
 
 
-# merge paired-end data by overlap: 
+# merge paired-end data by overlap:
 
-pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE, 
+pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
          outputFastq = './rfastp_pe_test_unpaired',
          mergeOut = './rfastp_pe_test_merged.fastq.gz')
 

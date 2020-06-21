@@ -1,7 +1,7 @@
 Package: Rfastp
 Type: Package
 Title: Wraps the fastp toolset in R
-Version: 0.1.0
+Version: 0.1.2
 Author: Thomas Carroll, Wei Wang
 Maintainer: Thomas Carroll <tc.infomatics@rockfeller.edu>
 Description: An R wrapper of fastp and gencore 

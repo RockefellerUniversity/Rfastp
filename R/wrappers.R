@@ -251,7 +251,9 @@
 #')
 
 
-rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
+rfastp <- function( read1, read2=NULL,
+                    outputHTML=NULL,outputJSON=NULL,
+                    outputFastq, unpaired=NULL,
     failedOut=NULL, merge=FALSE, mergeOut=NULL, compressLevel=4, phred64=FALSE,
     interleaved=FALSE, fixMGIid=FALSE, adapterTrimming=TRUE,
     adapterSequenceRead1=NULL, adapterSequenceRead2=NULL, adapterFasta=NULL,
@@ -278,6 +280,13 @@ rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
     reportTitle="Rfastp Report", thread=2, verbose=TRUE) {
 
     args <- paste0("-i ", read1, " -o ", outputFastq, "_R1.fastq.gz ")
+
+    if(is.null(outputHTML)){
+      outputHTML <- outputFastq
+    }
+    if(is.null(outputHTML)){
+      outputJSON <- outputFastq
+    }
 
     if ( is.null(read2) ) {
         if (interleaved) {
@@ -465,7 +474,7 @@ rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
         args <- paste0(args, " -V")
     }
 
-    args <- paste0(args, ' --report_title "Rfastp Report" -w ', thread, " -h ", outputFastq, ".html -j ", outputFastq, ".json" )
+    args <- paste0(args, ' --report_title "Rfastp Report" -w ', thread, " -h ", outputHTML, ".html -j ", outputJSON, ".json" )
     call <- paste(shQuote(file.path(system.file(package="Rfastp"), "fastp")), args)
     system(call, intern=TRUE)
     return(fromJSON(file = paste0(outputFastq, ".json")))

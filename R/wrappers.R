@@ -251,7 +251,7 @@
 #')
 
 
-rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
+rfastp <- function( read1, read2=NULL, outputFastq, unpaired=NULL,
     failedOut=NULL, merge=FALSE, mergeOut=NULL, compressLevel=4, phred64=FALSE,
     interleaved=FALSE, fixMGIid=FALSE, adapterTrimming=TRUE,
     adapterSequenceRead1=NULL, adapterSequenceRead2=NULL, adapterFasta=NULL,
@@ -460,14 +460,18 @@ rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
     }
 
     args <- paste0(args, " --split_prefix_digits ", splitPrefixPaddingNum)
+    args <- paste0(args, ' --report_title "', reportTitle, '" -w ', thread, " -h ", outputFastq, ".html -j ", outputFastq, ".json" )
 
     if (verbose) {
         args <- paste0(args, " -V")
+        call <- paste(shQuote(file.path(system.file(package="Rfastp"), "fastp")), args)
+        system(call, intern=TRUE)
+    }
+    else {
+        call <- paste(shQuote(file.path(system.file(package="Rfastp"), "fastp")), args)
+        system(call, intern=TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
     }
 
-    args <- paste0(args, ' --report_title "Rfastp Report" -w ', thread, " -h ", outputFastq, ".html -j ", outputFastq, ".json" )
-    call <- paste(shQuote(file.path(system.file(package="Rfastp"), "fastp")), args)
-    system(call, intern=TRUE)
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }
 
@@ -503,6 +507,8 @@ rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
 #'     Default 10000 means 1/10000.
 #' @param quitAfterContig stop when `quitAfterContig` contigs are processed.
 #'     Only used for fast debugging. Default 0 means no limitation.
+#' @param verbose output verbose log information
+#'
 #'
 #' @return returns a json object of the report.
 #' @author Thomas Carroll, Wei Wang
@@ -529,7 +535,8 @@ rfastp <- function( read1, read2=NULL, 　outputFastq, unpaired=NULL,
 rgencore <- function( inBam, outBam, ref, bed=NULL,
     umiPrefix=NULL, supportingReads=1, ratioMajorBase=0.8,
     scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
-    coverageSampling=10000, debug=FALSE, quitAfterContig=NULL) {
+    coverageSampling=10000, debug=FALSE, quitAfterContig=NULL, 
+    verbose = FALSE) {
 
     args <- paste0("-i ", inBam, " -o ", outBam, " -r ", ref)
 
@@ -556,7 +563,12 @@ rgencore <- function( inBam, outBam, ref, bed=NULL,
 
     args <- paste0(args, " -j ", outBam, ".json", " -h ", outBam, ".html")
     call <- paste(shQuote(file.path(system.file(package="Rfastp"), "gencore")), args)
-    system(call, intern=TRUE)
+    if (verbose) {
+        system(call, intern=TRUE)
+    }
+    else {
+        system(call, intern=TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
+    }
     return(fromJSON(file = paste0(outBam, ".json")))
 }
 

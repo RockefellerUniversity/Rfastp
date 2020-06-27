@@ -204,6 +204,7 @@ rfastp <- function( read1, outputFastq,
         runFastp(read1=read1, outputFastq=outputFastq, ...)
     }
 
+
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }
 

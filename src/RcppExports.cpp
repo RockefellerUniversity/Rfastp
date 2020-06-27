@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // runGencore
 int runGencore(std::string input, std::string output, std::string refFile, std::string bedFile, std::string umiPrefix, std::string jsonFile, std::string htmlFile, int clusterSizeReq, int baseScoreReq, double scorePercentReq, int maxContig, int highQuality, int moderateQuality, int lowQuality, int coverageStep, bool debug);
-RcppExport SEXP _fastponly_runGencore(SEXP inputSEXP, SEXP outputSEXP, SEXP refFileSEXP, SEXP bedFileSEXP, SEXP umiPrefixSEXP, SEXP jsonFileSEXP, SEXP htmlFileSEXP, SEXP clusterSizeReqSEXP, SEXP baseScoreReqSEXP, SEXP scorePercentReqSEXP, SEXP maxContigSEXP, SEXP highQualitySEXP, SEXP moderateQualitySEXP, SEXP lowQualitySEXP, SEXP coverageStepSEXP, SEXP debugSEXP) {
+RcppExport SEXP _Rfastp_runGencore(SEXP inputSEXP, SEXP outputSEXP, SEXP refFileSEXP, SEXP bedFileSEXP, SEXP umiPrefixSEXP, SEXP jsonFileSEXP, SEXP htmlFileSEXP, SEXP clusterSizeReqSEXP, SEXP baseScoreReqSEXP, SEXP scorePercentReqSEXP, SEXP maxContigSEXP, SEXP highQualitySEXP, SEXP moderateQualitySEXP, SEXP lowQualitySEXP, SEXP coverageStepSEXP, SEXP debugSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -33,7 +33,7 @@ END_RCPP
 }
 // runFastp
 int runFastp(std::string read1, std::string read2, std::string outputFastq, std::string unpaired, std::string failedOut, bool merge, std::string mergeOut, bool phred64, bool interleaved, bool fixMGIid, bool adapterTrimming, std::string adapterSequenceRead1, std::string adapterSequenceRead2, std::string adapterFasta, int trimFrontRead1, int trimTailRead1, int trimFrontRead2, int trimTailRead2, int maxLengthRead1, int maxLengthRead2, bool forceTrimPolyG, bool disableTrimPolyG, int minLengthPolyG, bool trimPolyX, int minLengthPolyX, bool cutLowQualFront, bool cutLowQualTail, bool cutSlideWindowRight, int cutWindowSize, int cutMeanQual, int cutFrontWindowSize, int cutFrontMeanQual, int cutTailWindowSize, int cutTailMeanQual, int cutSlideWindowSize, int cutSlideWindowQual, bool qualityFiltering, int qualityFilterPhred, int qualityFilterPercent, int maxNfilter, int averageQualFilter, bool lengthFiltering, int minReadLength, int maxReadLength, bool lowComplexityFiltering, int minComplexity, std::string index1Filter, std::string index2Filter, int maxIndexMismatch, bool correctionOverlap, int minOverlapLength, int maxOverlapMismatch, int maxOverlapMismatchPercentage, bool umi, bool umiIgnoreSeqNameSpace, std::string umiLoc, int umiLength, std::string umiPrefix, int umiSkipBaseLength, bool overrepresentationAnalysis, int overrepresentationSampling, int splitOutput, int splitByLines, int thread, bool verbose);
-RcppExport SEXP _fastponly_runFastp(SEXP read1SEXP, SEXP read2SEXP, SEXP outputFastqSEXP, SEXP unpairedSEXP, SEXP failedOutSEXP, SEXP mergeSEXP, SEXP mergeOutSEXP, SEXP phred64SEXP, SEXP interleavedSEXP, SEXP fixMGIidSEXP, SEXP adapterTrimmingSEXP, SEXP adapterSequenceRead1SEXP, SEXP adapterSequenceRead2SEXP, SEXP adapterFastaSEXP, SEXP trimFrontRead1SEXP, SEXP trimTailRead1SEXP, SEXP trimFrontRead2SEXP, SEXP trimTailRead2SEXP, SEXP maxLengthRead1SEXP, SEXP maxLengthRead2SEXP, SEXP forceTrimPolyGSEXP, SEXP disableTrimPolyGSEXP, SEXP minLengthPolyGSEXP, SEXP trimPolyXSEXP, SEXP minLengthPolyXSEXP, SEXP cutLowQualFrontSEXP, SEXP cutLowQualTailSEXP, SEXP cutSlideWindowRightSEXP, SEXP cutWindowSizeSEXP, SEXP cutMeanQualSEXP, SEXP cutFrontWindowSizeSEXP, SEXP cutFrontMeanQualSEXP, SEXP cutTailWindowSizeSEXP, SEXP cutTailMeanQualSEXP, SEXP cutSlideWindowSizeSEXP, SEXP cutSlideWindowQualSEXP, SEXP qualityFilteringSEXP, SEXP qualityFilterPhredSEXP, SEXP qualityFilterPercentSEXP, SEXP maxNfilterSEXP, SEXP averageQualFilterSEXP, SEXP lengthFilteringSEXP, SEXP minReadLengthSEXP, SEXP maxReadLengthSEXP, SEXP lowComplexityFilteringSEXP, SEXP minComplexitySEXP, SEXP index1FilterSEXP, SEXP index2FilterSEXP, SEXP maxIndexMismatchSEXP, SEXP correctionOverlapSEXP, SEXP minOverlapLengthSEXP, SEXP maxOverlapMismatchSEXP, SEXP maxOverlapMismatchPercentageSEXP, SEXP umiSEXP, SEXP umiIgnoreSeqNameSpaceSEXP, SEXP umiLocSEXP, SEXP umiLengthSEXP, SEXP umiPrefixSEXP, SEXP umiSkipBaseLengthSEXP, SEXP overrepresentationAnalysisSEXP, SEXP overrepresentationSamplingSEXP, SEXP splitOutputSEXP, SEXP splitByLinesSEXP, SEXP threadSEXP, SEXP verboseSEXP) {
+RcppExport SEXP _Rfastp_runFastp(SEXP read1SEXP, SEXP read2SEXP, SEXP outputFastqSEXP, SEXP unpairedSEXP, SEXP failedOutSEXP, SEXP mergeSEXP, SEXP mergeOutSEXP, SEXP phred64SEXP, SEXP interleavedSEXP, SEXP fixMGIidSEXP, SEXP adapterTrimmingSEXP, SEXP adapterSequenceRead1SEXP, SEXP adapterSequenceRead2SEXP, SEXP adapterFastaSEXP, SEXP trimFrontRead1SEXP, SEXP trimTailRead1SEXP, SEXP trimFrontRead2SEXP, SEXP trimTailRead2SEXP, SEXP maxLengthRead1SEXP, SEXP maxLengthRead2SEXP, SEXP forceTrimPolyGSEXP, SEXP disableTrimPolyGSEXP, SEXP minLengthPolyGSEXP, SEXP trimPolyXSEXP, SEXP minLengthPolyXSEXP, SEXP cutLowQualFrontSEXP, SEXP cutLowQualTailSEXP, SEXP cutSlideWindowRightSEXP, SEXP cutWindowSizeSEXP, SEXP cutMeanQualSEXP, SEXP cutFrontWindowSizeSEXP, SEXP cutFrontMeanQualSEXP, SEXP cutTailWindowSizeSEXP, SEXP cutTailMeanQualSEXP, SEXP cutSlideWindowSizeSEXP, SEXP cutSlideWindowQualSEXP, SEXP qualityFilteringSEXP, SEXP qualityFilterPhredSEXP, SEXP qualityFilterPercentSEXP, SEXP maxNfilterSEXP, SEXP averageQualFilterSEXP, SEXP lengthFilteringSEXP, SEXP minReadLengthSEXP, SEXP maxReadLengthSEXP, SEXP lowComplexityFilteringSEXP, SEXP minComplexitySEXP, SEXP index1FilterSEXP, SEXP index2FilterSEXP, SEXP maxIndexMismatchSEXP, SEXP correctionOverlapSEXP, SEXP minOverlapLengthSEXP, SEXP maxOverlapMismatchSEXP, SEXP maxOverlapMismatchPercentageSEXP, SEXP umiSEXP, SEXP umiIgnoreSeqNameSpaceSEXP, SEXP umiLocSEXP, SEXP umiLengthSEXP, SEXP umiPrefixSEXP, SEXP umiSkipBaseLengthSEXP, SEXP overrepresentationAnalysisSEXP, SEXP overrepresentationSamplingSEXP, SEXP splitOutputSEXP, SEXP splitByLinesSEXP, SEXP threadSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -108,12 +108,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fastponly_runGencore", (DL_FUNC) &_fastponly_runGencore, 16},
-    {"_fastponly_runFastp", (DL_FUNC) &_fastponly_runFastp, 65},
+    {"_Rfastp_runGencore", (DL_FUNC) &_Rfastp_runGencore, 16},
+    {"_Rfastp_runFastp", (DL_FUNC) &_Rfastp_runFastp, 65},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_fastponly(DllInfo *dll) {
+RcppExport void R_init_Rfastp(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

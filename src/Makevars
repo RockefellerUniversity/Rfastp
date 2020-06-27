@@ -1,11 +1,53 @@
-## This file uses GNU make syntax $(shell ...) so we need to
-## have "SystemRequirements: GNU make" in the DESCRIPTION file.
-## See Rhtslib's vignette for details.
+PKG_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\ "${R_HOME}/bin/R" --vanilla --slave)
+PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_static")'|\ "${R_HOME}/bin/R" --vanilla --slave)
 
 RHTSLIB_LIBS=$(shell echo 'Rhtslib::pkgconfig("PKG_LIBS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)
 RHTSLIB_CPPFLAGS=$(shell echo 'Rhtslib::pkgconfig("PKG_CPPFLAGS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)
+    
+PKG_LIBS+=$(RHTSLIB_LIBS)
+PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/
 
-PKG_LIBS=$(RHTSLIB_LIBS)
-PKG_CPPFLAGS=$(RHTSLIB_CPPFLAGS)
+
+OBJECTS=\
+./RcppExports.o \
+./adaptertrimmer.o \
+./basecorrector.o \
+./duplicate.o \
+./evaluator.o \
+./fastareader.o \
+./fastqreader.o \
+./filter.o \
+./filterresult.o \
+./gencore.o \
+./htmlreporter.o \
+./jsonreporter.o \
+./main_r.o \
+./nucleotidetree.o \
+./options.o \
+./overlapanalysis.o \
+./peprocessor.o \
+./polyx.o \
+./processor.o \
+./read.o \
+./seprocessor.o \
+./sequence.o \
+./stats.o \
+./threadconfig.o \
+./umiprocessor.o \
+./unittest.o \
+./writer.o \
+./writerthread.o \
+./GENCORE/bamutil.o \
+./GENCORE/bed.o \
+./GENCORE/cluster.o \
+./GENCORE/fastareader.o \
+./GENCORE/gencore.o \
+./GENCORE/htmlreporter.o \
+./GENCORE/jsonreporter.o \
+./GENCORE/options.o \
+./GENCORE/pair.o \
+./GENCORE/reference.o \
+./GENCORE/stats.o \
+./GENCORE/unittest.o

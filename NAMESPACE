@@ -2,4 +2,6 @@
 
 export(rfastp)
 export(rgencore)
+importFrom(Rcpp,sourceCpp)
 importFrom(rjson,fromJSON)
+useDynLib(Rfastp, .registration = TRUE)

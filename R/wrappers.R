@@ -1,61 +1,4 @@
 
-#' Call the fastp binary with additional arguments.
-#'
-#' @keywords internal
-#'
-#' @param bin The name of the fastp binary
-#' @param execute Logical scalar, whether to execute the command. If FALSE,
-#'   return a string with the shell command.
-#' @param args A character string containing the arguments that will be passed
-#'   to the binary.
-#'
-#' @return If \code{execute} is TRUE, returns the console output of running the
-#'   fastp command. If \code{execute} is FALSE, returns the shell command.
-#'
-
-.fastpBin <- function(bin="fastp", args="", execute=TRUE) {
-  if (is.null(args) || args=="") {
-    stop("The fastp binary needs to be called with additional arguments")
-  }
-  args <- gsub("^ *| *$", "", args)
-  bin <- match.arg(bin)
-  call <- paste(shQuote(file.path(system.file(package="Rfastp"), bin)), args)
-  if (!execute) {
-    return(call)
-  }
-  output <- system(call, intern=TRUE)
-  return(output)
-}
-
-#' Call the gencore binary with additional arguments.
-#'
-#' Adapted from the gencore package
-#'
-#' @keywords internal
-#'
-#' @param bin The name of the gencore binary
-#' @param execute Logical scalar, whether to execute the command. If FALSE,
-#'   return a string with the shell command.
-#' @param args A character string containing the arguments that will be passed
-#'   to the binary.
-#'
-#' @return If \code{execute} is TRUE, returns the console output of running the
-#'   gencore command. If \code{execute} is FALSE, returns the shell command.
-#'
-.gencoreBin <- function(bin="gencore", args="", execute=TRUE) {
-  if (is.null(args) || args=="") {
-    stop("The fastp binary needs to be called with additional arguments")
-  }
-  args <- gsub("^ *| *$", "", args)
-  bin <- match.arg(bin)
-  call <- paste(shQuote(file.path(system.file(package="Rfastp"), bin)), args)
-  if (!execute) {
-    return(call)
-  }
-  output <- system(call, intern=TRUE)
-  return(output)
-}
-
 #' R wrap of fastp
 #'
 #' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of fastq files.
@@ -251,232 +194,17 @@
 #')
 
 
-rfastp <- function( read1, read2=NULL,
-                    outputHTML=NULL,outputJSON=NULL,
-                    outputFastq, unpaired=NULL,
-    failedOut=NULL, merge=FALSE, mergeOut=NULL, compressLevel=4, phred64=FALSE,
-    interleaved=FALSE, fixMGIid=FALSE, adapterTrimming=TRUE,
-    adapterSequenceRead1=NULL, adapterSequenceRead2=NULL, adapterFasta=NULL,
-    trimFrontRead1=0, trimTailRead1=0, trimFrontRead2=0, trimTailRead2=0,
-    maxLengthRead1=0, maxLengthRead2=0,
-    forceTrimPolyG=FALSE, disableTrimPolyG=FALSE, minLengthPolyG=10,
-    trimPolyX=FALSE, minLengthPolyX=10,
-    cutLowQualFront=FALSE, cutLowQualTail=FALSE,
-    cutSlideWindowRight=FALSE, cutWindowSize=4, cutMeanQual=20,
-    cutFrontWindowSize=4, cutFrontMeanQual=20,
-    cutTailWindowSize=4, cutTailMeanQual=20,
-    cutSlideWindowSize=4, cutSlideWindowQual=20,
-    qualityFiltering=TRUE, qualityFilterPhred=15, qualityFilterPercent=40,
-    maxNfilter=5, averageQualFilter=0,
-    lengthFiltering=TRUE, minReadLength=15, maxReadLength=0,
-    lowComplexityFiltering=FALSE, minComplexity=30,
-    index1Filter=NULL, index2Filter=NULL, maxIndexMismatch=0,
-    correctionOverlap=FALSE, minOverlapLength=30, maxOverlapMismatch=5,
-    maxOverlapMismatchPercentage=20,
-    umi=FALSE, umiLoc=NULL, umiLength=0, umiPrefix=NULL, umiSkipBaseLength=0,
-    umiNoConnection=FALSE, umiIgnoreSeqNameSpace=FALSE,
-    overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
-    splitOutput=0, splitByLines=0, splitPrefixPaddingNum=4,
-    reportTitle="Rfastp Report", thread=2, verbose=TRUE) {
+rfastp <- function( read1, outputFastq,
+    umiNoConnection=FALSE, verbose=TRUE, ...) {
 
-    args <- paste0("-i ", read1, " -o ", outputFastq, "_R1.fastq.gz ")
-
-    if(is.null(outputHTML)){
-      outputHTML <- outputFastq
-    }
-    if(is.null(outputHTML)){
-      outputJSON <- outputFastq
-    }
-
-    if ( is.null(read2) ) {
-        if (interleaved) {
-            args <- paste0(args, " -O ", outputFastq, "_R2.fastq.gz")
-        }
-	else if (merge & is.null(mergeOut)) {
-            stop("Please specify the read2 file if you want to do merge, and specify the output merged file.")
-        }
+    if (!verbose) {
+        runFastp(read1=read1, outputFastq=outputFastq, verbose=FALSE, ...)
     }
     else {
-        if (interleaved) {
-            stop("You can't specify read2 when you set interleaved as TRUE")
-        }
-
-        args <- paste0(args, "-I ", read2, " -O ", outputFastq, "_R2.fastq.gz")
-        if (! is.null(unpaired) ) {
-            args <- paste0(args, " --unpaired1 ", unpaired, " --unpaired2 ", unpaired)
-        }
-
-        if ( is.null(adapterSequenceRead1) & is.null(adapterFasta) ) {
-            args <- paste0(args, " --detect_adapter_for_pe")
-        }
-
-        if (merge) {
-            args <- paste0(args, " --merge --merged_out ", mergeOut)
-        }
+        runFastp(read1=read1, outputFastq=outputFastq, ...)
     }
 
-    if (compressLevel != 4) {
-        args <- paste0(args, " -z ", compressLevel)
-    }
 
-    if (phred64) {
-        args <- paste0(args, " --phred64")
-    }
-
-    if (fixMGIid) {
-        args <- paste0(args, " --fix_mgi_id")
-    }
-
-    if (! adapterTrimming) {
-        args <- paste0(args, " --disable_adapter_trimming")
-    }
-
-    if ( ! is.null(adapterSequenceRead1)) {
-        args <- paste0(args, " --adapter_sequence " , adapterSequenceRead1)
-    }
-
-    if ( ! is.null(adapterSequenceRead2) ) {
-        args <- paste0(args, " --adapter_sequence_r2 " , adapterSequenceRead2)
-    }
-
-    if (! is.null(adapterFasta) ) {
-        args <- paste0(args, " --adapter_fasta")
-    }
-
-    if (trimFrontRead1 > 0) {
-        args <- paste0(args," --trim_front1 ", trimFrontRead1)
-    }
-
-    if (trimTailRead1 > 0) {
-        args <- paste0(args," --trim_tail1 ", trimTailRead1)
-    }
-    if (trimFrontRead2 > 0) {
-        args <- paste0(args," --trim_front1 ", trimFrontRead2)
-    }
-    if (trimTailRead2 >0) {
-        args <- paste0(args," --trim_tail2 ", trimTailRead2)
-    }
-
-    if (forceTrimPolyG) {
-        args <- paste0(args," -g --poly_g_min_len ", minLengthPolyG)
-    }
-    else if (disableTrimPolyG) {
-        args <- paste0(args," -G ")
-    }
-
-    if (trimPolyX) {
-        args <- paste0(args," -x --poly_x_min_len ", minLengthPolyX)
-    }
-
-    if (cutLowQualFront) {
-        args <- paste0(args, " -5 --cut_front_window_size ", cutFrontWindowSize, " --cut_front_mean_quality ", cutFrontMeanQual)
-    }
-
-    if (cutLowQualTail) {
-        args <- paste0(args, " -3 --cut_tail_window_size ", cutTailWindowSize, " --cut_tail_mean_quality ", cutTailMeanQual)
-    }
-
-    if (cutSlideWindowRight) {
-        args <- paste0(args, " -r --cut_right_window_size ", cutSlideWindowSize, " --cut_right_mean_quality ", cutSlideWindowQual)
-    }
-
-    args <- paste0(args, " --cut_window_size ", cutWindowSize)
-    args <- paste0(args, " --cut_mean_quality ", cutMeanQual)
-
-    if (! qualityFiltering) {
-        args <- paste0(args, " --disable_quality_filtering")
-    }
-
-    args <- paste0(args, " --qualified_quality_phred ", qualityFilterPhred)
-    args <- paste0(args, " --unqualified_percent_limit ", qualityFilterPercent)
-    args <- paste0(args, " --n_base_limit ", maxNfilter)
-
-    args <- paste0(args, " --average_qual ", averageQualFilter)
-
-    if (! lengthFiltering) {
-        args <- paste0(args, " --disable_length_filtering")
-    }
-
-    args <- paste0(args, " --length_required ", minReadLength)
-
-    if (maxReadLength > 0) {
-        args <- paste0(args, " --length_limit ", maxReadLength)
-    }
-
-    if (lowComplexityFiltering) {
-        args <- paste0(args, " --low_complexity_filter")
-        args <- paste0(args, " --complexity_threshold ", minComplexity)
-    }
-
-    if ( ! is.null(index1Filter) ) {
-        args <- paste0(args, " --filter_by_index1 ", index1Filter)
-        args <- paste0(args, " --filter_by_index_threshold ", maxIndexMismatch)
-    }
-
-    if (! is.null(index2Filter) ) {
-        args <- paste0(args, " --filter_by_index2 ", index2Filter)
-    }
-
-    if (correctionOverlap) {
-        args <- paste0(args, " --correction")
-    }
-
-    args <- paste0(args, " --overlap_len_require ", minOverlapLength)
-
-    args <- paste0(args, " --overlap_diff_limit ", maxOverlapMismatch)
-
-    args <- paste0(args, " --overlap_diff_percent_limit ", maxOverlapMismatchPercentage)
-
-    if (umi) {
-        args <- paste0(args, " --umi --umi_loc ", umiLoc)
-        if (umiLoc %in% c("read1", "read2")) {
-            if (umiLength > 0) {
-                args <- paste0(args, " --umi_len ", umiLength)
-            }
-            else {
-                stop("You must set length of UMI if the UMI is in read1/read2.")
-            }
-
-            if (umiSkipBaseLength > 0) {
-                args <- paste0(args, " --umi_skip ", umiSkipBaseLength)
-            }
-        }
-
-        if (! is.null(umiPrefix) ) {
-	    if (umiNoConnection) {
-		args <- paste0(args, " --umi_prefix ", umiPrefix)
-	    }
-	    else {
-                args <- paste0(args, " --umi_prefix ", umiPrefix, "_")
-	    }
-        }
-
-	if (umiIgnoreSeqNameSpace) {
-	    args <- paste0(args, " --umi_ignore")
-	}
-    }
-
-    if (overrepresentationAnalysis) {
-        args <- paste0(args, " -p")
-        args <- paste0(args, " -P ", overrepresentationSampling)
-    }
-
-    if (splitOutput > 0) {
-        args <- paste0(args, " --split ", splitOutput)
-    }
-    else if (splitByLines >0) {
-        args <- paste0(args, " --split_by_lines ", splitByLines)
-    }
-
-    args <- paste0(args, " --split_prefix_digits ", splitPrefixPaddingNum)
-
-    if (verbose) {
-        args <- paste0(args, " -V")
-    }
-
-    args <- paste0(args, ' --report_title "Rfastp Report" -w ', thread, " -h ", outputHTML, ".html -j ", outputJSON, ".json" )
-    call <- paste(shQuote(file.path(system.file(package="Rfastp"), "fastp")), args)
-    system(call, intern=TRUE)
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }
 
@@ -512,6 +240,8 @@ rfastp <- function( read1, read2=NULL,
 #'     Default 10000 means 1/10000.
 #' @param quitAfterContig stop when `quitAfterContig` contigs are processed.
 #'     Only used for fast debugging. Default 0 means no limitation.
+#' @param verbose output verbose log information
+#'
 #'
 #' @return returns a json object of the report.
 #' @author Thomas Carroll, Wei Wang
@@ -538,7 +268,8 @@ rfastp <- function( read1, read2=NULL,
 rgencore <- function( inBam, outBam, ref, bed=NULL,
     umiPrefix=NULL, supportingReads=1, ratioMajorBase=0.8,
     scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
-    coverageSampling=10000, debug=FALSE, quitAfterContig=NULL) {
+    coverageSampling=10000, debug=FALSE, quitAfterContig=NULL, 
+    verbose = FALSE) {
 
     args <- paste0("-i ", inBam, " -o ", outBam, " -r ", ref)
 
@@ -565,7 +296,12 @@ rgencore <- function( inBam, outBam, ref, bed=NULL,
 
     args <- paste0(args, " -j ", outBam, ".json", " -h ", outBam, ".html")
     call <- paste(shQuote(file.path(system.file(package="Rfastp"), "gencore")), args)
-    system(call, intern=TRUE)
+    if (verbose) {
+        system(call, intern=TRUE)
+    }
+    else {
+        system(call, intern=TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
+    }
     return(fromJSON(file = paste0(outBam, ".json")))
 }
 

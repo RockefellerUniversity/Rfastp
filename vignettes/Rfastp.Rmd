@@ -1,62 +1,128 @@
 
 ---
-title: "Visualization and annotation of read signal over genomic ranges with profileplyr"
-author: "Doug Barrows and Tom Carroll"
+title: "Versatile fastq quality control toolkits and duplication removal for sorted bam files"
+author: "Tom Carroll and Wei Wang"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+package: Rfastp
 
 output:
   BiocStyle::html_document:
      number_sections: yes
      toc: true
-# bibliography: library.bib
 vignette: >
-  %\VignetteIndexEntry{Visualization and annotation of read signal over genomic ranges with profileplyr}
+  %\VignetteIndexEntry{Rfastp}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}
+
+bibliography: opengene.bib
 ---
 
-```{r setup, echo=FALSE, results="hide"}
+```{r setup, echo=FALSE, results="hide", include = FALSE}
 knitr::opts_chunk$set(tidy=FALSE, cache=FALSE,
-                      dev="png",
+                      #dev="png",
                       message=FALSE, error=FALSE, warning=TRUE)
+options(width=100)
 ```
 
 # Introduction
-# Import signal quantification from deepTools or soGGi
-## Starting with output from deepTools ‘computeMatrix’
-## Starting with output from soGGi
-# The profileplyr object
-## Key components of the object
-## Subsetting the profileplyr object
-## Changing sample names
-## Connecting profileplyr functions using the pipe (%>%) operator
-# Export/Conversion of profileplyr object for heatmap visualization of ranges
-## Export to a deepTools matrix
-## Directly generate a customized EnrichedHeatmap with annotated ranges
-## Convert to an EnrichedHeatmap matrix
-# Summarize signal for ggplot or heatmap visualization
-## Matrix output for heatmaps
-## Long output for ggplot
-## profileplyr object output with summarized matrix
-# Annotating of genomic ranges with clusters, genomic regions, and genes
-## K-means and hierarchical clustering of the genomic ranges
-## Output matrix with cluster information to deepTools
-## Generate group-annotated heatmap in R directly with generateEnrichedHeatmap()
-## Visualize mean range signal for each cluster with ggplot
-## Gene annotation of ranges
-### Annotation of ranges with genes and genomic regions using ChIPseeker
-### Annotation of ranges with genes using GREAT
-# Grouping ranges by range metadata, gene list, or additional GRanges
-## Switch output grouping columns within existing range metadata
-## Group by user-supplied GRanges
-## Group by user-supplied gene list
-### Gene set list contains a character data
-### Gene set list with data frames for heatmap annotation (using pipe - %>%)
-# Combining multiple profileplyr functions for heatmap annotation
+
+The Rfastp package provides an interface to the all-in-one preprocessing for FastQ files toolkit [fastp](https://github.com/OpenGene/fastp) and toolkit removing sequencing duplications and eliminate sequencing errors by generating consensus reads [gencore](https://github.com/OpenGene/gencore).
+
+# Installation
+
+Use the `BiocManager` package to download and install the package from
+Bioconductor as follows:
+
+```{r getPackage, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("Rfastp")
+```
+
+If required, the latest development version of the package can also be installed
+from GitHub.
+
+```{r, eval = FALSE}
+install.packages('devtools')
+devtools::install_github(repo = 'RockefellerUniversity/Rfastp')
+```
+
+Once the package is installed, load it into your R session:
+
+```{r}
+library(Rfastp)
+```
+
+
+# FastQ Quality Control with rfastp
+
+The package contains three example fastq files, corresponding to a single-end
+fastq file, a pair of paired-end fastq files.
+```{r}
+se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
+pe_read1 <- system.file("extdata","reads1.fastq.gz",package="Rfastp")
+pe_read2 <- system.file("extdata","reads2.fastq.gz",package="Rfastp")
+output_fastq  <- './rfastp_test'
+```
+
+## a normal run for single-end fastq file. 
+
+```{r}
+se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+         thread = 4)
+```
+
+## a normal run for paired-end fastq files and specify the adaptor sequence.
+```{r}
+
+```
+
+## merge paired-end fastq files after QC.
+
+```{r}
+pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
+         outputFastq = './rfastp_pe_test_unpaired',
+         mergeOut = './rfastp_pe_test_merged.fastq.gz')
+```
+
+## A complex quality control example, Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
+```{r}
+clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr',
+         disableTrimPolyG = TRUE,
+         cutLowQualFront = TRUE,
+         cutFrontWindowSize = 29,
+         cutFrontMeanQual = 20,
+         cutLowQualTail = TRUE,
+         cutTailWindowSize = 1,
+         cutTailMeanQual = 5,
+         minReadLength = 29,
+         adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
+)
+```
+# Revmove sequencing duplications from sorted bam files with rgencore
+The package contains a sorted bam file and a reference file.
+```{r}
+inputbamfile <-  system.file("extdata", "ex1_sorted.bam", package="Rfastp")
+reference <- system.file("extdata", "myreference.fa", package="Rfastp")
+outputbamfile <- "ex1_rgencore.bam"
+```
+run `rgenecore` to remove the duplications from the sorted bam file.
+```{r}
+rgencore_json_report <- rgencore(inBam=inputbamfile,
+         outBam=outputbamfile,
+         ref=reference
+)
+```
+
+# Miscellaneous helper functions
+
 # Acknowledgements
+
 # Session info
 
 ```{r sessionInfo}
 sessionInfo()
 ```
+
+#References:

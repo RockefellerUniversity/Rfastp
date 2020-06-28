@@ -149,6 +149,7 @@
 #'      padding
 #' @param thread owrker thread number, default is 2
 #' @param verbose output verbose log information
+#' @param ... parameters transfered to runFastp.
 #'
 #' @return returns a json object of the report.
 #' @author Thomas Carroll, Wei Wang
@@ -216,17 +217,17 @@ rfastp <- function( read1, outputFastq,
 #'
 #' @param inBam read1 input file name of sorted bam/sam [string]
 #' @param outBam file name of output bam/sam [string]
-#' @param ref Path to reference fasta file. [string]
-#' @param bed bedfile to specify the capturing region. [string]
+#' @param refFile Path to reference fasta file. [string]
+#' @param bedFile bedfile to specify the capturing region. [string]
 #' @param umiPrefix the prefix for UMI, if it has. None by default.
-#' @param supportingReads only output consensus reads/pairs that
-#'     merged by >= `supportingRead` reads/pairs. The valud should be 1~10, and the
+#' @param numSupportingReads only output consensus reads/pairs that
+#'     merged by >= `supportingRead` reads/pairs. The value should be 1~10, and the
 #'     default value is 1.
-#' @param ratioMajorBase if the ratio of the major base in a cluster is less than
-#'     `ratioMajorBase`, it will be further compared to the reference. The valud should
+#' @param majorBaseRatio if the ratio of the major base in a cluster is less than
+#'     `ratioMajorBase`, it will be further compared to the reference. The value should
 #'     be 0.5~1.0, and the default value is 0.8
-#' @param scoreMajorBase if the score of the major base in a cluster is less than
-#'     `scoreMajorBase`, it will be further compared to the reference. The valud should
+#' @param majorBaseScore if the score of the major base in a cluster is less than
+#'     `scoreMajorBase`, it will be further compared to the reference. The value should
 #'     be 1~20, and the default value is 6
 #' @param highQual the threshold for a quality score to be considered as high qulity.
 #'     Default 30 means Q30
@@ -235,11 +236,12 @@ rfastp <- function( read1, outputFastq,
 #' @param lowQual the threshold for a quality score to be considered as low qulity.
 #'     Default 15 means Q15.
 #' @param debug a logical indicating output some debug information to STDERR.
-#' @param coverageSampling the sampling ratefor genome scale coverage statistics.
+#' @param coverageSampling the sampling rate for genome scale coverage statistics.
 #'     Default 10000 means 1/10000.
 #' @param quitAfterContig stop when `quitAfterContig` contigs are processed.
 #'     Only used for fast debugging. Default 0 means no limitation.
 #' @param verbose output verbose log information
+#' @param ... parameters transfered to function runGencore.
 #'
 #'
 #' @return returns a json object of the report.
@@ -263,44 +265,8 @@ rfastp <- function( read1, outputFastq,
 #'          ref=reference
 #')
 
-
-rgencore <- function( inBam, outBam, ref, bed=NULL,
-    umiPrefix=NULL, supportingReads=1, ratioMajorBase=0.8,
-    scoreMajorBase=6, highQual=30, moderateQual=20, lowQual=15,
-    coverageSampling=10000, debug=FALSE, quitAfterContig=NULL, 
-    verbose = FALSE) {
-
-    args <- paste0("-i ", inBam, " -o ", outBam, " -r ", ref)
-
-    if ( ! is.null(bed) ) {
-        args <- paste0(args, " -b ", bed)
-    }
-
-    if ( ! is.null(umiPrefix) ) {
-        args <- paste0(args, " -u ", umiPrefix)
-    }
-    args <- paste0(args, " -s ", supportingReads)
-    args <- paste0(args, " -a ", ratioMajorBase)
-    args <- paste0(args, " -c ", scoreMajorBase)
-    args <- paste0(args, " --high_qual ", highQual)
-    args <- paste0(args, " --moderate_qual ", moderateQual)
-    args <- paste0(args, " --low_qual ", lowQual)
-    args <- paste0(args, " --coverage_sampling ", coverageSampling)
-    if (debug) {
-        args <- paste0(args, " --debug")
-        if (! is.null(quitAfterContig) ) {
-            args <- paste0(args, " --quit_after_contig ", quitAfterContig)
-        }
-    }
-
-    args <- paste0(args, " -j ", outBam, ".json", " -h ", outBam, ".html")
-    call <- paste(shQuote(file.path(system.file(package="Rfastp"), "gencore")), args)
-    if (verbose) {
-        system(call, intern=TRUE)
-    }
-    else {
-        system(call, intern=TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE)
-    }
+rgencore <- function(inBam, outBam, refFile, ...) {
+    runGencore(inBam=inBam, outBam=outBam, refFile=refFile, ...)
     return(fromJSON(file = paste0(outBam, ".json")))
 }
 

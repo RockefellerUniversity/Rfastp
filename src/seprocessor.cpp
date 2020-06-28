@@ -125,15 +125,17 @@ bool SingleEndProcessor::process(){
         postStats.push_back(configs[t]->getPostStats1());
     }
 
-    cerr << "Read1 before filtering:"<<endl;
-    finalPreStats->print();
-    cerr << endl;
-    cerr << "Read1 after filtering:"<<endl;
-    finalPostStats->print();
+    if (mOptions->verbose) {
+        cerr << "Read1 before filtering:"<<endl;
+        finalPreStats->print();
+        cerr << endl;
+        cerr << "Read1 after filtering:"<<endl;
+        finalPostStats->print();
 
-    cerr << endl;
-    cerr << "Filtering result:"<<endl;
-    finalFilterResult->print();
+        cerr << endl;
+        cerr << "Filtering result:"<<endl;
+        finalFilterResult->print();
+    }
 
     int* dupHist = NULL;
     double* dupMeanTlen = NULL;
@@ -145,8 +147,10 @@ bool SingleEndProcessor::process(){
         dupMeanGC = new double[mOptions->duplicate.histSize];
         memset(dupMeanGC, 0, sizeof(double) * mOptions->duplicate.histSize);
         dupRate = mDuplicate->statAll(dupHist, dupMeanGC, mOptions->duplicate.histSize);
-        cerr << endl;
-        cerr << "Duplication rate (may be overestimated since this is SE data): " << dupRate * 100.0 << "%" << endl;
+        if (mOptions->verbose) {
+            cerr << endl;
+            cerr << "Duplication rate (may be overestimated since this is SE data): " << dupRate * 100.0 << "%" << endl;
+        }
     }
 
     // make JSON report

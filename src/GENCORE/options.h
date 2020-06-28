@@ -58,6 +58,7 @@ public:
 
     int coverageStep;
     int bedCoverageStep;
+    bool verbose;
 };
 }
 

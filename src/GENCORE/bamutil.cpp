@@ -244,16 +244,16 @@ namespace GENCORE {
     }
     
     void BamUtil::dumpHeader(bam_hdr_t* hdr) {
-        cerr << hdr->n_targets << " contigs in the bam file:" << endl;
+        //cerr << hdr->n_targets << " contigs in the bam file:" << endl;
         int dumped = 0;
         while(dumped < hdr->n_targets) {
             char *targetName = hdr->target_name[dumped];
             int targetLen = hdr->target_len[dumped];
             string name(targetName);
-            cerr << targetName << ": " << targetLen << " bp" << endl;
+            //cerr << targetName << ": " << targetLen << " bp" << endl;
             dumped++;
         }
-        cerr << endl;
+        //cerr << endl;
     }
     
     /* bam_cigar_type returns a bit flag with:

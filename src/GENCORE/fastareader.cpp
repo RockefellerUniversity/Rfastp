@@ -158,14 +158,18 @@ bool FastaReader::hasNext() {
 void FastaReader::readAll() {
     while(!mFastaFileStream.eof()){
         readNext();
-        cerr << mCurrentID << ": " << mCurrentSize << " bp" << endl;
+	if (mOptions->verbose) {
+            cerr << mCurrentID << ": " << mCurrentSize << " bp" << endl;
+	}
         mAllContigs[mCurrentID] = mCurrentSequence;
         mAllContigSizes[mCurrentID] = mCurrentSize;
         if(mOptions->maxContig>0 && mAllContigs.size()>mOptions->maxContig){
             break;
         }
     }
-    cerr << endl << "loaded " << mAllContigs.size() << " contigs" << endl<< endl;
+    if (mOptions->verbose) {
+        cerr << endl << "loaded " << mAllContigs.size() << " contigs" << endl<< endl;
+    }
 }
 }
 

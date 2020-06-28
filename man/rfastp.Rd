@@ -4,84 +4,21 @@
 \alias{rfastp}
 \title{R wrap of fastp}
 \usage{
-rfastp(
-  read1,
-  read2 = NULL,
-  outputFastq,
-  unpaired = NULL,
-  failedOut = NULL,
-  merge = FALSE,
-  mergeOut = NULL,
-  compressLevel = 4,
-  phred64 = FALSE,
-  interleaved = FALSE,
-  fixMGIid = FALSE,
-  adapterTrimming = TRUE,
-  adapterSequenceRead1 = NULL,
-  adapterSequenceRead2 = NULL,
-  adapterFasta = NULL,
-  trimFrontRead1 = 0,
-  trimTailRead1 = 0,
-  trimFrontRead2 = 0,
-  trimTailRead2 = 0,
-  maxLengthRead1 = 0,
-  maxLengthRead2 = 0,
-  forceTrimPolyG = FALSE,
-  disableTrimPolyG = FALSE,
-  minLengthPolyG = 10,
-  trimPolyX = FALSE,
-  minLengthPolyX = 10,
-  cutLowQualFront = FALSE,
-  cutLowQualTail = FALSE,
-  cutSlideWindowRight = FALSE,
-  cutWindowSize = 4,
-  cutMeanQual = 20,
-  cutFrontWindowSize = 4,
-  cutFrontMeanQual = 20,
-  cutTailWindowSize = 4,
-  cutTailMeanQual = 20,
-  cutSlideWindowSize = 4,
-  cutSlideWindowQual = 20,
-  qualityFiltering = TRUE,
-  qualityFilterPhred = 15,
-  qualityFilterPercent = 40,
-  maxNfilter = 5,
-  averageQualFilter = 0,
-  lengthFiltering = TRUE,
-  minReadLength = 15,
-  maxReadLength = 0,
-  lowComplexityFiltering = FALSE,
-  minComplexity = 30,
-  index1Filter = NULL,
-  index2Filter = NULL,
-  maxIndexMismatch = 0,
-  correctionOverlap = FALSE,
-  minOverlapLength = 30,
-  maxOverlapMismatch = 5,
-  maxOverlapMismatchPercentage = 20,
-  umi = FALSE,
-  umiLoc = NULL,
-  umiLength = 0,
-  umiPrefix = NULL,
-  umiSkipBaseLength = 0,
-  umiNoConnection = FALSE,
-  umiIgnoreSeqNameSpace = FALSE,
-  overrepresentationAnalysis = FALSE,
-  overrepresentationSampling = 20,
-  splitOutput = 0,
-  splitByLines = 0,
-  splitPrefixPaddingNum = 4,
-  reportTitle = "Rfastp Report",
-  thread = 2,
-  verbose = TRUE
-)
+rfastp(read1, outputFastq, umiNoConnection = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{read1}{read1 input file name [string]}
 
-\item{read2}{read2 input file name [string]}
-
 \item{outputFastq}{string of /path/prefix for output fastq [string]}
+
+\item{umiNoConnection}{an logical indicating remove "_" between the UMI
+prefix string and the UMI string. Default is FALSE.}
+
+\item{verbose}{output verbose log information}
+
+\item{...}{parameters transfered to runFastp.}
+
+\item{read2}{read2 input file name [string]}
 
 \item{unpaired}{for PE input, output file name for reads which the mate
 reads failed to pass the QC [string], default NULL, discard it. [string]}
@@ -257,15 +194,12 @@ identifier (UMI). Default: `FALSE`}
 (i.e. prefix=UMI, UMI=AATTCG, final=UMIAATTCG). Only letters,
 numbers, and '#" allowed. No prefix by default.}
 
-\item{umiSkipBaseLength}{if the UMI is in read1/read2, skip
-`umiSkipBaseLength` bases following UMI, default is 0.}
-
-\item{umiNoConnection}{an logical indicating remove "_" between the UMI
-prefix string and the UMI string. Default is FALSE.}
-
 \item{umiIgnoreSeqNameSpace}{an logical indicating ignore the space
 in the sequence name. Default is FALSE, the umi tag will be
 inserted into the sequence name before the first SPACE.}
+
+\item{umiSkipBaseLength}{if the UMI is in read1/read2, skip
+`umiSkipBaseLength` bases following UMI, default is 0.}
 
 \item{overrepresentationAnalysis}{A logical indicating overrepresentation
 analysis. Default is `FALSE`}
@@ -273,6 +207,8 @@ analysis. Default is `FALSE`}
 \item{overrepresentationSampling}{one in `overrepresentationSampling`
 reads will be computed for overrepresentation analysis (1~10000),
 smaller is slower, default is 20.}
+
+\item{reportTitle}{Title of the report, default: "Rfastp report"}
 
 \item{splitOutput}{number of files to be splitted (2~999). a sequential number
 prefix will be added to output name. Default is 0 (no split)}
@@ -285,11 +221,7 @@ sequential number prefix will be added to output name ( 0001.out.fq,
 default is 4, so the filename will be padded as 0001.xxx, 0 to disable
 padding}
 
-\item{reportTitle}{Title of the report, default: "Rfastp report"}
-
 \item{thread}{owrker thread number, default is 2}
-
-\item{verbose}{output verbose log information}
 }
 \value{
 returns a json object of the report.

@@ -255,11 +255,13 @@ void Gencore::consensus(){
     bam_destroy1(b);
     sam_close(in);
 
-    cerr << "----Before gencore processing:" << endl;
-    mPreStats->print();
+    if (mOptions->verbose) {
+        cerr << "----Before gencore processing:" << endl;
+        mPreStats->print();
 
-    cerr << endl << "----After gencore processing:" << endl;
-    mPostStats->print();
+        cerr << endl << "----After gencore processing:" << endl;
+        mPostStats->print();
+    }
 
     report();
 }

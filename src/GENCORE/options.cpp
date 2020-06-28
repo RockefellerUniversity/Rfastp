@@ -1,5 +1,7 @@
 #include "options.h"
 #include "util.h"
+#include <Rcpp.h>
+
 namespace GENCORE {
 Options::Options(){
     input = "";
@@ -41,7 +43,7 @@ Options::Options(){
 
 bool Options::validate() {
     if(input.empty()) {
-        error_exit("input should be specified by --in1");
+        Rcpp::stop("input should be specified by --in1");
     } else {
         check_file_valid(input);
     }
@@ -52,47 +54,47 @@ bool Options::validate() {
     }
 
     if(scorePercentReq > 1.0) {
-        error_exit("ratio_threshold cannot be greater than 1.0");
+        Rcpp::stop("ratio_threshold cannot be greater than 1.0");
     } else if(scorePercentReq < 0.5) {
-        error_exit("ratio_threshold cannot be less than 0.5");
+        Rcpp::stop("ratio_threshold cannot be less than 0.5");
     }
 
     if(clusterSizeReq > 10) {
-        error_exit("supporting_reads cannot be greater than 10");
+        Rcpp::stop("supporting_reads cannot be greater than 10");
     } else if(clusterSizeReq < 1) {
-        error_exit("supporting_reads cannot be less than 1");
+        Rcpp::stop("supporting_reads cannot be less than 1");
     }
 
     if(baseScoreReq > 10) {
-        error_exit("score_threshold cannot be greater than 10");
+        Rcpp::stop("score_threshold cannot be greater than 10");
     } else if(baseScoreReq < 1) {
-        error_exit("score_threshold cannot be less than 1");
+        Rcpp::stop("score_threshold cannot be less than 1");
     }
 
     if(highQuality > 40) {
-        error_exit("high_qual cannot be greater than 40");
+        Rcpp::stop("high_qual cannot be greater than 40");
     } else if(highQuality < 20) {
-        error_exit("high_qual cannot be less than 20");
+        Rcpp::stop("high_qual cannot be less than 20");
     }
 
     if(moderateQuality > 35) {
-        error_exit("moderate_qual cannot be greater than 35");
+        Rcpp::stop("moderate_qual cannot be greater than 35");
     } else if(moderateQuality < 15) {
-        error_exit("moderate_qual cannot be less than 15");
+        Rcpp::stop("moderate_qual cannot be less than 15");
     }
 
     if(lowQuality > 30) {
-        error_exit("low_qual cannot be greater than 30");
+        Rcpp::stop("low_qual cannot be greater than 30");
     } else if(lowQuality < 8) {
-        error_exit("low_qual cannot be less than 8");
+        Rcpp::stop("low_qual cannot be less than 8");
     }
 
     if(lowQuality > moderateQuality) {
-        error_exit("low_qual cannot be greater than moderate_qual");
+        Rcpp::stop("low_qual cannot be greater than moderate_qual");
     }
 
     if(moderateQuality > highQuality) {
-        error_exit("moderate_qual cannot be greater than high_qual");
+        Rcpp::stop("moderate_qual cannot be greater than high_qual");
     }
 
     return true;

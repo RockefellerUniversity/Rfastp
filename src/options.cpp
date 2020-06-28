@@ -68,7 +68,7 @@ void Options::loadFastaAdapters() {
             adapter.seqsInFasta.push_back(iter->second);
         }
         else {
-            cerr << "skip too short adapter sequence in " <<  adapter.fastaFile << " (6bp required): " << iter->second << endl;
+            Rcpp::Rcerr << "skip too short adapter sequence in " <<  adapter.fastaFile << " (6bp required): " << iter->second << endl;
         }
     }
 
@@ -106,25 +106,25 @@ bool Options::validate() {
         if(!correction.enabled)
             correction.enabled = true;
         if(merge.out.empty() && !outputToSTDOUT && !out1.empty() && out2.empty()) {
-            cerr << "You specified --out1, but haven't specified --merged_out in merging mode. Using --out1 to store the merged reads to be compatible with fastp 0.19.8" << endl << endl;
+            Rcpp::Rcerr << "You specified --out1, but haven't specified --merged_out in merging mode. Using --out1 to store the merged reads to be compatible with fastp 0.19.8" << endl << endl;
             merge.out = out1;
             out1 = "";
         }
         if(merge.includeUnmerged) {
             if(!out1.empty()) {
-                cerr << "You specified --include_unmerged in merging mode. Ignoring argument --out1 = " << out1 << endl;
+                Rcpp::Rcerr << "You specified --include_unmerged in merging mode. Ignoring argument --out1 = " << out1 << endl;
                 out1 = "";
             }
             if(!out2.empty()) {
-                cerr << "You specified --include_unmerged in merging mode. Ignoring argument --out2 = " << out2 << endl;
+                Rcpp::Rcerr << "You specified --include_unmerged in merging mode. Ignoring argument --out2 = " << out2 << endl;
                 out2 = "";
             }
             if(!unpaired1.empty()) {
-                cerr << "You specified --include_unmerged in merging mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
+                Rcpp::Rcerr << "You specified --include_unmerged in merging mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
                 unpaired1 = "";
             }
             if(!unpaired2.empty()) {
-                cerr << "You specified --include_unmerged in merging mode. Ignoring argument --unpaired1 = " << unpaired2 << endl;
+                Rcpp::Rcerr << "You specified --include_unmerged in merging mode. Ignoring argument --unpaired1 = " << unpaired2 << endl;
                 unpaired2 = "";
             }
         }
@@ -144,7 +144,7 @@ bool Options::validate() {
     } else {
         // not in merging mode
         if(!merge.out.empty()) {
-            cerr << "You haven't enabled merging mode (-m/--merge), ignoring argument --merged_out = " << merge.out << endl;
+            Rcpp::Rcerr << "You haven't enabled merging mode (-m/--merge), ignoring argument --merged_out = " << merge.out << endl;
             merge.out = "";
         }
     }
@@ -154,15 +154,15 @@ bool Options::validate() {
         if(split.enabled) {
             Rcpp::stop("splitting mode cannot work with stdout mode");
         }
-        cerr << "Streaming uncompressed ";
+        Rcpp::Rcerr << "Streaming uncompressed ";
         if(merge.enabled)
-            cerr << "merged";
+            Rcpp::Rcerr << "merged";
         else if(isPaired())
-            cerr << "interleaved";
-        cerr << " reads to STDOUT..." << endl;
+            Rcpp::Rcerr << "interleaved";
+        Rcpp::Rcerr << " reads to STDOUT..." << endl;
         if(isPaired() && !merge.enabled)
-            cerr << "Enable interleaved output mode for paired-end input." << endl;
-        cerr << endl;
+            Rcpp::Rcerr << "Enable interleaved output mode for paired-end input." << endl;
+        Rcpp::Rcerr << endl;
     }
 
     if(in2.empty() && !interleavedInput && !out2.empty()) {
@@ -206,25 +206,25 @@ bool Options::validate() {
     }
     if(!isPaired()) {
         if(!unpaired1.empty()) {
-            cerr << "Not paired-end mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
+            Rcpp::Rcerr << "Not paired-end mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
             unpaired1 = "";
         }
         if(!unpaired2.empty()) {
-            cerr << "Not paired-end mode. Ignoring argument --unpaired2 = " << unpaired2 << endl;
+            Rcpp::Rcerr << "Not paired-end mode. Ignoring argument --unpaired2 = " << unpaired2 << endl;
             unpaired2 = "";
         }
         if(!overlappedOut.empty()) {
-            cerr << "Not paired-end mode. Ignoring argument --overlapped_out = " << overlappedOut << endl;
+            Rcpp::Rcerr << "Not paired-end mode. Ignoring argument --overlapped_out = " << overlappedOut << endl;
             overlappedOut = "";
         }
     }
     if(split.enabled) {
         if(!unpaired1.empty()) {
-            cerr << "Outputing unpaired reads is not supported in splitting mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
+            Rcpp::Rcerr << "Outputing unpaired reads is not supported in splitting mode. Ignoring argument --unpaired1 = " << unpaired1 << endl;
             unpaired1 = "";
         }
         if(!unpaired2.empty()) {
-            cerr << "Outputing unpaired reads is not supported in splitting mode. Ignoring argument --unpaired2 = " << unpaired2 << endl;
+            Rcpp::Rcerr << "Outputing unpaired reads is not supported in splitting mode. Ignoring argument --unpaired2 = " << unpaired2 << endl;
             unpaired2 = "";
         }
     }
@@ -280,7 +280,7 @@ bool Options::validate() {
     if(thread < 1) {
         thread = 1;
     } else if(thread > 16) {
-        cerr << "WARNING: fastp uses up to 16 threads although you specified " << thread << endl;
+        Rcpp::Rcerr << "WARNING: fastp uses up to 16 threads although you specified " << thread << endl;
         thread = 16;
     }
 
@@ -384,7 +384,7 @@ bool Options::validate() {
     }
 
     if(correction.enabled && !isPaired()) {
-        cerr << "WARNING: base correction is only appliable for paired end data, ignoring -c/--correction" << endl;
+        Rcpp::Rcerr << "WARNING: base correction is only appliable for paired end data, ignoring -c/--correction" << endl;
         correction.enabled = false;
     }
 
@@ -471,7 +471,7 @@ vector<string> Options::makeListFromFileByLine(string filename) {
     file.open(filename.c_str(), ifstream::in);
     const int maxLine = 1000;
     char line[maxLine];
-    cerr << "filter by index, loading " << filename << endl;
+    Rcpp::Rcerr << "filter by index, loading " << filename << endl;
     while(file.getline(line, maxLine)){
         // trim \n, \r or \r\n in the tail
         int readed = strlen(line);
@@ -488,10 +488,10 @@ vector<string> Options::makeListFromFileByLine(string filename) {
                 Rcpp::stop("processing " + filename + ", each line should be one barcode, which can only contain A/T/C/G");
             }
         }
-        cerr << linestr << endl;
+        Rcpp::Rcerr << linestr << endl;
         ret.push_back(linestr);
     }
-    cerr << endl;
+    Rcpp::Rcerr << endl;
     return ret;
 }
 

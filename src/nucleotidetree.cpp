@@ -1,5 +1,6 @@
 #include "nucleotidetree.h"
 #include <sstream>
+#include <Rcpp.h>
 
 NucleotideNode::NucleotideNode(){
     count = 0;
@@ -15,8 +16,8 @@ NucleotideNode::~NucleotideNode(){
 void NucleotideNode::dfs() {
     //cerr << base;
     //cerr << count;
-    printf("%c", base);
-    printf("%d", count);
+    Rprintf("%c", base);
+    Rprintf("%d", count);
     bool hasChild = false;
     for(int i=0; i<8; i++) {
         if(children[i]){
@@ -25,7 +26,7 @@ void NucleotideNode::dfs() {
         }
     }
     if(!hasChild) {
-        printf("\n");
+        Rprintf("\n");
     }
 }
 
@@ -99,6 +100,6 @@ bool NucleotideTree::test() {
 
     bool reachedLeaf = true;
     string path = tree.getDominantPath(reachedLeaf);
-    printf("%s\n", path.c_str());
+    Rprintf("%s\n", path.c_str());
     return path == "AAAATTTTGGGGCC";
 }

@@ -200,26 +200,28 @@ bool PairEndProcessor::process(){
     Stats* finalPostStats2 = Stats::merge(postStats2);
     FilterResult* finalFilterResult = FilterResult::merge(filterResults);
 
-    cerr << "Read1 before filtering:"<<endl;
-    finalPreStats1->print();
-    cerr << endl;
-    cerr << "Read2 before filtering:"<<endl;
-    finalPreStats2->print();
-    cerr << endl;
-    if(!mOptions->merge.enabled) {
-        cerr << "Read1 after filtering:"<<endl;
-        finalPostStats1->print();
+    if (mOptions->verbose) {
+        cerr << "Read1 before filtering:"<<endl;
+        finalPreStats1->print();
         cerr << endl;
-        cerr << "Read2 after filtering:"<<endl;
-        finalPostStats2->print();
-    } else {
-        cerr << "Merged and filtered:"<<endl;
-        finalPostStats1->print();
-    }
+        cerr << "Read2 before filtering:"<<endl;
+        finalPreStats2->print();
+        cerr << endl;
+        if(!mOptions->merge.enabled) {
+            cerr << "Read1 after filtering:"<<endl;
+            finalPostStats1->print();
+            cerr << endl;
+            cerr << "Read2 after filtering:"<<endl;
+            finalPostStats2->print();
+        } else {
+            cerr << "Merged and filtered:"<<endl;
+            finalPostStats1->print();
+        }
 
-    cerr << endl;
-    cerr << "Filtering result:"<<endl;
-    finalFilterResult->print();
+        cerr << endl;
+        cerr << "Filtering result:"<<endl;
+        finalFilterResult->print();
+    }
 
     int* dupHist = NULL;
     double* dupMeanTlen = NULL;
@@ -231,16 +233,20 @@ bool PairEndProcessor::process(){
         dupMeanGC = new double[mOptions->duplicate.histSize];
         memset(dupMeanGC, 0, sizeof(double) * mOptions->duplicate.histSize);
         dupRate = mDuplicate->statAll(dupHist, dupMeanGC, mOptions->duplicate.histSize);
-        cerr << endl;
-        cerr << "Duplication rate: " << dupRate * 100.0 << "%" << endl;
+	if (mOptions->verbose) {
+            cerr << endl;
+            cerr << "Duplication rate: " << dupRate * 100.0 << "%" << endl;
+	}
     }
 
     // insert size distribution
     int peakInsertSize = getPeakInsertSize();
-    cerr << endl;
-    cerr << "Insert size peak (evaluated by paired-end reads): " << peakInsertSize << endl;
+    if (mOptions->verbose) {
+        cerr << endl;
+        cerr << "Insert size peak (evaluated by paired-end reads): " << peakInsertSize << endl;
+    }
 
-    if(mOptions->merge.enabled) {
+    if(mOptions->merge.enabled && mOptions->verbose) {
         cerr << endl;
         cerr << "Read pairs merged: " << finalFilterResult->mMergedPairs << endl;
         if(finalPostStats1->getReads() > 0) {

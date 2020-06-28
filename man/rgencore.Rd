@@ -4,44 +4,31 @@
 \alias{rgencore}
 \title{R wrap of gencore}
 \usage{
-rgencore(
-  inBam,
-  outBam,
-  ref,
-  bed = NULL,
-  umiPrefix = NULL,
-  supportingReads = 1,
-  ratioMajorBase = 0.8,
-  scoreMajorBase = 6,
-  highQual = 30,
-  moderateQual = 20,
-  lowQual = 15,
-  coverageSampling = 10000,
-  debug = FALSE,
-  quitAfterContig = NULL
-)
+rgencore(inBam, outBam, refFile, ...)
 }
 \arguments{
 \item{inBam}{read1 input file name of sorted bam/sam [string]}
 
 \item{outBam}{file name of output bam/sam [string]}
 
-\item{ref}{Path to reference fasta file. [string]}
+\item{refFile}{Path to reference fasta file. [string]}
 
-\item{bed}{bedfile to specify the capturing region. [string]}
+\item{...}{parameters transfered to function runGencore.}
+
+\item{bedFile}{bedfile to specify the capturing region. [string]}
 
 \item{umiPrefix}{the prefix for UMI, if it has. None by default.}
 
-\item{supportingReads}{only output consensus reads/pairs that
-merged by >= `supportingRead` reads/pairs. The valud should be 1~10, and the
+\item{numSupportingReads}{only output consensus reads/pairs that
+merged by >= `supportingRead` reads/pairs. The value should be 1~10, and the
 default value is 1.}
 
-\item{ratioMajorBase}{if the ratio of the major base in a cluster is less than
-`ratioMajorBase`, it will be further compared to the reference. The valud should
+\item{majorBaseRatio}{if the ratio of the major base in a cluster is less than
+`ratioMajorBase`, it will be further compared to the reference. The value should
 be 0.5~1.0, and the default value is 0.8}
 
-\item{scoreMajorBase}{if the score of the major base in a cluster is less than
-`scoreMajorBase`, it will be further compared to the reference. The valud should
+\item{majorBaseScore}{if the score of the major base in a cluster is less than
+`scoreMajorBase`, it will be further compared to the reference. The value should
 be 1~20, and the default value is 6}
 
 \item{highQual}{the threshold for a quality score to be considered as high qulity.
@@ -53,13 +40,15 @@ qulity. Default 20 means Q20.}
 \item{lowQual}{the threshold for a quality score to be considered as low qulity.
 Default 15 means Q15.}
 
-\item{coverageSampling}{the sampling ratefor genome scale coverage statistics.
-Default 10000 means 1/10000.}
-
 \item{debug}{a logical indicating output some debug information to STDERR.}
+
+\item{coverageSampling}{the sampling rate for genome scale coverage statistics.
+Default 10000 means 1/10000.}
 
 \item{quitAfterContig}{stop when `quitAfterContig` contigs are processed.
 Only used for fast debugging. Default 0 means no limitation.}
+
+\item{verbose}{output verbose log information}
 }
 \value{
 returns a json object of the report.

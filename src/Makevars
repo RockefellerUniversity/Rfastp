@@ -20,10 +20,10 @@ OBJECTS=\
 ./fastqreader.o \
 ./filter.o \
 ./filterresult.o \
-./gencore.o \
+./main_gencore.o \
 ./htmlreporter.o \
 ./jsonreporter.o \
-./main_r.o \
+./main_fastp.o \
 ./nucleotidetree.o \
 ./options.o \
 ./overlapanalysis.o \

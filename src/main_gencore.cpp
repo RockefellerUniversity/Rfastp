@@ -18,43 +18,43 @@ using namespace std;
 //string gencore_command;
 
 // [[Rcpp::export]]
-int runGencore(std::string input="-",
-               std::string output="-",
+int runGencore(std::string inBam="",
+               std::string outBam="",
                std::string refFile="",
                std::string bedFile="",
                std::string umiPrefix="",
-               std::string jsonFile="gencore.json",
-               std::string htmlFile="gencore.html",
-               int clusterSizeReq=1,
-               int baseScoreReq=6,
-               double scorePercentReq=0.8,
-               int maxContig=0,
-               int highQuality=30,
-               int moderateQuality=20,
-               int lowQuality=15,
-               int coverageStep=10000,
-               bool debug=false
+               int numSupportingReads=1,
+               int majorBaseScore=6,
+               double majorBaseRatio=0.8,
+               int quitAfterContig=0,
+               int highQual=30,
+               int moderateQual=20,
+               int lowQual=15,
+               int coverageSampling=10000,
+               bool debug=false,
+	       bool verbose=true
                ){
 
 
 //
   GENCORE::Options opt;
-  opt.input = input;
-  opt.output = output;
+  opt.input = inBam;
+  opt.output = outBam;
   opt.refFile = refFile;
   opt.bedFile = bedFile;
   opt.umiPrefix = umiPrefix;
-  opt.clusterSizeReq = clusterSizeReq;
-  opt.baseScoreReq = baseScoreReq;
-  opt.scorePercentReq = scorePercentReq;
-  opt.maxContig = maxContig;
-  opt.highQuality = highQuality;
-  opt.moderateQuality = moderateQuality;
-  opt.lowQuality = lowQuality;
-  opt.coverageStep = coverageStep;
+  opt.clusterSizeReq = numSupportingReads;
+  opt.baseScoreReq = majorBaseScore;
+  opt.scorePercentReq = majorBaseRatio;
+  opt.maxContig = quitAfterContig;
+  opt.highQuality = highQual;
+  opt.moderateQuality = moderateQual;
+  opt.lowQuality = lowQual;
+  opt.coverageStep = coverageSampling;
   opt.debug = debug;
-  opt.jsonFile = jsonFile;
-  opt.htmlFile = htmlFile;
+  opt.jsonFile = outBam + ".json";
+  opt.htmlFile = outBam + ".html";
+  opt.verbose = verbose;
 //
 //   opt.validate();
 //
@@ -62,7 +62,7 @@ int runGencore(std::string input="-",
 
   // loading reference
   GENCORE::Reference* reference = NULL;
-  if(!opt.refFile.empty()) {
+  if(!opt.refFile.empty() && verbose) {
     cerr << "loading reference data:" << endl;
     reference = GENCORE::Reference::instance(&opt);
   }

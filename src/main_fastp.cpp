@@ -16,98 +16,98 @@ using namespace std;
 //using namespace Rcpp;
 mutex logmtx;
 
-//             int compressLevel=4, 
+//             int compressLevel=4,
 //             int readsToProcess=0,
 //             bool dontOverwrite=false,
 //             int splitPrefixPaddingNum=4,
-//             std::string reportTitle="Rfastp Report", 
+//             std::string reportTitle="Rfastp Report",
 
 
 // [[Rcpp::export]]
-int runFastp(std::string read1="", 
-             std::string read2="", 
-             std::string outputFastq="", 
+int runFastp(std::string read1="",
+             std::string read2="",
+             std::string outputFastq="",
              std::string unpaired="",
-             std::string failedOut="", 
-             bool merge=false, 
-             std::string mergeOut="", 
+             std::string failedOut="",
+             bool merge=false,
+             std::string mergeOut="",
              bool phred64=false,
-             bool interleaved=false, 
-             bool fixMGIid=false, 
+             bool interleaved=false,
+             bool fixMGIid=false,
              bool adapterTrimming=true,
-             std::string adapterSequenceRead1="auto", 
-             std::string adapterSequenceRead2="auto", 
+             std::string adapterSequenceRead1="auto",
+             std::string adapterSequenceRead2="auto",
              std::string adapterFasta="",
-             int trimFrontRead1=0, 
-             int trimTailRead1=0, 
-             int trimFrontRead2=0, 
+             int trimFrontRead1=0,
+             int trimTailRead1=0,
+             int trimFrontRead2=0,
              int trimTailRead2=0,
-             int maxLengthRead1=0, 
+             int maxLengthRead1=0,
              int maxLengthRead2=0,
-             bool forceTrimPolyG=false, 
-             bool disableTrimPolyG=false, 
+             bool forceTrimPolyG=false,
+             bool disableTrimPolyG=false,
              int minLengthPolyG=10,
-             bool trimPolyX=false, 
+             bool trimPolyX=false,
              int minLengthPolyX=10,
-             bool cutLowQualFront=false, 
+             bool cutLowQualFront=false,
              bool cutLowQualTail=false,
-             bool cutSlideWindowRight=false, 
-             int cutWindowSize=4, 
+             bool cutSlideWindowRight=false,
+             int cutWindowSize=4,
              int cutMeanQual=20,
-             int cutFrontWindowSize=4, 
+             int cutFrontWindowSize=4,
              int cutFrontMeanQual=20,
-             int cutTailWindowSize=4, 
+             int cutTailWindowSize=4,
              int cutTailMeanQual=20,
-             int cutSlideWindowSize=4, 
+             int cutSlideWindowSize=4,
              int cutSlideWindowQual=20,
-             bool qualityFiltering=true, 
-             int qualityFilterPhred=15, 
+             bool qualityFiltering=true,
+             int qualityFilterPhred=15,
              int qualityFilterPercent=40,
-             int maxNfilter=5, 
+             int maxNfilter=5,
              int averageQualFilter=0,
-             bool lengthFiltering=true, 
-             int minReadLength=15, 
+             bool lengthFiltering=true,
+             int minReadLength=15,
              int maxReadLength=0,
-             bool lowComplexityFiltering=false, 
+             bool lowComplexityFiltering=false,
              int minComplexity=30,
-             std::string index1Filter="", 
-             std::string index2Filter="", 
+             std::string index1Filter="",
+             std::string index2Filter="",
              int maxIndexMismatch=0,
-             bool correctionOverlap=false, 
-             int minOverlapLength=30, 
+             bool correctionOverlap=false,
+             int minOverlapLength=30,
              int maxOverlapMismatch=5,
              int maxOverlapMismatchPercentage=20,
-             bool umi=false, 
+             bool umi=false,
              bool umiIgnoreSeqNameSpace=false,
-             std::string umiLoc="", 
-             int umiLength=0, 
-             std::string umiPrefix="", 
+             std::string umiLoc="",
+             int umiLength=0,
+             std::string umiPrefix="",
              int umiSkipBaseLength=0,
-             bool overrepresentationAnalysis=false, 
+             bool overrepresentationAnalysis=false,
              int overrepresentationSampling=20,
-             int splitOutput=0, 
-             int splitByLines=0, 
-             int thread=2, 
+             int splitOutput=0,
+             int splitByLines=0,
+             int thread=2,
              bool verbose=true){
     Options opt;
 
     // I/O
-    opt.in1 = read1; 
+    opt.in1 = read1;
     opt.in2 = read2;
     opt.out1 = outputFastq + "_R1.fastq.gz";
     opt.out2 = "";
-    if (!opt.in2.empty() || interleaved)  
+    if (!opt.in2.empty() || interleaved)
         opt.out2 = outputFastq + "_R2.fastq.gz";
     opt.unpaired1 = unpaired;
     opt.unpaired2 = unpaired;
     opt.failedOut = failedOut;
     opt.overlappedOut = mergeOut;
-//    int compressLevel=4; 
+//    int compressLevel=4;
 //    int readsToProcess=0;
     opt.compression = 4;
     opt.readsToProcess = 0;
-    opt.phred64 = phred64; 
-    opt.dontOverwrite = false; 
+    opt.phred64 = phred64;
+    opt.dontOverwrite = false;
     opt.inputFromSTDIN = false;
     opt.outputToSTDOUT = false;
     opt.interleavedInput = interleaved;
@@ -142,7 +142,7 @@ int runFastp(std::string read1="",
 
     // polyG tail trimming
     if( forceTrimPolyG && disableTrimPolyG) {
-        error_exit("You cannot enabled both trim_poly_g and disable_trim_poly_g");
+        Rcpp::stop("You cannot enabled both trim_poly_g and disable_trim_poly_g");
     } else if(forceTrimPolyG) {
         opt.polyGTrim.enabled = true;
     } else if(disableTrimPolyG) {
@@ -216,7 +216,7 @@ int runFastp(std::string read1="",
     int splitPrefixPaddingNum=4;
     opt.split.digits = splitPrefixPaddingNum;
     if( splitOutput > 0  && splitByLines > 0 ) {
-        error_exit("You cannot set both splitting by file number and splitting by file lines, please choose either.");
+        Rcpp::stop("You cannot set both splitting by file number and splitting by file lines, please choose either.");
     }
     if(splitOutput > 0) {
         opt.split.number = splitOutput;
@@ -226,7 +226,7 @@ int runFastp(std::string read1="",
     if(splitByLines > 0) {
         long lines = splitByLines;
         if(lines % 4 != 0) {
-            error_exit("Line number should be a multiple of 4");
+            Rcpp::stop("Line number should be a multiple of 4");
         }
         opt.split.size = lines / 4; // 4 lines per record
         opt.split.needEvaluation = false;
@@ -243,14 +243,14 @@ int runFastp(std::string read1="",
         //string umiLoc = umiLoc;
         str2lower(umiLoc);
         if(umiLoc.empty())
-            error_exit("You've enabled UMI (umi=TRUE), you should specify the UMI location by umiLoc");
+            Rcpp::stop("You've enabled UMI (umi=TRUE), you should specify the UMI location by umiLoc");
         if(umiLoc != "index1" && umiLoc != "index2" && umiLoc != "read1" && umiLoc != "read2" && umiLoc != "per_index" && umiLoc != "per_read") {
-            error_exit("UMI location can only be index1/index2/read1/read2/per_index/per_read");
+            Rcpp::stop("UMI location can only be index1/index2/read1/read2/per_index/per_read");
         }
         if(!opt.isPaired() && (umiLoc == "index2" || umiLoc == "read2"))
-            error_exit("You specified the UMI location as " + umiLoc + ", but the input data is not paired end.");
+            Rcpp::stop("You specified the UMI location as " + umiLoc + ", but the input data is not paired end.");
         if(opt.umi.length == 0 && (umiLoc == "read1" || umiLoc == "read2" ||  umiLoc == "per_read"))
-            error_exit("You specified the UMI location as " + umiLoc + ", but the length is not specified (--umi_len).");
+            Rcpp::stop("You specified the UMI location as " + umiLoc + ", but the length is not specified (--umi_len).");
         if(umiLoc == "index1") {
             opt.umi.location = UMI_LOC_INDEX1;
         } else if(umiLoc == "index2") {
@@ -268,7 +268,7 @@ int runFastp(std::string read1="",
 
     // overrepresented sequence analysis
     opt.overRepAnalysis.enabled = overrepresentationAnalysis;
-    opt.overRepAnalysis.sampling = overrepresentationSampling; 
+    opt.overRepAnalysis.sampling = overrepresentationSampling;
 
     // filtering by index
     string blacklist1 = index1Filter;
@@ -360,7 +360,7 @@ int runFastp(std::string read1="",
 */
     Processor p(&opt);
     p.process();
-/*    
+/*
     time_t t2 = time(NULL);
 
     cerr << endl << "JSON report: " << opt.jsonFile << endl;

@@ -1,6 +1,7 @@
 #include "fastqreader.h"
 #include "util.h"
 #include <string.h>
+#include <Rcpp.h>
 
 #define FQ_BUF_SIZE (1<<20)
 
@@ -58,7 +59,7 @@ void FastqReader::init(){
 		else
 			mFile = fopen(mFilename.c_str(), "rb");
 		if(mFile == NULL) {
-			error_exit("Failed to open file: " + mFilename);
+		  Rcpp::stop("Failed to open file: " + mFilename);
 		}
 		mZipped = false;
 	}

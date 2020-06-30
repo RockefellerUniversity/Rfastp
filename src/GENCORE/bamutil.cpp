@@ -13,10 +13,10 @@ namespace GENCORE {
     }
 
     void BamUtil::dump(bam1_t *b) {
-        cerr << b->core.tid << ":" << b->core.pos << ", M:" << b->core.mtid << ":" << b->core.mpos << " TLEN:" << b->core.isize << " ID:" << b->id << endl;
-        cerr << getQName(b) << " " << getCigar(b) << endl;
-        cerr << getSeq(b) << endl;
-        cerr << getQual(b) << endl;
+        Rcpp::Rcerr << b->core.tid << ":" << b->core.pos << ", M:" << b->core.mtid << ":" << b->core.mpos << " TLEN:" << b->core.isize << " ID:" << b->id << endl;
+        Rcpp::Rcerr << getQName(b) << " " << getCigar(b) << endl;
+        Rcpp::Rcerr << getSeq(b) << endl;
+        Rcpp::Rcerr << getQual(b) << endl;
     }
 
     string BamUtil::getQName(const bam1_t *b) {
@@ -149,7 +149,7 @@ namespace GENCORE {
             case 15:
                 return 'N';
             default:
-                cerr << "ERROR: Wrong base with value "<< (int)val << endl ;
+                Rcpp::Rcerr << "ERROR: Wrong base with value "<< (int)val << endl ;
                 return 'N';
         }
     }
@@ -167,7 +167,7 @@ namespace GENCORE {
             case 'N':
                 return 15;
             default:
-                cerr << "ERROR: Wrong base "<< base << endl ;
+                Rcpp::Rcerr << "ERROR: Wrong base "<< base << endl ;
                 return 15;
         }
     }
@@ -298,7 +298,7 @@ namespace GENCORE {
                     return ref - REFERENCE_CONSUM[op] * (query - bampos);
             }
         }
-        cerr << "wrong cigar: " << getCigar(b) << " tid: " << b->core.tid << " l_qseq: " << b->core.l_qseq << " pos: "  << b->core.l_qseq << " isize: " << b->core.isize << " offset: " << bampos << endl;
+        Rcpp::Rcerr << "wrong cigar: " << getCigar(b) << " tid: " << b->core.tid << " l_qseq: " << b->core.l_qseq << " pos: "  << b->core.l_qseq << " isize: " << b->core.isize << " offset: " << bampos << endl;
         // not found
         return -1;
     }
@@ -331,7 +331,7 @@ namespace GENCORE {
         int fromlen = from->core.l_qname;
         int tolen = to->core.l_qname;
         if(tolen < fromlen) {
-            cerr << "copyQName ERROR: desitination qname is shorter";
+            Rcpp::Rcerr << "copyQName ERROR: desitination qname is shorter";
             Rcpp::stop("copyQName ERROR: desitination qname is shorter");
         }
 
@@ -403,7 +403,7 @@ namespace GENCORE {
         for(int i=0; i<qnames.size(); i++) {
             string umi = getUMI(qnames[i], prefixes[i]);
             if(umi != umis[i]) {
-                cerr << "get UMI from " << qnames[i] << ", expect " << umis[i] << ", but got " << umi << endl;
+                Rcpp::Rcerr << "get UMI from " << qnames[i] << ", expect " << umis[i] << ", but got " << umi << endl;
                 return false;
             }
         }

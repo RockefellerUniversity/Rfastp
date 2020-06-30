@@ -32,7 +32,7 @@ int runGencore(std::string inBam="",
                int lowQual=15,
                int coverageSampling=10000,
                bool debug=false,
-	       bool verbose=true
+           bool verbose=true
                ){
 
 
@@ -63,7 +63,7 @@ int runGencore(std::string inBam="",
   // loading reference
   GENCORE::Reference* reference = NULL;
   if(!opt.refFile.empty() && verbose) {
-    cerr << "loading reference data:" << endl;
+    Rcpp::Rcerr << "loading reference data:" << endl;
     reference = GENCORE::Reference::instance(&opt);
   }
 

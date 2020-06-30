@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "stats.h"
 #include <memory.h>
 #include <sstream>
@@ -377,10 +378,10 @@ void Stats::print() {
     if(!summarized) {
         summarize();
     }
-    cerr << "total reads: " << mReads << endl;
-    cerr << "total bases: " << mBases << endl;
-    cerr << "Q20 bases: " << mQ20Total << "(" << (mQ20Total*100.0)/mBases << "%)" << endl;
-    cerr << "Q30 bases: " << mQ30Total << "(" << (mQ30Total*100.0)/mBases << "%)" << endl;
+    Rcpp::Rcerr << "total reads: " << mReads << endl;
+    Rcpp::Rcerr << "total bases: " << mBases << endl;
+    Rcpp::Rcerr << "Q20 bases: " << mQ20Total << "(" << (mQ20Total*100.0)/mBases << "%)" << endl;
+    Rcpp::Rcerr << "Q30 bases: " << mQ30Total << "(" << (mQ30Total*100.0)/mBases << "%)" << endl;
 }
 
 void Stats::reportJson(ofstream& ofs, string padding) {
@@ -926,7 +927,7 @@ Stats* Stats::merge(vector<Stats*>& list) {
             string seq = iter->first;
             s->mOverRepSeq[seq] += list[t]->mOverRepSeq[seq];
             if(s->mIsRead2 != list[t]->mIsRead2 || list[t]->mOverRepSeqDist[seq] == NULL)
-                cerr << t <<seq<< ":" << (s->mIsRead2?2:1 ) << "," << (list[t]->mIsRead2?2:1 ) <<endl;
+                Rcpp::Rcerr << t <<seq<< ":" << (s->mIsRead2?2:1 ) << "," << (list[t]->mIsRead2?2:1 ) <<endl;
             for(int i=0; i<s->mEvaluatedSeqLen; i++) {
                 s->mOverRepSeqDist[seq][i] += list[t]->mOverRepSeqDist[seq][i];
             }

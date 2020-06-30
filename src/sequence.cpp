@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "sequence.h"
 
 Sequence::Sequence(){
@@ -8,7 +9,7 @@ Sequence::Sequence(string seq){
 }
 
 void Sequence::print(){
-    std::cerr << mStr;
+    Rcpp::Rcerr << mStr;
 }
 
 int Sequence::length(){
@@ -51,11 +52,11 @@ bool Sequence::test(){
     Sequence s("AAAATTTTCCCCGGGG");
     Sequence rc = ~s;
     if (s.mStr != "AAAATTTTCCCCGGGG" ){
-        cerr << "Failed in reverseComplement() expect AAAATTTTCCCCGGGG, but get "<< s.mStr;
+        Rcpp::Rcerr << "Failed in reverseComplement() expect AAAATTTTCCCCGGGG, but get "<< s.mStr;
         return false;
     }
     if (rc.mStr != "CCCCGGGGAAAATTTT" ){
-        cerr << "Failed in reverseComplement() expect CCCCGGGGAAAATTTT, but get "<< rc.mStr;
+        Rcpp::Rcerr << "Failed in reverseComplement() expect CCCCGGGGAAAATTTT, but get "<< rc.mStr;
         return false;
     }
     return true;

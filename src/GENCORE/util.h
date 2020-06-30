@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <Rcpp.h>
 #include <stdlib.h>
 #include <string>
 #include <iostream>
@@ -37,8 +38,8 @@ inline bool starts_with( string const & value,  string const & starting)
 
 inline bool ends_with( string const & value,  string const & ending)
 {
-	if (ending.size() > value.size()) return false;
-	return  equal(ending.rbegin(), ending.rend(), value.rbegin());
+    if (ending.size() > value.size()) return false;
+    return  equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
 inline string trim(const string& str)
@@ -168,12 +169,14 @@ inline bool is_directory(const  string& path)
 
 inline void check_file_valid(const  string& s) {
     if(!file_exists2(s)){
-        cerr << "ERROR: file '" << s << "' doesn't exist, quit now" << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: file '" << s << "' doesn't exist, quit now" << endl;
+	Rcpp::stop("\n");
+        //exit(-1);
     }
     if(is_directory(s)){
-        cerr << "ERROR: '" << s << "' is a folder, not a file, quit now" << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: '" << s << "' is a folder, not a file, quit now" << endl;
+        //exit(-1);
+        Rcpp::stop("\n");
     }
 }
 
@@ -248,8 +251,10 @@ inline char num2qual(int num) {
 }
 
 inline void error_exit(const string& msg) {
-    cerr << "ERROR: " << msg << endl;
-    exit(-1);
+    // since error_exit is not used, mayby nothing is required herel.
+    Rcpp::Rcerr << "ERROR: " << msg << endl;
+    Rcpp::stop("\n");
+    //exit(-1);
 }
 }
 #endif /* UTIL_H */

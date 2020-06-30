@@ -9,7 +9,7 @@ JsonReporter::~JsonReporter(){
 
 //extern string gencore_command;
 void JsonReporter::report(Stats* preStats, Stats* postStats) {
-	ofstream ofs;
+    ofstream ofs;
     ofs.open(mOptions->jsonFile, ifstream::out);
     ofs << "{" << endl;
 

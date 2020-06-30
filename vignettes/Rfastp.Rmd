@@ -75,7 +75,8 @@ se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
 
 ## a normal run for paired-end fastq files and specify the adaptor sequence.
 ```{r}
-
+pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
+         outputFastq = './rfastp_test_pe')
 ```
 
 ## merge paired-end fastq files after QC.
@@ -111,7 +112,7 @@ run `rgenecore` to remove the duplications from the sorted bam file.
 ```{r}
 rgencore_json_report <- rgencore(inBam=inputbamfile,
          outBam=outputbamfile,
-         ref=reference
+         refFile=reference
 )
 ```
 

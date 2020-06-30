@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "reference.h"
 #include "util.h"
 namespace GENCORE {
@@ -51,7 +52,7 @@ const unsigned char* Reference::getData(int bamContig, int pos, int len) {
     if(mRef->mAllContigs.count(contigName) == 0) {
         static bool reported = false;
         if(!reported)
-            cerr << "contig " << contigName << " not found in the reference, please make sure your reference is correct" << endl;
+            Rcpp::Rcerr << "contig " << contigName << " not found in the reference, please make sure your reference is correct" << endl;
         reported = true;
         mLastData = NULL;
         return NULL;
@@ -60,7 +61,7 @@ const unsigned char* Reference::getData(int bamContig, int pos, int len) {
     if(pos + len >= mRef->mAllContigSizes[contigName]){
         static bool reported = false;
         if(!reported)
-            cerr << "contig " << contigName << " doesn't match the length in the reference, please make sure your reference is correct" << endl;
+            Rcpp::Rcerr << "contig " << contigName << " doesn't match the length in the reference, please make sure your reference is correct" << endl;
         mLastData = NULL;
         return NULL;
     }

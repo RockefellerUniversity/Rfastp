@@ -16,30 +16,30 @@ using namespace std;
 
 class Writer{
 public:
-	Writer(string filename, int compression = 3);
-	Writer(ofstream* stream);
-	Writer(gzFile gzfile);
-	~Writer();
-	bool isZipped();
-	bool writeString(string& s);
-	bool writeLine(string& linestr);
-	bool write(char* strdata, size_t size);
-	string filename();
+    Writer(string filename, int compression = 3);
+    Writer(ofstream* stream);
+    Writer(gzFile gzfile);
+    ~Writer();
+    bool isZipped();
+    bool writeString(string& s);
+    bool writeLine(string& linestr);
+    bool write(char* strdata, size_t size);
+    string filename();
 
 public:
-	static bool test();
+    static bool test();
 
 private:
-	void init();
-	void close();
+    void init();
+    void close();
 
 private:
-	string mFilename;
-	gzFile mZipFile;
-	ofstream* mOutStream;
-	bool mZipped;
-	int mCompression;
-	bool haveToClose;
+    string mFilename;
+    gzFile mZipFile;
+    ofstream* mOutStream;
+    bool mZipped;
+    int mCompression;
+    bool haveToClose;
 };
 
 #endif

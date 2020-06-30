@@ -54,12 +54,12 @@ public:
     void consensus();
 
 private:
-	void releaseClusters(map<int, map<int, map<long, Cluster*>>>& clusters);
-	void dumpClusters(map<int, map<int, map<long, Cluster*>>>& clusters);
-	void addToCluster(bam1_t* b);
-	void addToProperCluster(bam1_t* b);
-	void addToUnProperCluster(bam1_t* b);
-	void createCluster(map<int, map<int, map<long, Cluster*>>>& clusters, int tid, int left, long right);
+    void releaseClusters(map<int, map<int, map<long, Cluster*>>>& clusters);
+    void dumpClusters(map<int, map<int, map<long, Cluster*>>>& clusters);
+    void addToCluster(bam1_t* b);
+    void addToProperCluster(bam1_t* b);
+    void addToUnProperCluster(bam1_t* b);
+    void createCluster(map<int, map<int, map<long, Cluster*>>>& clusters, int tid, int left, long right);
     void outputPair(Pair* p);
     bool outputBam(bam1_t* b);
     void finishConsensus(map<int, map<int, map<long, Cluster*>>>& clusters);

@@ -1,6 +1,7 @@
 #ifndef BEDREGION_H
 #define BEDREGION_H
 
+#include <Rcpp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -24,7 +25,9 @@ namespace GENCORE {
             mTid = -1;
         }
         inline void dump() {
-            cerr << mChr << ":" << mStart << "-" << mEnd << " " << mName << ", " << mCount << endl;
+            //Rcpp::warning( mChr + ": " + mName + "\n");
+            //Rcpp::Rcerr( mChr + ":" + mStart + "-" + mEnd + " " + mName + ", " + mCount + "\n");
+            Rcpp::warning( mChr + ":" + to_string(mStart) + "-" + to_string(mEnd) + " " + mName + ", " + to_string(mCount) + "\n");
         }
         inline int getAvgDepth() {
             if(mEnd <= mStart)

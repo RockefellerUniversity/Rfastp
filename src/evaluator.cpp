@@ -1,4 +1,5 @@
 #include "evaluator.h"
+#include <Rcpp.h>
 #include "fastqreader.h"
 #include <map>
 #include <memory.h>
@@ -151,7 +152,7 @@ void Evaluator::computeOverRepSeq(string filename, map<string, long>& hotseqs, i
 
     // output for test
     /*for(iter = hotseqs.begin(); iter!=hotseqs.end(); iter++) {
-        cerr << iter->first << ": " << iter->second << endl;
+        Rcpp::Rcerr << iter->first << ": " << iter->second << endl;
     }*/
 }
 
@@ -398,10 +399,10 @@ string Evaluator::evalAdapterAndReadNumDepreciated(long& readNum) {
     string matchedAdapter = matchKnownAdapter(finalAdapter);
     if(!matchedAdapter.empty()) {
         map<string, string> knownAdapters = getKnownAdapter();
-        cerr << knownAdapters[matchedAdapter] << ": " << matchedAdapter << endl;
+        Rcpp::Rcerr << knownAdapters[matchedAdapter] << ": " << matchedAdapter << endl;
         return matchedAdapter;
     } else {
-        cerr << finalAdapter << endl;
+        Rcpp::Rcerr << finalAdapter << endl;
         return finalAdapter;
     }
 
@@ -617,11 +618,11 @@ string Evaluator::getAdapterWithSeed(int seed, Read** loadedReads, long records,
     string matchedAdapter = matchKnownAdapter(adapter);
     if(!matchedAdapter.empty()) {
         map<string, string> knownAdapters = getKnownAdapter();
-        cerr << knownAdapters[matchedAdapter] << endl << matchedAdapter << endl;
+        Rcpp::Rcerr << knownAdapters[matchedAdapter] << endl << matchedAdapter << endl;
         return matchedAdapter;
     } else {
         if(reachedLeaf) {
-            cerr << adapter << endl;
+            Rcpp::Rcerr << adapter << endl;
             return adapter;
         } else {
             return "";
@@ -715,6 +716,6 @@ int Evaluator::seq2int(string& seq, int pos, int keylen, int lastVal) {
 bool Evaluator::test() {
     Evaluator eval(NULL);
     string s = "ATCGATCGAT";
-    cerr << eval.int2seq(eval.seq2int(s, 0, 10, -1), 10) << endl;
+    Rcpp::Rcerr << eval.int2seq(eval.seq2int(s, 0, 10, -1), 10) << endl;
     return eval.int2seq(eval.seq2int(s, 0, 10, -1), 10) == s;
 }

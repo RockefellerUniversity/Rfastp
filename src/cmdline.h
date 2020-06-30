@@ -588,13 +588,15 @@ private:
 
   void check(int argc, bool ok){
     if ((argc==1 && !ok) || exist("help")){
-      std::cerr<<usage();
-      exit(0);
+      Rcpp::stop(usage());
+      //std::cerr<<usage();
+      //exit(0);
     }
 
     if (!ok){
-      std::cerr<<error()<<std::endl<<usage();
-      exit(1);
+      Rcpp::stop(error() + "\n" + usage());
+      //std::cerr<<error()<<std::endl<<usage();
+      //exit(1);
     }
   }
 

@@ -173,11 +173,12 @@ int runFastp(std::string read1="",
     opt.qualityCut.windowSizeRight = cutSlideWindowSize;
     opt.qualityCut.qualityRight = cutSlideWindowQual;
 
+    // ============= default parameters issues =============
     // raise a warning if cutting option is not enabled but -W/-M is enabled
-    if(!opt.qualityCut.enabledFront && !opt.qualityCut.enabledTail && !opt.qualityCut.enabledRight) {
-        if(cutMeanQual > 0 )
-            cerr << "WARNING: you specified the options for cutting by quality, but forogt to enable any of cut_front/cut_tail/cut_right. This will have no effect." << endl;
-    }
+    //if(!opt.qualityCut.enabledFront && !opt.qualityCut.enabledTail && !opt.qualityCut.enabledRight) {
+    //    if(cutMeanQual > 0 )
+    //        Rcpp::Rcerr << "WARNING: you specified the options for cutting by quality, but forogt to enable any of cut_front/cut_tail/cut_right. This will have no effect." << endl;
+    //}
 
     // quality filtering
     opt.qualfilter.enabled = qualityFiltering;

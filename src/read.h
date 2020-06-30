@@ -13,12 +13,12 @@ using namespace std;
 
 class Read{
 public:
-	Read(string name, string seq, string strand, string quality, bool phred64=false);
+    Read(string name, string seq, string strand, string quality, bool phred64=false);
     Read(string name, Sequence seq, string strand, string quality, bool phred64=false);
-	Read(string name, string seq, string strand);
+    Read(string name, string seq, string strand);
     Read(string name, Sequence seq, string strand);
     Read(Read &r);
-	void print();
+    void print();
     void printFile(ofstream& file);
     Read* reverseComplement();
     string firstIndex();
@@ -40,11 +40,11 @@ private:
 
 
 public:
-	string mName;
-	Sequence mSeq;
-	string mStrand;
-	string mQuality;
-	bool mHasQuality;
+    string mName;
+    Sequence mSeq;
+    string mStrand;
+    string mQuality;
+    bool mHasQuality;
 };
 
 class ReadPair{

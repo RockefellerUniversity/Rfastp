@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <Rcpp.h>
 #include "filterresult.h"
 #include "stats.h"
 #include "htmlreporter.h"
@@ -167,28 +168,28 @@ long FilterResult::getTotalPolyXTrimmedBases() {
 
 
 void FilterResult::print() {
-    cerr <<  "reads passed filter: " << mFilterReadStats[PASS_FILTER] << endl;
-    cerr <<  "reads failed due to low quality: " << mFilterReadStats[FAIL_QUALITY] << endl;
-    cerr <<  "reads failed due to too many N: " << mFilterReadStats[FAIL_N_BASE] << endl;
+    Rcpp::Rcerr <<  "reads passed filter: " << mFilterReadStats[PASS_FILTER] << endl;
+    Rcpp::Rcerr <<  "reads failed due to low quality: " << mFilterReadStats[FAIL_QUALITY] << endl;
+    Rcpp::Rcerr <<  "reads failed due to too many N: " << mFilterReadStats[FAIL_N_BASE] << endl;
     if(mOptions->lengthFilter.enabled) {
-        cerr <<  "reads failed due to too short: " << mFilterReadStats[FAIL_LENGTH] << endl;
+        Rcpp::Rcerr <<  "reads failed due to too short: " << mFilterReadStats[FAIL_LENGTH] << endl;
         if(mOptions->lengthFilter.maxLength > 0)
-            cerr <<  "reads failed due to too long: " << mFilterReadStats[FAIL_TOO_LONG] << endl;
+            Rcpp::Rcerr <<  "reads failed due to too long: " << mFilterReadStats[FAIL_TOO_LONG] << endl;
     }
     if(mOptions->complexityFilter.enabled) {
-        cerr <<  "reads failed due to low complexity: " << mFilterReadStats[FAIL_COMPLEXITY] << endl;
+        Rcpp::Rcerr <<  "reads failed due to low complexity: " << mFilterReadStats[FAIL_COMPLEXITY] << endl;
     }
     if(mOptions->adapter.enabled) {
-        cerr <<  "reads with adapter trimmed: " << mTrimmedAdapterRead << endl;
-        cerr <<  "bases trimmed due to adapters: " << mTrimmedAdapterBases << endl;
+        Rcpp::Rcerr <<  "reads with adapter trimmed: " << mTrimmedAdapterRead << endl;
+        Rcpp::Rcerr <<  "bases trimmed due to adapters: " << mTrimmedAdapterBases << endl;
     }
     if(mOptions->polyXTrim.enabled) {
-        cerr <<  "reads with polyX in 3' end: " << getTotalPolyXTrimmedReads() << endl;
-        cerr <<  "bases trimmed in polyX tail: " << getTotalPolyXTrimmedBases() << endl;
+        Rcpp::Rcerr <<  "reads with polyX in 3' end: " << getTotalPolyXTrimmedReads() << endl;
+        Rcpp::Rcerr <<  "bases trimmed in polyX tail: " << getTotalPolyXTrimmedBases() << endl;
     }
     if(mOptions->correction.enabled) {
-        cerr <<  "reads corrected by overlap analysis: " << mCorrectedReads << endl;
-        cerr <<  "bases corrected by overlap analysis: " << getTotalCorrectedBases() << endl;
+        Rcpp::Rcerr <<  "reads corrected by overlap analysis: " << mCorrectedReads << endl;
+        Rcpp::Rcerr <<  "bases corrected by overlap analysis: " << getTotalCorrectedBases() << endl;
     }
 }
 

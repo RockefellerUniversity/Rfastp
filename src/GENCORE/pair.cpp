@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "pair.h"
 #include "bamutil.h"
 #include <memory.h>
@@ -157,16 +158,16 @@ void Pair::setRight(bam1_t *b) {
     mRight = b;
     string umi = BamUtil::getUMI(mRight, mOptions->umiPrefix);
     if(!mUMI.empty() && umi!=mUMI) {
-        cerr << "Mismatched UMI of a pair of reads" << endl;
+        Rcpp::Rcerr << "Mismatched UMI of a pair of reads" << endl;
         if(mLeft) {
-            cerr << "Left:" << endl;
+            Rcpp::Rcerr << "Left:" << endl;
             BamUtil::dump(mLeft);
         }
         if(mRight) {
-            cerr << "Right:" << endl;
+            Rcpp::Rcerr << "Right:" << endl;
             BamUtil::dump(mRight);
         }
-        error_exit("The UMI of a read pair should be identical, but we got " + mUMI + " and " + umi );
+        Rcpp::stop("The UMI of a read pair should be identical, but we got " + mUMI + " and " + umi );
     }
     else
         mUMI = umi;
@@ -179,28 +180,32 @@ bool Pair::pairFound() {
 
 int Pair::getLeftRef() {
     if(mLeft == NULL)
-        return -1;
+        //return -1;
+        Rcpp::stop("error mLefti Ref");
 
     return mLeft->core.tid;
 }
 
 int Pair::getLeftPos() {
     if(mLeft == NULL)
-        return -1;
+        //return -1;
+        Rcpp::stop("error mLeft Pos");
 
     return mLeft->core.pos;
 }
 
 int Pair::getRightRef() {
     if(mRight == NULL)
-        return -1;
+        //return -1;
+        Rcpp::stop("error mRight Pos");
 
     return mRight->core.tid;
 }
 
 int Pair::getRightPos() {
     if(mRight == NULL)
-        return -1;
+        //return -1;
+        Rcpp::stop("error mRignt Pos");
 
     return mRight->core.pos;
 }
@@ -284,13 +289,13 @@ bool Pair::isDupWith(Pair* other) {
 }
 
 void Pair::dump() {
-    cerr << "merged by " << mMergeReads << " reads, diff (" << mMergeLeftDiff << ", " << mMergeRightDiff << ")" << endl;
+    Rcpp::Rcerr << "merged by " << mMergeReads << " reads, diff (" << mMergeLeftDiff << ", " << mMergeRightDiff << ")" << endl;
     if(mLeft){
-        cerr << "left:" << endl;
+        Rcpp::Rcerr << "left:" << endl;
         BamUtil::dump(mLeft);
     }
     if(mRight) {
-        cerr << "right:" << endl;
+        Rcpp::Rcerr << "right:" << endl;
         BamUtil::dump(mRight);
     }
 }

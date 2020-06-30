@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "seprocessor.h"
 #include "fastqreader.h"
 #include <iostream>
@@ -126,14 +127,14 @@ bool SingleEndProcessor::process(){
     }
 
     if (mOptions->verbose) {
-        cerr << "Read1 before filtering:"<<endl;
+        Rcpp::Rcerr << "Read1 before filtering:"<<endl;
         finalPreStats->print();
-        cerr << endl;
-        cerr << "Read1 after filtering:"<<endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Read1 after filtering:"<<endl;
         finalPostStats->print();
 
-        cerr << endl;
-        cerr << "Filtering result:"<<endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Filtering result:"<<endl;
         finalFilterResult->print();
     }
 
@@ -148,8 +149,8 @@ bool SingleEndProcessor::process(){
         memset(dupMeanGC, 0, sizeof(double) * mOptions->duplicate.histSize);
         dupRate = mDuplicate->statAll(dupHist, dupMeanGC, mOptions->duplicate.histSize);
         if (mOptions->verbose) {
-            cerr << endl;
-            cerr << "Duplication rate (may be overestimated since this is SE data): " << dupRate * 100.0 << "%" << endl;
+            Rcpp::Rcerr << endl;
+            Rcpp::Rcerr << "Duplication rate (may be overestimated since this is SE data): " << dupRate * 100.0 << "%" << endl;
         }
     }
 
@@ -276,9 +277,12 @@ bool SingleEndProcessor::processSingleEnd(ReadPack* pack, ThreadConfig* config){
     // if splitting output, then no lock is need since different threads write different files
     if(!mOptions->split.enabled)
         mOutputMtx.lock();
-    if(mOptions->outputToSTDOUT) {
-        fwrite(outstr.c_str(), 1, outstr.length(), stdout);
-    } else if(mOptions->split.enabled) {
+
+    // no stdout in R
+    //if(mOptions->outputToSTDOUT) {
+    //    fwrite(outstr.c_str(), 1, outstr.length(), stdout);
+    //} else if(mOptions->split.enabled) {
+    if(mOptions->split.enabled) {
         // split output by each worker thread
         if(!mOptions->out1.empty())
             config->getWriter1()->writeString(outstr);

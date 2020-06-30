@@ -36,7 +36,7 @@ public:
     void statDepth(int tid, int start, int len);
 
 public:    
-	static string list2string(double* list, int size);
+    static string list2string(double* list, int size);
     static string list2string(double* list, int size, long* coords);
     static string list2string(long* list, int size);
 
@@ -48,12 +48,12 @@ public:
     long mMoleculeSE;
     long mMoleculePE;
     long* mSupportingHistgram;
-	Options* mOptions;
-	long mBase;
-	long mBaseMismatches;
-	long mBaseUnmapped;
-	long mRead;
-	long mReadUnmapped;
+    Options* mOptions;
+    long mBase;
+    long mBaseMismatches;
+    long mBaseUnmapped;
+    long mRead;
+    long mReadUnmapped;
     long uncountedSupportingReads;
     vector<vector<long>> mGenomeDepth;
     Bed* mBedStats;

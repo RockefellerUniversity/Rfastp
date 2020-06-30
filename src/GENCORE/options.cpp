@@ -49,8 +49,9 @@ bool Options::validate() {
     }
 
     if(ends_with(refFile, ".gz") || ends_with(refFile, ".gz")) {
-        cerr << "reference fasta file should not be compressed.\nplease unzip "<<refFile<<" and try again."<<endl;
-        exit(-1);
+        Rcpp::Rcerr << "reference fasta file should not be compressed.\nplease unzip "<<refFile<<" and try again."<<endl;
+	Rcpp::stop("\n");
+        //exit(-1);
     }
 
     if(scorePercentReq > 1.0) {

@@ -4,7 +4,23 @@
 \alias{rgencore}
 \title{R wrap of gencore}
 \usage{
-rgencore(inBam, outBam, refFile, ...)
+rgencore(
+  inBam = "",
+  outBam = "",
+  refFile = "",
+  bedFile = "",
+  umiPrefix = "",
+  numSupportingReads = 1,
+  majorBaseScore = 6,
+  majorBaseRatio = 0.8,
+  quitAfterContig = 0,
+  highQual = 30,
+  moderateQual = 20,
+  lowQual = 15,
+  coverageSampling = 10000,
+  debug = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{inBam}{read1 input file name of sorted bam/sam [string]}
@@ -12,8 +28,6 @@ rgencore(inBam, outBam, refFile, ...)
 \item{outBam}{file name of output bam/sam [string]}
 
 \item{refFile}{Path to reference fasta file. [string]}
-
-\item{...}{parameters transfered to function runGencore.}
 
 \item{bedFile}{bedfile to specify the capturing region. [string]}
 
@@ -23,13 +37,16 @@ rgencore(inBam, outBam, refFile, ...)
 merged by >= `supportingRead` reads/pairs. The value should be 1~10, and the
 default value is 1.}
 
+\item{majorBaseScore}{if the score of the major base in a cluster is less than
+`scoreMajorBase`, it will be further compared to the reference. The value should
+be 1~20, and the default value is 6}
+
 \item{majorBaseRatio}{if the ratio of the major base in a cluster is less than
 `ratioMajorBase`, it will be further compared to the reference. The value should
 be 0.5~1.0, and the default value is 0.8}
 
-\item{majorBaseScore}{if the score of the major base in a cluster is less than
-`scoreMajorBase`, it will be further compared to the reference. The value should
-be 1~20, and the default value is 6}
+\item{quitAfterContig}{stop when `quitAfterContig` contigs are processed.
+Only used for fast debugging. Default 0 means no limitation.}
 
 \item{highQual}{the threshold for a quality score to be considered as high qulity.
 Default 30 means Q30}
@@ -40,13 +57,10 @@ qulity. Default 20 means Q20.}
 \item{lowQual}{the threshold for a quality score to be considered as low qulity.
 Default 15 means Q15.}
 
-\item{debug}{a logical indicating output some debug information to STDERR.}
-
 \item{coverageSampling}{the sampling rate for genome scale coverage statistics.
 Default 10000 means 1/10000.}
 
-\item{quitAfterContig}{stop when `quitAfterContig` contigs are processed.
-Only used for fast debugging. Default 0 means no limitation.}
+\item{debug}{a logical indicating output some debug information to STDERR.}
 
 \item{verbose}{output verbose log information}
 }

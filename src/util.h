@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <Rcpp.h>
 #include <stdlib.h>
 #include <string>
 #include <iostream>
@@ -39,8 +40,8 @@ inline bool starts_with( string const & value,  string const & starting)
 
 inline bool ends_with( string const & value,  string const & ending)
 {
-	if (ending.size() > value.size()) return false;
-	return  equal(ending.rbegin(), ending.rend(), value.rbegin());
+    if (ending.size() > value.size()) return false;
+    return  equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
 inline string trim(const string& str)
@@ -178,24 +179,28 @@ inline bool is_directory(const  string& path)
 
 inline void check_file_valid(const  string& s) {
     if(!file_exists(s)){
-        cerr << "ERROR: file '" << s << "' doesn't exist, quit now" << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: file '" << s << "' doesn't exist, quit now" << endl;
+        //exit(-1);
+        Rcpp::stop("\n");
     }
     if(is_directory(s)){
-        cerr << "ERROR: '" << s << "' is a folder, not a file, quit now" << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: '" << s << "' is a folder, not a file, quit now" << endl;
+        //exit(-1);
+        Rcpp::stop("\n");
     }
 }
 
 inline void check_file_writable(const  string& s) {
     string dir = dirname(s);
     if(!file_exists(dir)) {
-        cerr << "ERROR: '" << dir << " doesn't exist. Create this folder and run this command again." << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: '" << dir << " doesn't exist. Create this folder and run this command again." << endl;
+        Rcpp::stop("\n");
+        //exit(-1);
     }
     if(is_directory(s)){
-        cerr << "ERROR: '" << s << "' is not a writable file, quit now" << endl;
-        exit(-1);
+        Rcpp::Rcerr << "ERROR: '" << s << "' is not a writable file, quit now" << endl;
+        //exit(-1);
+        Rcpp::stop("\n");
     }
 }
 
@@ -258,8 +263,9 @@ inline char num2qual(int num) {
 }
 
 inline void error_exit(const string& msg) {
-    cerr << "ERROR: " << msg << endl;
-    exit(-1);
+    Rcpp::Rcerr << "ERROR: " << msg << endl;
+    Rcpp::stop("\n");
+    //exit(-1);
 }
 
 extern mutex logmtx;
@@ -267,7 +273,7 @@ inline void loginfo(const string s){
     logmtx.lock();
     time_t tt = time(NULL);
     tm* t= localtime(&tt);
-    cerr<<"["<<t->tm_hour<<":"<<t->tm_min<<":"<<t->tm_sec<<"] "<<s<<endl;
+    Rcpp::Rcerr<<"["<<t->tm_hour<<":"<<t->tm_min<<":"<<t->tm_sec<<"] "<<s<<endl;
     logmtx.unlock();
 }
 

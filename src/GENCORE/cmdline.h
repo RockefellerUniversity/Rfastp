@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include <Rcpp.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -591,13 +592,15 @@ private:
 
   void check(int argc, bool ok){
     if ((argc==1 && !ok) || exist("help")){
-      std::cerr<<usage();
-      exit(0);
+      //std::cerr<<usage();
+      //exit(0);
+      Rcpp::stop(usage());
     }
 
     if (!ok){
-      std::cerr<<error()<<std::endl<<usage();
-      exit(1);
+      //std::cerr<<error()<<std::endl<<usage();
+      //exit(1);
+      Rcpp::stop(error() + "\n" + usage());
     }
   }
 

@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "gencore.h"
 #include "bamutil.h"
 #include "jsonreporter.h"
@@ -24,8 +25,8 @@ Gencore::~Gencore(){
     }
     if(mOutSam != NULL) {
         if (sam_close(mOutSam) < 0) {
-            cerr << "ERROR: failed to close " << mOutput << endl;
-            exit(-1);
+            Rcpp::stop("ERROR: failed to close " + mOutput + "\n");
+            //exit(-1);
         }
     }
     delete mPreStats;
@@ -85,20 +86,20 @@ void Gencore::writeBam(bam1_t* b) {
         // skip the -1:-1, which means unmapped
         if(b->core.tid >=0 && b->core.pos >= 0) {
             if(!warnedUnordered) {
-                cerr << "WARNING: The output will be unordered!" << endl;
+                Rcpp::Rcerr << "WARNING: The output will be unordered!" << endl;
                 warnedUnordered = true;
             }
             /*cerr << "ERROR: the input is unsorted. Found " << b->core.tid << ":" << b->core.pos << " after " << lastTid << ":" << lastPos << endl;
-            cerr << "Please sort the input first." << endl << endl;
+            Rcpp::Rcerr << "Please sort the input first." << endl << endl;
             //BamUtil::dump(b);
-            cerr << "mProcessedTid: " << mProcessedTid << endl;
-            cerr << "mProcessedPos: " << mProcessedPos << endl;
+            Rcpp::Rcerr << "mProcessedTid: " << mProcessedTid << endl;
+            Rcpp::Rcerr << "mProcessedPos: " << mProcessedPos << endl;
             //dumpClusters(mProperClusters);
             exit(-1);*/
         }
     }
     if(sam_write1(mOutSam, mBamHeader, b) <0) {
-        error_exit("Writing failed, exiting ...");
+        Rcpp::stop("Writing failed, exiting ...");
     }
     lastTid = b->core.tid;
     lastPos = b->core.pos;
@@ -113,7 +114,7 @@ void Gencore::outputBam(bam1_t* b, bool isLeft) {
     //cerr << "tail " << (*mOutSet.rbegin())->core.tid << ":" << (*mOutSet.rbegin())->core.pos << endl;
     // pointing to its next
     if(ret.second == false) {
-        cerr << "OOPS, found two completely same reads" << endl;
+        Rcpp::Rcerr << "OOPS, found two completely same reads" << endl;
         BamUtil::dump(b);
         BamUtil::dump(*ret.first);
     }
@@ -159,8 +160,8 @@ void Gencore::consensus(){
     samFile *in;
     in = sam_open(mOptions->input.c_str(), "r");
     if (!in) {
-        cerr << "ERROR: failed to open " << mOptions->input << endl;
-        exit(-1);
+        Rcpp::stop("ERROR: failed to open " + mOptions->input +  "\n");
+        //exit(-1);
     }
 
     if(ends_with(mOptions->output, "sam"))
@@ -168,8 +169,8 @@ void Gencore::consensus(){
     else 
         mOutSam = sam_open(mOptions->output.c_str(), "wb");
     if (!mOutSam) {
-        cerr << "ERROR: failed to open output " << mOptions->output << endl;
-        exit(-1);
+        Rcpp::stop( "ERROR: failed to open output " + mOptions->output + "\n");
+        //exit(-1);
     }
 
     mBamHeader = sam_hdr_read(in);
@@ -180,14 +181,14 @@ void Gencore::consensus(){
     mPostStats->makeBedStats(mPreStats->mBedStats);
 
     if (mBamHeader == NULL || mBamHeader->n_targets == 0) {
-        cerr << "ERROR: this SAM file has no header " << mInput << endl;
-        exit(-1);
+        Rcpp::stop("ERROR: this SAM file has no header " + mInput + "\n");
+        //exit(-1);
     }
     BamUtil::dumpHeader(mBamHeader);
 
     if (sam_hdr_write(mOutSam, mBamHeader) < 0) {
-        cerr << "failed to write header" << endl;
-        exit(-1);
+        Rcpp::stop("failed to write header\n");
+        //exit(-1);
     }
 
     bam1_t *b = NULL;
@@ -205,17 +206,18 @@ void Gencore::consensus(){
                 hasPE = true;
         }
         if(count == 1000 && hasPE == false) {
-            cerr << "WARNING: seems that the input data is single-end, gencore will not make consensus read and remove duplication for SE data since grouping by coordination will be inaccurate." << endl << endl;
+            Rcpp::Rcerr << "WARNING: seems that the input data is single-end, gencore will not make consensus read and remove duplication for SE data since grouping by coordination will be inaccurate." << endl << endl;
         }
 
         // check whether the BAM is sorted
         if(b->core.tid <lastTid || (b->core.tid == lastTid && b->core.pos <lastPos)) {
             // skip the -1:-1, which means unmapped
             if(b->core.tid >=0 && b->core.pos >= 0) {
-                cerr << "ERROR: the input is unsorted. Found " << b->core.tid << ":" << b->core.pos << " after " << lastTid << ":" << lastPos << endl;
-                cerr << "Please sort the input first." << endl << endl;
+                Rcpp::Rcerr << "ERROR: the input is unsorted. Found " << b->core.tid << ":" << b->core.pos << " after " << lastTid << ":" << lastPos << endl;
+                Rcpp::Rcerr << "Please sort the input first." << endl << endl;
                 BamUtil::dump(b);
-                exit(-1);
+                //exit(-1);
+		Rcpp::stop("\n");
             }
         }
         // for testing, we only process to some contig
@@ -225,7 +227,7 @@ void Gencore::consensus(){
         }
         // if debug flag is enabled, show which contig we are start to process
         if(mOptions->debug && b->core.tid > lastTid) {
-            cerr << "Starting contig " << b->core.tid << endl;
+            Rcpp::Rcerr << "Starting contig " << b->core.tid << endl;
         }
         lastTid = b->core.tid;
         lastPos = b->core.pos;
@@ -256,10 +258,10 @@ void Gencore::consensus(){
     sam_close(in);
 
     if (mOptions->verbose) {
-        cerr << "----Before gencore processing:" << endl;
+        Rcpp::Rcerr << "----Before gencore processing:" << endl;
         mPreStats->print();
 
-        cerr << endl << "----After gencore processing:" << endl;
+        Rcpp::Rcerr << endl << "----After gencore processing:" << endl;
         mPostStats->print();
     }
 

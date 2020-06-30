@@ -242,7 +242,7 @@ inline map<string, string> getKnownAdapter() {
     knownAdapters["TGGAATTCTCGGGTGCCAAGGAACTCCAGTCACTTAGGCATCTCGTATGCCGTCTTCTGCTTG"] = ">RNA_PCR_Primer_Index_3_(RPI3)";
     knownAdapters["TTTTTTTTTTAATGATACGGCGACCACCGAGATCTACAC"] = ">FlowCell1";
     knownAdapters["TTTTTTTTTTCAAGCAGAAGACGGCATACGA"] = ">FlowCell2";
-	
+    
     return knownAdapters;
 }
 #endif

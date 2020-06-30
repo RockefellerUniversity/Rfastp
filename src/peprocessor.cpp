@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "peprocessor.h"
 #include "fastqreader.h"
 #include <iostream>
@@ -201,25 +202,25 @@ bool PairEndProcessor::process(){
     FilterResult* finalFilterResult = FilterResult::merge(filterResults);
 
     if (mOptions->verbose) {
-        cerr << "Read1 before filtering:"<<endl;
+        Rcpp::Rcerr << "Read1 before filtering:"<<endl;
         finalPreStats1->print();
-        cerr << endl;
-        cerr << "Read2 before filtering:"<<endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Read2 before filtering:"<<endl;
         finalPreStats2->print();
-        cerr << endl;
+        Rcpp::Rcerr << endl;
         if(!mOptions->merge.enabled) {
-            cerr << "Read1 after filtering:"<<endl;
+            Rcpp::Rcerr << "Read1 after filtering:"<<endl;
             finalPostStats1->print();
-            cerr << endl;
-            cerr << "Read2 after filtering:"<<endl;
+            Rcpp::Rcerr << endl;
+            Rcpp::Rcerr << "Read2 after filtering:"<<endl;
             finalPostStats2->print();
         } else {
-            cerr << "Merged and filtered:"<<endl;
+            Rcpp::Rcerr << "Merged and filtered:"<<endl;
             finalPostStats1->print();
         }
 
-        cerr << endl;
-        cerr << "Filtering result:"<<endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Filtering result:"<<endl;
         finalFilterResult->print();
     }
 
@@ -233,29 +234,29 @@ bool PairEndProcessor::process(){
         dupMeanGC = new double[mOptions->duplicate.histSize];
         memset(dupMeanGC, 0, sizeof(double) * mOptions->duplicate.histSize);
         dupRate = mDuplicate->statAll(dupHist, dupMeanGC, mOptions->duplicate.histSize);
-	if (mOptions->verbose) {
-            cerr << endl;
-            cerr << "Duplication rate: " << dupRate * 100.0 << "%" << endl;
-	}
+    if (mOptions->verbose) {
+            Rcpp::Rcerr << endl;
+            Rcpp::Rcerr << "Duplication rate: " << dupRate * 100.0 << "%" << endl;
+    }
     }
 
     // insert size distribution
     int peakInsertSize = getPeakInsertSize();
     if (mOptions->verbose) {
-        cerr << endl;
-        cerr << "Insert size peak (evaluated by paired-end reads): " << peakInsertSize << endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Insert size peak (evaluated by paired-end reads): " << peakInsertSize << endl;
     }
 
     if(mOptions->merge.enabled && mOptions->verbose) {
-        cerr << endl;
-        cerr << "Read pairs merged: " << finalFilterResult->mMergedPairs << endl;
+        Rcpp::Rcerr << endl;
+        Rcpp::Rcerr << "Read pairs merged: " << finalFilterResult->mMergedPairs << endl;
         if(finalPostStats1->getReads() > 0) {
             double postMergedPercent = 100.0 * finalFilterResult->mMergedPairs / finalPostStats1->getReads();
             double preMergedPercent = 100.0 * finalFilterResult->mMergedPairs / finalPreStats1->getReads();
-            cerr << "% of original read pairs: " << preMergedPercent << "%" << endl;
-            cerr << "% in reads after filtering: " << postMergedPercent << "%" << endl;
+            Rcpp::Rcerr << "% of original read pairs: " << preMergedPercent << "%" << endl;
+            Rcpp::Rcerr << "% in reads after filtering: " << postMergedPercent << "%" << endl;
         }
-        cerr << endl;
+        Rcpp::Rcerr << endl;
     }
 
     // make JSON report
@@ -530,15 +531,17 @@ bool PairEndProcessor::processPairEnd(ReadPairPack* pack, ThreadConfig* config){
     // if splitting output, then no lock is need since different threads write different files
     if(!mOptions->split.enabled) 
         mOutputMtx.lock();
-    if(mOptions->outputToSTDOUT) {
+    // no stdout needed for Rcpp
+    //if(mOptions->outputToSTDOUT) {
         // STDOUT output
         // if it's merging mode, write the merged reads to STDOUT
         // otherwise write interleaved single output
-        if(mOptions->merge.enabled)
-            fwrite(mergedOutput.c_str(), 1, mergedOutput.length(), stdout);
-        else
-            fwrite(singleOutput.c_str(), 1, singleOutput.length(), stdout);
-    } else if(mOptions->split.enabled) {
+    //    if(mOptions->merge.enabled)
+    //        fwrite(mergedOutput.c_str(), 1, mergedOutput.length(), stdout);
+    //    else
+    //        fwrite(singleOutput.c_str(), 1, singleOutput.length(), stdout);
+    //} else if(mOptions->split.enabled) {
+    if(mOptions->split.enabled) {
         // split output by each worker thread
         if(!mOptions->out1.empty())
             config->getWriter1()->writeString(outstr1);

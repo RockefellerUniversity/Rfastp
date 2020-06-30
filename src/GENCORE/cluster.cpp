@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "cluster.h"
 #include "bamutil.h"
 #include "reference.h"
@@ -53,14 +54,14 @@ namespace GENCORE {
     }
         
     vector<Pair*> Cluster::clusterByUMI(int umiDiffThreshold, Stats* preStats, Stats* postStats, bool crossContig) {
-    	vector<Cluster*> subClusters;
+        vector<Cluster*> subClusters;
         map<string, int> umiCount;
         map<string, Pair*>::iterator iterOfPairs;
         for(iterOfPairs = mPairs.begin(); iterOfPairs!=mPairs.end(); iterOfPairs++) {
             string umi = iterOfPairs->second->getUMI();
             umiCount[umi]++;
         }
-    	while(mPairs.size()>0) {
+        while(mPairs.size()>0) {
             // get top UMI
             string topUMI;
             int topCount = 0;
@@ -75,10 +76,10 @@ namespace GENCORE {
             Cluster* c = new Cluster(mOptions);
             bool isPE = false;
     
-    		// create the group by the top UMI
+            // create the group by the top UMI
             map<string, Pair*>::iterator piter;
             for(piter = mPairs.begin(); piter!=mPairs.end();){
-        		Pair* p = piter->second;
+                Pair* p = piter->second;
                 string umi = p->getUMI();
                 if(umiDiff(umi, topUMI) <= umiDiffThreshold) {
                     c->addPair(p);
@@ -91,34 +92,34 @@ namespace GENCORE {
                 }
             }
             //if(mPairs.size()>0 || subClusters.size()>0)
-            //    cerr << "UMI " << topUMI<< " " << topCount << "/" << c->mPairs.size() << endl;
+            //    Rcpp::Rcerr << "UMI " << topUMI<< " " << topCount << "/" << c->mPairs.size() << endl;
             subClusters.push_back(c);
             preStats->addMolecule(c->mPairs.size(), isPE);
             umiCount[topUMI] = 0;
-    	}
+        }
     
         preStats->addCluster(subClusters.size()>1);
     
         //if(subClusters.size()>1)
-        //    cerr << subClusters.size() << " clusters" << endl;
+        //    Rcpp::Rcerr << subClusters.size() << " clusters" << endl;
     
-    	vector<Pair*> consensusPairs;
+        vector<Pair*> consensusPairs;
     
-    	for(int i=0; i<subClusters.size(); i++) {
-    		Pair* p = subClusters[i]->consensusMerge(crossContig);
+        for(int i=0; i<subClusters.size(); i++) {
+            Pair* p = subClusters[i]->consensusMerge(crossContig);
             if(p->mMergeReads >= mOptions->clusterSizeReq)
-    		  consensusPairs.push_back(p);
+              consensusPairs.push_back(p);
             else
                 delete p;
-    		delete subClusters[i];
-    		subClusters[i] = NULL;
-    	}
+            delete subClusters[i];
+            subClusters[i] = NULL;
+        }
     
         if(consensusPairs.size()>0) {
             postStats->addCluster(consensusPairs.size()>1);
         }
     
-    	return consensusPairs;
+        return consensusPairs;
     }
     
     Pair* Cluster::consensusMerge(bool crossContig) {
@@ -226,7 +227,7 @@ namespace GENCORE {
                 }
                 if(diffNeighbor < seq.length()*0.5) {
                     if(mOptions->debug) {
-                        cerr << "Skipping " << mPairs.size() << " low complexity reads like: " << seq << endl;
+                        Rcpp::Rcerr << "Skipping " << mPairs.size() << " low complexity reads like: " << seq << endl;
                     }
                     return NULL;
                 }
@@ -428,7 +429,7 @@ namespace GENCORE {
         if(out->core.isize != 0) {
             refdata = Reference::instance(mOptions)->getData(out->core.tid, out->core.pos, BamUtil::getRefOffset(out, len-1) + 1);
             if(refdata == NULL && mOptions->debug)
-                cerr << "ref data is NULL for " << out->core.tid << ":" << out->core.pos << endl;
+                Rcpp::Rcerr << "ref data is NULL for " << out->core.tid << ":" << out->core.pos << endl;
         }
         // loop all the position of out
         for(int i=0; i<len; i++) {
@@ -599,18 +600,18 @@ namespace GENCORE {
             // this is abnormal, restore it, and output it for debugging
             if(mismatchInc > 5) {
                 if(mOptions->debug) {
-                    cerr << endl;
-                    cerr << "NOTICE: mismatch increased with " << mismatchInc << endl;
+                    Rcpp::Rcerr << endl;
+                    Rcpp::Rcerr << "NOTICE: mismatch increased with " << mismatchInc << endl;
                     if(isLeft)
-                        cerr << "Consensus by left" << endl;
+                        Rcpp::Rcerr << "Consensus by left" << endl;
                     else
-                        cerr << "Consensus by right" << endl;
-                    cerr << "Edit distance (NM) changed from " << valNM << " to " << newValNM << endl;
-                    cerr << "Read name: " << BamUtil::getQName(out) << endl;
-                    cerr << "tid: " << out->core.tid << ", pos: " << out->core.pos << endl;
+                        Rcpp::Rcerr << "Consensus by right" << endl;
+                    Rcpp::Rcerr << "Edit distance (NM) changed from " << valNM << " to " << newValNM << endl;
+                    Rcpp::Rcerr << "Read name: " << BamUtil::getQName(out) << endl;
+                    Rcpp::Rcerr << "tid: " << out->core.tid << ", pos: " << out->core.pos << endl;
                     if(refdata)
-                        cerr << "ref:" << endl << FastaReader::toString(refdata, out->core.pos, len) << endl;
-                    cerr << "css:" << endl << BamUtil::getSeq(out) << endl;
+                        Rcpp::Rcerr << "ref:" << endl << FastaReader::toString(refdata, out->core.pos, len) << endl;
+                    Rcpp::Rcerr << "css:" << endl << BamUtil::getSeq(out) << endl;
                 }
     
                 // restore the data
@@ -619,12 +620,12 @@ namespace GENCORE {
     
                 if(mOptions->debug) {
                     for(int r=0; r<reads.size(); r++) {
-                        cerr << reads[r]->core.tid << ":" << reads[r]->core.pos << ", " << reads[r]->core.mpos << ", " << reads[r]->core.isize  << " " << BamUtil::getCigar(reads[r])  << endl << BamUtil::getSeq(reads[r]) << endl;
+                        Rcpp::Rcerr << reads[r]->core.tid << ":" << reads[r]->core.pos << ", " << reads[r]->core.mpos << ", " << reads[r]->core.isize  << " " << BamUtil::getCigar(reads[r])  << endl << BamUtil::getSeq(reads[r]) << endl;
                         for(int p=0; p<reads[r]->core.l_qseq; p++)
-                            cerr << (int)scores[r][p];
-                        cerr<<endl;
+                            Rcpp::Rcerr << (int)scores[r][p];
+                        Rcpp::Rcerr<<endl;
                     }
-                    cerr << endl;
+                    Rcpp::Rcerr << endl;
                 }
             } else {
                 // update edit distance

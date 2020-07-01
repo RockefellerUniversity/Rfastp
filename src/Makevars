@@ -9,36 +9,35 @@ RHTSLIB_CPPFLAGS=$(shell echo 'Rhtslib::pkgconfig("PKG_CPPFLAGS")'|\
 PKG_LIBS+=$(RHTSLIB_LIBS)
 PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/
 
-
 OBJECTS=\
 ./RcppExports.o \
-./adaptertrimmer.o \
-./basecorrector.o \
-./duplicate.o \
-./evaluator.o \
-./fastareader.o \
-./fastqreader.o \
-./filter.o \
-./filterresult.o \
 ./main_gencore.o \
-./htmlreporter.o \
-./jsonreporter.o \
 ./main_fastp.o \
-./nucleotidetree.o \
-./options.o \
-./overlapanalysis.o \
-./peprocessor.o \
-./polyx.o \
-./processor.o \
-./read.o \
-./seprocessor.o \
-./sequence.o \
-./stats.o \
-./threadconfig.o \
-./umiprocessor.o \
-./unittest.o \
-./writer.o \
-./writerthread.o \
+./FASTP/adaptertrimmer.o \
+./FASTP/basecorrector.o \
+./FASTP/duplicate.o \
+./FASTP/evaluator.o \
+./FASTP/fastareader.o \
+./FASTP/fastqreader.o \
+./FASTP/filter.o \
+./FASTP/filterresult.o \
+./FASTP/htmlreporter.o \
+./FASTP/jsonreporter.o \
+./FASTP/nucleotidetree.o \
+./FASTP/options.o \
+./FASTP/overlapanalysis.o \
+./FASTP/peprocessor.o \
+./FASTP/polyx.o \
+./FASTP/processor.o \
+./FASTP/read.o \
+./FASTP/seprocessor.o \
+./FASTP/sequence.o \
+./FASTP/stats.o \
+./FASTP/threadconfig.o \
+./FASTP/umiprocessor.o \
+./FASTP/unittest.o \
+./FASTP/writer.o \
+./FASTP/writerthread.o \
 ./GENCORE/bamutil.o \
 ./GENCORE/bed.o \
 ./GENCORE/cluster.o \

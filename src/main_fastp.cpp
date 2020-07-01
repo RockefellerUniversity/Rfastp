@@ -1,15 +1,15 @@
 #include <Rcpp.h>
 
 #include <stdio.h>
-#include "fastqreader.h"
-#include "unittest.h"
+#include "FASTP/fastqreader.h"
+#include "FASTP/unittest.h"
 #include <time.h>
-#include "cmdline.h"
+#include "FASTP/cmdline.h"
 #include <sstream>
-#include "util.h"
-#include "options.h"
-#include "processor.h"
-#include "evaluator.h"
+#include "FASTP/util.h"
+#include "FASTP/options.h"
+#include "FASTP/processor.h"
+#include "FASTP/evaluator.h"
 
 string command = "testcommand";
 using namespace std;

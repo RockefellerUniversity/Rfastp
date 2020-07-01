@@ -15,9 +15,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}
 
-bibliography: opengene.bib
+bibliography: 
+  - fastp.bib
+  - gencore.bib
 ---
-
+ 
 ```{r setup, echo=FALSE, results="hide", include = FALSE}
 knitr::opts_chunk$set(tidy=FALSE, cache=FALSE,
                       #dev="png",
@@ -27,7 +29,7 @@ options(width=100)
 
 # Introduction
 
-The Rfastp package provides an interface to the all-in-one preprocessing for FastQ files toolkit [fastp](https://github.com/OpenGene/fastp) and toolkit removing sequencing duplications and eliminate sequencing errors by generating consensus reads [gencore](https://github.com/OpenGene/gencore).
+The Rfastp package provides an interface to the all-in-one preprocessing for FastQ files toolkit [fastp](https://github.com/OpenGene/fastp)[@10.1093/bioinformatics/bty560] and toolkit removing sequencing duplications and eliminate sequencing errors by generating consensus reads [gencore](https://github.com/OpenGene/gencore)[@Chen2019].
 
 # Installation
 
@@ -87,7 +89,8 @@ pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
          mergeOut = './rfastp_pe_test_merged.fastq.gz')
 ```
 
-## A complex quality control example, Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
+## A complex quality control example
+Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
 ```{r}
 clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr',
          disableTrimPolyG = TRUE,
@@ -126,4 +129,4 @@ rgencore_json_report <- rgencore(inBam=inputbamfile,
 sessionInfo()
 ```
 
-#References:
+# References

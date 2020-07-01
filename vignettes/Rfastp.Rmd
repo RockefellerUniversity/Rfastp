@@ -69,13 +69,14 @@ output_fastq  <- './rfastp_test'
 ```
 
 ## a normal run for single-end fastq file. 
-
+Rfastp support multiple threads, set threads number by parameter `thread`.
 ```{r}
 se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
          thread = 4)
 ```
 
 ## a normal run for paired-end fastq files and specify the adaptor sequence.
+
 ```{r}
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
          outputFastq = './rfastp_test_pe')
@@ -89,7 +90,15 @@ pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
          mergeOut = './rfastp_pe_test_merged.fastq.gz')
 ```
 
-## A complex quality control example
+## umi processing
+
+the following example will add prefix string before the UMI sequence in the sequence name. An "_" will be added between the prefix string and UMI sequence. The UMI sequences will be inserted into the sequence name before the first space.
+
+```{r umi}
+umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, umi = TRUE, umiLoc = "read1", umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, umiIgnoreSeqNameSpace = TRUE)
+```
+ 
+## A quality control example with customized cutoffs. 
 Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
 ```{r}
 clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr',
@@ -104,6 +113,8 @@ clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr
          adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
 )
 ```
+
+
 # Revmove sequencing duplications from sorted bam files with rgencore
 The package contains a sorted bam file and a reference file.
 ```{r}
@@ -111,6 +122,7 @@ inputbamfile <-  system.file("extdata", "ex1_sorted.bam", package="Rfastp")
 reference <- system.file("extdata", "myreference.fa", package="Rfastp")
 outputbamfile <- "ex1_rgencore.bam"
 ```
+
 run `rgenecore` to remove the duplications from the sorted bam file.
 ```{r}
 rgencore_json_report <- rgencore(inBam=inputbamfile,
@@ -120,9 +132,16 @@ rgencore_json_report <- rgencore(inBam=inputbamfile,
 ```
 
 # Miscellaneous helper functions
-
+usage of rfastp:
+```{r}
+?rfastp
+```
+usage of rgencore:
+```{r}
+?rgencore
+```
 # Acknowledgements
-
+Thank you to Ji-Dung Luo for testing/vignette review/critical feedback, Doug Barrows for critical feedback/vignette review and Ziwei Liang for their support.
 # Session info
 
 ```{r sessionInfo}

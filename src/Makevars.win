@@ -7,7 +7,7 @@ RHTSLIB_CPPFLAGS=$(shell echo 'Rhtslib::pkgconfig("PKG_CPPFLAGS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)
 
 PKG_LIBS+=$(RHTSLIB_LIBS)
-PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/
+PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/ -fpermissive
 
 OBJECTS=\
 ./RcppExports.o \

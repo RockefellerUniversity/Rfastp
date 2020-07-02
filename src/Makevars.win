@@ -1,0 +1,52 @@
+PKG_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\ "${R_HOME}/bin/R" --vanilla --slave)
+PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_static")'|\ "${R_HOME}/bin/R" --vanilla --slave)
+
+RHTSLIB_LIBS=$(shell echo 'Rhtslib::pkgconfig("PKG_LIBS")'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
+RHTSLIB_CPPFLAGS=$(shell echo 'Rhtslib::pkgconfig("PKG_CPPFLAGS")'|\
+    "${R_HOME}/bin/R" --vanilla --slave)
+
+PKG_LIBS+=$(RHTSLIB_LIBS)
+PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/
+
+OBJECTS=\
+./RcppExports.o \
+./main_gencore.o \
+./main_fastp.o \
+./FASTP/adaptertrimmer.o \
+./FASTP/basecorrector.o \
+./FASTP/duplicate.o \
+./FASTP/evaluator.o \
+./FASTP/fastareader.o \
+./FASTP/fastqreader.o \
+./FASTP/filter.o \
+./FASTP/filterresult.o \
+./FASTP/htmlreporter.o \
+./FASTP/jsonreporter.o \
+./FASTP/nucleotidetree.o \
+./FASTP/options.o \
+./FASTP/overlapanalysis.o \
+./FASTP/peprocessor.o \
+./FASTP/polyx.o \
+./FASTP/processor.o \
+./FASTP/read.o \
+./FASTP/seprocessor.o \
+./FASTP/sequence.o \
+./FASTP/stats.o \
+./FASTP/threadconfig.o \
+./FASTP/umiprocessor.o \
+./FASTP/unittest.o \
+./FASTP/writer.o \
+./FASTP/writerthread.o \
+./GENCORE/bamutil.o \
+./GENCORE/bed.o \
+./GENCORE/cluster.o \
+./GENCORE/fastareader.o \
+./GENCORE/gencore.o \
+./GENCORE/htmlreporter.o \
+./GENCORE/jsonreporter.o \
+./GENCORE/options.o \
+./GENCORE/pair.o \
+./GENCORE/reference.o \
+./GENCORE/stats.o \
+./GENCORE/unittest.o

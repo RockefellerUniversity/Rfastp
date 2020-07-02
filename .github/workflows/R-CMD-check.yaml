@@ -83,6 +83,7 @@ jobs:
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
           BiocManager::install("devtools")
+          BiocManager::install("pkgdown")
         shell: Rscript {0}
 
 

@@ -197,7 +197,7 @@
 #')
 
 
-rfastp <- function(read1="", read2="", outputFastq="", unpaired="",
+rfastp <- function(read1, read2="", outputFastq, unpaired="",
     failedOut="", merge=FALSE, mergeOut="", phred64=FALSE, interleaved=FALSE,
     fixMGIid=FALSE, adapterTrimming=TRUE, adapterSequenceRead1="auto",
     adapterSequenceRead2="auto", adapterFasta="", trimFrontRead1=0,
@@ -217,9 +217,11 @@ rfastp <- function(read1="", read2="", outputFastq="", unpaired="",
     umiNoConnection=FALSE, umiIgnoreSeqNameSpace=FALSE,
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
+
     if (umi & umiPrefix != "" & !umiNoConnection) {
         umiPrefix <- paste0(umiPrefix, "_")
     }
+
     exitcode <- runFastp(read1=read1, read2=read2, outputFastq=outputFastq,
         unpaired=unpaired, failedOut=failedOut, merge=merge, mergeOut=mergeOut,
         phred64=phred64, interleaved=interleaved, fixMGIid=fixMGIid, 
@@ -315,7 +317,7 @@ rfastp <- function(read1="", read2="", outputFastq="", unpaired="",
 #'    ref=reference
 #')
 
-rgencore <- function(inBam="", outBam="", refFile="", bedFile="", umiPrefix="",
+rgencore <- function(inBam, outBam, refFile="", bedFile="", umiPrefix="",
     numSupportingReads=1, majorBaseScore=6, majorBaseRatio=0.8, 
     quitAfterContig=0, highQual=30, moderateQual=20, lowQual=15, 
     coverageSampling=10000, debug=FALSE, verbose=TRUE ) {

@@ -5,9 +5,9 @@
 \title{R wrap of fastp}
 \usage{
 rfastp(
-  read1 = "",
+  read1,
   read2 = "",
-  outputFastq = "",
+  outputFastq,
   unpaired = "",
   failedOut = "",
   merge = FALSE,

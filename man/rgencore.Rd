@@ -5,8 +5,8 @@
 \title{R wrap of gencore}
 \usage{
 rgencore(
-  inBam = "",
-  outBam = "",
+  inBam,
+  outBam,
   refFile = "",
   bedFile = "",
   umiPrefix = "",

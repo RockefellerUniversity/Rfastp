@@ -95,7 +95,8 @@ pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
 the following example will add prefix string before the UMI sequence in the sequence name. An "_" will be added between the prefix string and UMI sequence. The UMI sequences will be inserted into the sequence name before the first space.
 
 ```{r umi}
-umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, umi = TRUE, umiLoc = "read1", umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, umiIgnoreSeqNameSpace = TRUE)
+umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, outputFastq = './rfastp_test_umi',
+                          umi = TRUE, umiLoc = "read1", umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, umiIgnoreSeqNameSpace = TRUE)
 ```
  
 ## A quality control example with customized cutoffs. 

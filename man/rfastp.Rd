@@ -30,10 +30,10 @@ rfastp(
   minLengthPolyG = 10,
   trimPolyX = FALSE,
   minLengthPolyX = 10,
-  cutLowQualFront = FALSE,
+  cutWindowSize = 4,
   cutLowQualTail = FALSE,
   cutSlideWindowRight = FALSE,
-  cutWindowSize = 4,
+  cutLowQualFront = FALSE,
   cutMeanQual = 20,
   cutFrontWindowSize = 4,
   cutFrontMeanQual = 20,
@@ -83,7 +83,8 @@ rfastp(
 \item{unpaired}{for PE input, output file name for reads which the mate
 reads failed to pass the QC [string], default NULL, discard it. [string]}
 
-\item{failedOut}{file to store reads that cannot pass the filters default}
+\item{failedOut}{file to store reads that cannot pass the filters default
+NULL, discard it. [string]}
 
 \item{merge}{for PE input, A logical(1) indicating whether merge each pair
 of reads into a single read if they are overlaped, unmerged reads will
@@ -92,11 +93,12 @@ set if TRUE.}
 
 \item{mergeOut}{under `merge` mode, file to store the merged reads. [string]}
 
-\item{phred64}{A logical indicating whether the input is using phred64 scoring
-(it will be converted to phred33, so the output will still be phred33)}
+\item{phred64}{A logical indicating whether the input is using phred64
+     scoring (it will be converted to phred33, so the output will still be
+.      phred33)}
 
-\item{interleaved}{A logical indicating whether <read1> is an interleaved FASTQ
-which contains both read1 and read2. Default is FALSE.}
+\item{interleaved}{A logical indicating whether <read1> is an interleaved
+FASTQ which contains both read1 and read2. Default is FALSE.}
 
 \item{fixMGIid}{the MGI FASTQ ID format is not compatible with many BAM
 operation tools, enable this option to fix it. Default is FALSE}
@@ -112,10 +114,11 @@ if R1/R2 are found not overlapped.}
 used if R1/R2 are found not overlapped. If not specified, it will be the
 same as <adapterSequenceRead1>}
 
-\item{adapterFasta}{specify a FASTA file to trim both read1 and read2 (if PE)
-by all the sequences in this FASTA file.}
+\item{adapterFasta}{specify a FASTA file to trim both read1 and read2 (if
+PE) by all the sequences in this FASTA file.}
 
-\item{trimFrontRead1}{trimming how many bases in front for read1, default is 0}
+\item{trimFrontRead1}{trimming how many bases in front for read1, default 
+is 0.}
 
 \item{trimTailRead1}{trimming how many bases in tail for read1, default is 0'}
 
@@ -134,7 +137,8 @@ at its tail to make it as long as maxLengthRead2. Default 0 means no
 limitation. If it's not specified, it will follow read1's settings.}
 
 \item{forceTrimPolyG}{A logical indicating force polyG tail trimming,
-trimming is only automatically enabled for Illumina NextSeq/NovaSeq data.}
+     trimming is only automatically enabled for Illumina NextSeq/NovaSeq
+.     data.}
 
 \item{disableTrimPolyG}{A logical indicating disable polyG tail trimming.}
 
@@ -146,9 +150,8 @@ trimming is only automatically enabled for Illumina NextSeq/NovaSeq data.}
 \item{minLengthPolyX}{the minimum length to detect polyX in the read tail.
 10 by default.}
 
-\item{cutLowQualFront}{A logical indiccating move a sliding window from
-front (5') to tail, drop the bases in the window if its mean quality
-< threshold, stop otherwise. Default is `FALSE`}
+\item{cutWindowSize}{the window size option shared by cutLowQualFront,
+cutLowQualTail, or cutSlideWindowRight. Range: 1~1000, default: 4}
 
 \item{cutLowQualTail}{A logical indiccating move a sliding window from
 tail (3') to front, drop the bases in the window if its mean quality
@@ -159,35 +162,38 @@ front to tail, if meet one window with mean quality < threshold, drop
 the bases in the window and the right part, and then stop. Default is
 `FALSE`}
 
-\item{cutWindowSize}{the window size option shared by cutLowQualFront,
-cutLowQualTail, or cutSlideWindowRight. Range: 1~1000, default: 4}
+\item{cutLowQualFront}{A logical indiccating move a sliding window from
+front (5') to tail, drop the bases in the window if its mean quality
+< threshold, stop otherwise. Default is `FALSE`}
 
-\item{cutMeanQual}{the mean quality requirement option shared by cutLowQualFront,
-cutLowQualTail or cutSlideWindowRight. Range: 1~36 default: 20}
+\item{cutMeanQual}{the mean quality requirement option shared by
+cutLowQualFront, cutLowQualTail or cutSlideWindowRight. Range: 1~36,
+default: 20}
 
-\item{cutFrontWindowSize}{the window size option of cutLowQualFront, default to
-cutWindowSize if not specified. default: 4}
+\item{cutFrontWindowSize}{the window size option of cutLowQualFront, default
+to cutWindowSize if not specified. default: 4}
 
-\item{cutFrontMeanQual}{the mean quality requirement option for cutLowQualFront,
-default to cutMeanQual if not specified. default: 20}
+\item{cutFrontMeanQual}{the mean quality requirement option for
+cutLowQualFront, default to cutMeanQual if not specified. default: 20}
 
-\item{cutTailWindowSize}{the window size option of cutLowQualTail, default to
-cutWindowSize if not specified. default: 4}
+\item{cutTailWindowSize}{the window size option of cutLowQualTail, default
+to cutWindowSize if not specified. default: 4}
 
-\item{cutTailMeanQual}{the mean quality requirement option for cutLowQualTail,
-default to cutMeanQual if not specified. default: 20}
+\item{cutTailMeanQual}{the mean quality requirement option for
+cutLowQualTail, default to cutMeanQual if not specified. default: 20}
 
 \item{cutSlideWindowSize}{the window size option of cutSlideWindowRight,
 default to cutWindowSize if not specified. default: 4}
 
 \item{cutSlideWindowQual}{the mean quality requirement option for
-cutSlideWindowRight, default to cutMeanQual if not specified. default: 20}
+cutSlideWindowRight, default to cutMeanQual if not specified. default:
+20}
 
 \item{qualityFiltering}{A logical indicating run quality filtering.
 Default is `TRUE`.}
 
-\item{qualityFilterPhred}{the minimum quality value that a base is qualified.
-Default 15 means phred quality >=Q15 is qualified.}
+\item{qualityFilterPhred}{the minimum quality value that a base is
+qualified. Default 15 means phred quality >=Q15 is qualified.}
 
 \item{qualityFilterPercent}{Maximum percents of bases are allowed to be
 unqualified (0~100). Default 40 means 40\%}
@@ -195,8 +201,9 @@ unqualified (0~100). Default 40 means 40\%}
 \item{maxNfilter}{maximum number of N allowed in the sequence. read/pair is
 discarded if failed to pass this filter. Default is 5}
 
-\item{averageQualFilter}{if one read's average quality score < `averageQualFilter`,
-then this read/pair is discarded. Default 0 means no requirement.}
+\item{averageQualFilter}{if one read's average quality score < 
+`averageQualFilter`, then this read/pair is discarded. Default 0 means
+ no requirement.}
 
 \item{lengthFiltering}{A logical indicating whether run lenght filtering.
 Default: TRUE}
@@ -207,9 +214,10 @@ default is 15.}
 \item{maxReadLength}{reads longer than maxReadLength will be discarded,
 default 0 means no limitation.}
 
-\item{lowComplexityFiltering}{A logical indicating whethere run low complexity
-filter. The complexity is defined as the percentage of base that is
-different from its next base (base[i] != base[i+1]). Default is `FALSE`}
+\item{lowComplexityFiltering}{A logical indicating whethere run low
+complexity filter. The complexity is defined as the percentage of base
+that is different from its next base (base[i] != base[i+1]). Default is
+`FALSE`}
 
 \item{minComplexity}{the threshold for low complexity filter (0~100).
 Default is 30, which means 30\% complexity is required. (int [=30])}
@@ -268,8 +276,8 @@ analysis. Default is `FALSE`}
 reads will be computed for overrepresentation analysis (1~10000),
 smaller is slower, default is 20.}
 
-\item{splitOutput}{number of files to be splitted (2~999). a sequential number
-prefix will be added to output name. Default is 0 (no split)}
+\item{splitOutput}{number of files to be splitted (2~999). a sequential
+number prefix will be added to output name. Default is 0 (no split)}
 
 \item{splitByLines}{split output by limiting lines of each file(>=1000), a
 sequential number prefix will be added to output name ( 0001.out.fq,
@@ -283,7 +291,8 @@ sequential number prefix will be added to output name ( 0001.out.fq,
 returns a json object of the report.
 }
 \description{
-Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of fastq files.
+Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
+of fastq files.
 }
 \examples{
 
@@ -299,28 +308,29 @@ output_fastq  <- './rfastp_test'
 # a normal single-end file
 
 se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
-         thread = 4)
+   thread = 4)
 
 
 # merge paired-end data by overlap:
 
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
-         outputFastq = './rfastp_pe_test_unpaired',
-         mergeOut = './rfastp_pe_test_merged.fastq.gz')
+   outputFastq = './rfastp_pe_test_unpaired',
+   mergeOut = './rfastp_pe_test_merged.fastq.gz')
 
 
 # a clipr example
 
-clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr',
-         disableTrimPolyG = TRUE,
-         cutLowQualFront = TRUE,
-         cutFrontWindowSize = 29,
-         cutFrontMeanQual = 20,
-         cutLowQualTail = TRUE,
-         cutTailWindowSize = 1,
-         cutTailMeanQual = 5,
-         minReadLength = 29,
-         adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
+clipr_json_report <- rfastp(read1 = se_read1, 
+   outputFastq = './rfastp_test_clipr',
+   disableTrimPolyG = TRUE,
+   cutLowQualFront = TRUE,
+   cutFrontWindowSize = 29,
+   cutFrontMeanQual = 20,
+   cutLowQualTail = TRUE,
+   cutTailWindowSize = 1,
+   cutTailMeanQual = 5,
+   minReadLength = 29,
+   adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
 )
 }
 \author{

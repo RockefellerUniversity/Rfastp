@@ -34,31 +34,31 @@ rgencore(
 \item{umiPrefix}{the prefix for UMI, if it has. None by default.}
 
 \item{numSupportingReads}{only output consensus reads/pairs that
-merged by >= `supportingRead` reads/pairs. The value should be 1~10, and the
-default value is 1.}
+merged by >= `supportingRead` reads/pairs. The value should be 1~10, and
+the default value is 1.}
 
-\item{majorBaseScore}{if the score of the major base in a cluster is less than
-`scoreMajorBase`, it will be further compared to the reference. The value should
-be 1~20, and the default value is 6}
+\item{majorBaseScore}{if the score of the major base in a cluster is less 
+than `scoreMajorBase`, it will be further compared to the reference. The
+value should be 1~20, and the default value is 6}
 
-\item{majorBaseRatio}{if the ratio of the major base in a cluster is less than
-`ratioMajorBase`, it will be further compared to the reference. The value should
-be 0.5~1.0, and the default value is 0.8}
+\item{majorBaseRatio}{if the ratio of the major base in a cluster is less 
+than `ratioMajorBase`, it will be further compared to the reference. The
+value should be 0.5~1.0, and the default value is 0.8}
 
 \item{quitAfterContig}{stop when `quitAfterContig` contigs are processed.
 Only used for fast debugging. Default 0 means no limitation.}
 
-\item{highQual}{the threshold for a quality score to be considered as high qulity.
-Default 30 means Q30}
+\item{highQual}{the threshold for a quality score to be considered as high
+qulity. Default 30 means Q30}
 
-\item{moderateQual}{the threshold for a quality score to be considered as moderate
-qulity. Default 20 means Q20.}
+\item{moderateQual}{the threshold for a quality score to be considered as
+moderate qulity. Default 20 means Q20.}
 
-\item{lowQual}{the threshold for a quality score to be considered as low qulity.
-Default 15 means Q15.}
+\item{lowQual}{the threshold for a quality score to be considered as low
+qulity. Default 15 means Q15.}
 
-\item{coverageSampling}{the sampling rate for genome scale coverage statistics.
-Default 10000 means 1/10000.}
+\item{coverageSampling}{the sampling rate for genome scale coverage
+statistics. Default 10000 means 1/10000.}
 
 \item{debug}{a logical indicating output some debug information to STDERR.}
 
@@ -68,7 +68,8 @@ Default 10000 means 1/10000.}
 returns a json object of the report.
 }
 \description{
-Quality control (Cut adapter, low quality trimming, UMI handling, and etc.) of fastq files.
+Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
+of fastq files.
 }
 \examples{
 
@@ -82,8 +83,8 @@ reference <- system.file("extdata", "myreference.fa", package="Rfastp")
 # run rgencore
 
 rgencore_json_report <- rgencore(inBam=inputbamfile,
-         outBam=outputbamfile,
-         ref=reference
+   outBam=outputbamfile,
+   ref=reference
 )
 }
 \author{

@@ -3,7 +3,7 @@ Type: Package
 Title: Wraps the fastp toolset and gencore in R
 Version: 0.1.0
 Author: Thomas Carroll, Wei Wang
-Maintainer: Thomas Carroll <tc.infomatics@rockfeller.edu>, Wei Wang <periwinkle.david@gmail.com>
+Maintainer: Thomas Carroll <tc.infomatics@gmail.com>, Wei Wang <periwinkle.david@gmail.com>
 Description: Rfastp is an R wrapper of fastp and gencore.
     fastp performs quality control for fastq files. 
     gencore performs duplication removal for sorted bam files.
@@ -11,10 +11,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
+biocViews: QualityControl, Sequencing, Preprocessing, Software
 SystemRequirements: GNU make
 LinkingTo: 
     Rcpp, Rhtslib, zlibbioc
 Imports: 
-    Rcpp, Rhtslib, rjson
+    Rcpp, rjson
 Suggests: BiocStyle, testthat, knitr, rmarkdown
 VignetteBuilder: knitr

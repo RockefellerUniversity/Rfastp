@@ -60,6 +60,11 @@ jobs:
           sudo apt-get install -y libcurl4-openssl-dev
         shell: bash {0}
 
+      - name: Install System Dependencies
+        if: runner.os == 'Windows'
+        run: |
+          pacman --noconfirm -S mingw-w64-x86_64-curl
+        shell: bash {0}
 
       - name: Install dependencies
         run: |
@@ -82,6 +87,8 @@ jobs:
           message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck ****'))
           remotes::install_cran("rcmdcheck")
           BiocManager::install("BiocCheck")
+          BiocManager::install("devtools")
+          BiocManager::install("pkgdown")
         shell: Rscript {0}
 
 

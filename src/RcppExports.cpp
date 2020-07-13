@@ -80,35 +80,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// runGencore
-int runGencore(std::string inBam, std::string outBam, std::string refFile, std::string bedFile, std::string umiPrefix, int numSupportingReads, int majorBaseScore, double majorBaseRatio, int quitAfterContig, int highQual, int moderateQual, int lowQual, int coverageSampling, bool debug, bool verbose);
-RcppExport SEXP _Rfastp_runGencore(SEXP inBamSEXP, SEXP outBamSEXP, SEXP refFileSEXP, SEXP bedFileSEXP, SEXP umiPrefixSEXP, SEXP numSupportingReadsSEXP, SEXP majorBaseScoreSEXP, SEXP majorBaseRatioSEXP, SEXP quitAfterContigSEXP, SEXP highQualSEXP, SEXP moderateQualSEXP, SEXP lowQualSEXP, SEXP coverageSamplingSEXP, SEXP debugSEXP, SEXP verboseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type inBam(inBamSEXP);
-    Rcpp::traits::input_parameter< std::string >::type outBam(outBamSEXP);
-    Rcpp::traits::input_parameter< std::string >::type refFile(refFileSEXP);
-    Rcpp::traits::input_parameter< std::string >::type bedFile(bedFileSEXP);
-    Rcpp::traits::input_parameter< std::string >::type umiPrefix(umiPrefixSEXP);
-    Rcpp::traits::input_parameter< int >::type numSupportingReads(numSupportingReadsSEXP);
-    Rcpp::traits::input_parameter< int >::type majorBaseScore(majorBaseScoreSEXP);
-    Rcpp::traits::input_parameter< double >::type majorBaseRatio(majorBaseRatioSEXP);
-    Rcpp::traits::input_parameter< int >::type quitAfterContig(quitAfterContigSEXP);
-    Rcpp::traits::input_parameter< int >::type highQual(highQualSEXP);
-    Rcpp::traits::input_parameter< int >::type moderateQual(moderateQualSEXP);
-    Rcpp::traits::input_parameter< int >::type lowQual(lowQualSEXP);
-    Rcpp::traits::input_parameter< int >::type coverageSampling(coverageSamplingSEXP);
-    Rcpp::traits::input_parameter< bool >::type debug(debugSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(runGencore(inBam, outBam, refFile, bedFile, umiPrefix, numSupportingReads, majorBaseScore, majorBaseRatio, quitAfterContig, highQual, moderateQual, lowQual, coverageSampling, debug, verbose));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Rfastp_runFastp", (DL_FUNC) &_Rfastp_runFastp, 65},
-    {"_Rfastp_runGencore", (DL_FUNC) &_Rfastp_runGencore, 15},
     {NULL, NULL, 0}
 };
 

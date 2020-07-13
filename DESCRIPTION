@@ -1,12 +1,11 @@
 Package: Rfastp
 Type: Package
-Title: Wraps the fastp toolset and gencore in R
+Title: Wraps the fastp toolset in R
 Version: 0.1.0
 Author: Thomas Carroll, Wei Wang
 Maintainer: Thomas Carroll <tc.infomatics@gmail.com>, Wei Wang <periwinkle.david@gmail.com>
-Description: Rfastp is an R wrapper of fastp and gencore.
+Description: Rfastp is an R wrapper of fastp.
     fastp performs quality control for fastq files. 
-    gencore performs duplication removal for sorted bam files.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

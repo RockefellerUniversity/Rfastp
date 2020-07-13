@@ -1,7 +1,7 @@
 
 ---
-title: "Versatile fastq quality control toolkits and duplication removal for sorted bam files"
-author: "Tom Carroll and Wei Wang"
+title: "Versatile fastq quality control toolkits"
+author: "Thomas Carroll and Wei Wang"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 package: Rfastp
 
@@ -17,7 +17,6 @@ vignette: >
 
 bibliography: 
   - fastp.bib
-  - gencore.bib
 ---
  
 ```{r setup, echo=FALSE, results="hide", include = FALSE}
@@ -29,7 +28,7 @@ options(width=100)
 
 # Introduction
 
-The Rfastp package provides an interface to the all-in-one preprocessing for FastQ files toolkit [fastp](https://github.com/OpenGene/fastp)[@10.1093/bioinformatics/bty560] and toolkit removing sequencing duplications and eliminate sequencing errors by generating consensus reads [gencore](https://github.com/OpenGene/gencore)[@Chen2019].
+The Rfastp package provides an interface to the all-in-one preprocessing for FastQ files toolkit [fastp](https://github.com/OpenGene/fastp)[@10.1093/bioinformatics/bty560].
 
 # Installation
 
@@ -115,31 +114,10 @@ clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr
 )
 ```
 
-
-# Revmove sequencing duplications from sorted bam files with rgencore
-The package contains a sorted bam file and a reference file.
-```{r}
-inputbamfile <-  system.file("extdata", "ex1_sorted.bam", package="Rfastp")
-reference <- system.file("extdata", "myreference.fa", package="Rfastp")
-outputbamfile <- "ex1_rgencore.bam"
-```
-
-run `rgenecore` to remove the duplications from the sorted bam file.
-```{r}
-rgencore_json_report <- rgencore(inBam=inputbamfile,
-         outBam=outputbamfile,
-         refFile=reference
-)
-```
-
 # Miscellaneous helper functions
 usage of rfastp:
 ```{r}
 ?rfastp
-```
-usage of rgencore:
-```{r}
-?rgencore
 ```
 # Acknowledgements
 Thank you to Ji-Dung Luo for testing/vignette review/critical feedback, Doug Barrows for critical feedback/vignette review and Ziwei Liang for their support.

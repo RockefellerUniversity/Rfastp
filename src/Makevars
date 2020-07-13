@@ -11,7 +11,6 @@ PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/
 
 OBJECTS=\
 ./RcppExports.o \
-./main_gencore.o \
 ./main_fastp.o \
 ./FASTP/adaptertrimmer.o \
 ./FASTP/basecorrector.o \
@@ -37,16 +36,4 @@ OBJECTS=\
 ./FASTP/umiprocessor.o \
 ./FASTP/unittest.o \
 ./FASTP/writer.o \
-./FASTP/writerthread.o \
-./GENCORE/bamutil.o \
-./GENCORE/bed.o \
-./GENCORE/cluster.o \
-./GENCORE/fastareader.o \
-./GENCORE/gencore.o \
-./GENCORE/htmlreporter.o \
-./GENCORE/jsonreporter.o \
-./GENCORE/options.o \
-./GENCORE/pair.o \
-./GENCORE/reference.o \
-./GENCORE/stats.o \
-./GENCORE/unittest.o
+./FASTP/writerthread.o

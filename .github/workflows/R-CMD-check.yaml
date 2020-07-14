@@ -64,6 +64,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           pacman --noconfirm -S mingw-w64-x86_64-curl
+          pacman --noconfirm -S mingw-w64-i686-curl
         shell: bash {0}
 
       - name: Install dependencies

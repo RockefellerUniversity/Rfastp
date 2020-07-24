@@ -12,6 +12,7 @@ PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -I./GENCORE/ -fpermissive
 OBJECTS=\
 ./RcppExports.o \
 ./main_fastp.o \
+./main_rcat.o \
 ./FASTP/adaptertrimmer.o \
 ./FASTP/basecorrector.o \
 ./FASTP/duplicate.o \

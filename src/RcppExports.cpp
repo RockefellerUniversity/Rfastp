@@ -80,9 +80,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcat
+int rcat(std::string output, Rcpp::List inputFiles, int numInFile);
+RcppExport SEXP _Rfastp_rcat(SEXP outputSEXP, SEXP inputFilesSEXP, SEXP numInFileSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type output(outputSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type inputFiles(inputFilesSEXP);
+    Rcpp::traits::input_parameter< int >::type numInFile(numInFileSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcat(output, inputFiles, numInFile));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Rfastp_runFastp", (DL_FUNC) &_Rfastp_runFastp, 65},
+    {"_Rfastp_rcat", (DL_FUNC) &_Rfastp_rcat, 3},
     {NULL, NULL, 0}
 };
 

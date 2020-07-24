@@ -1,11 +1,90 @@
+#' concatenate file in R
+#'
+#' concatenate multiple files into a big file.
+#'
+#' @param output output file name [string]
+#' @param inputFiles a list of input file names [list]
+#' @param append a logical indicating append the files to a file already
+#'      exists.
+#' @param paired a logical indicating split the input files into two halves.
+#'      the first half merged into read1, the second half merged into read2.
+#'
+#' @return no returns.
+#' @author Thomas Carroll, Wei Wang
+#' @export
+#'
+#' @examples
+#'
+#' pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",package="Rfastp")
+#' pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",package="Rfastp")
+#' pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",package="Rfastp")
+#' pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",package="Rfastp")
+#'
+#' pe001_read2 <- system.file("extdata","splited_001_R2.fastq.gz",package="Rfastp")
+#' pe002_read2 <- system.file("extdata","splited_002_R2.fastq.gz",package="Rfastp")
+#' pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",package="Rfastp")
+#' pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",package="Rfastp")
+#'
+#' allR1 <- list(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
+#' allR2 <- list(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
+#'
+#' allreads <- append(allR1, allR2)
+#'
+#' # a normal single-end concatenation.
+#'
+#' catfastq(output = "merged1_R1.fastq.gz", inputFiles = allR1)
+#'
+#' # a normal paired-end concatenation.
+#'
+#' catfastq(output = "merged_paired", inputFiles = allreads, paired=TRUE)
+#'
+#'# append to exists files (paired-end)
+#'
+#' catfastq(output="append_paired", inputFiles=allreads, append=TRUE, paired=TRUE)
+#'
+
+
+catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE) {
+    if (paired) {
+        pairsNum <- length(inputFiles)/2
+        r1files <- inputFiles[1:pairsNum]
+        r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+        if (append) {
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"), r2files, pairsNum)
+        }
+        else {
+            if (file.exists(paste0(output, "_R1.fastq.gz")) | 
+		file.exists(paste0(output, "_R2.fastq.gz")) ) {
+                stop("output file exists already! please change it!")
+            }
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"), r2files, pairsNum)
+        }
+
+    }
+    else {
+        if (append) {
+            exitcode <- rcat(output=output, inputFiles, length(inputFiles))
+        }
+        else {
+            if (file.exists(output)) {
+                stop("output file exists already! please change it!")
+            }
+            exitcode <- rcat(output=output, inputFiles, length(inputFiles))
+        }
+    }
+}
+
+
 
 #' R wrap of fastp
 #'
 #' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
 #' of fastq files.
 #'
-#' @param read1 read1 input file name [string]
-#' @param read2 read2 input file name [string]
+#' @param read1 read1 input file name or comma separated file names. [string]
+#' @param read2 read2 input file name or comma separated file names. [string]
 #' @param outputFastq string of /path/prefix for output fastq [string]
 #' @param unpaired for PE input, output file name for reads which the mate
 #'      reads failed to pass the QC [string], default NULL, discard it. [string]
@@ -218,6 +297,25 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
+    multipleInput = grepl(",", read1)    
+    if ( multipleInput ) {
+        infilesR1 = as.list(unlist(strsplit(read1,",")))
+        ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=T)))
+        read1 <- paste0("catInput_", ramstr, "_R1.fastq.gz")
+        exitcode <- rcat(output=read1, infilesR1, length(infilesR1))
+        if (read2 != "") {
+            infilesR2 = as.list(unlist(strsplit(read2,",")))
+            if (length(infilesR2) != length(infilesR2)) {
+                stop("the file number of Read1 and Read2 are not identical!")
+            }
+            read2 <- paste0("catInput_", ramstr, "_R2.fastq.gz")
+            if (file.exists(read2)) {
+                stop("the tmp concatenated R2 file exists already!")
+            }
+            exitcode <- rcat(output=read2, infilesR2, length(infilesR1))
+        }
+    }
+
     if (umi & umiPrefix != "" & !umiNoConnection) {
         umiPrefix <- paste0(umiPrefix, "_")
     }
@@ -257,5 +355,12 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
         overrepresentationSampling=overrepresentationSampling,
         splitOutput=splitOutput, splitByLines=splitByLines, thread=thread, 
         verbose=verbose)
+
+    if (multipleInput) {
+        file.remove(read1)
+        if (read2 != "") {
+            file.remove(read2)
+        }
+    }
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }

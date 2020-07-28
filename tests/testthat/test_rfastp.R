@@ -22,11 +22,13 @@ test_that("correctly formatted input  works", {
 
 
 test_that("catfastq: malformed input gives error", {
-    catfastq(output = "merged1_R1.fastq.gz", 
-	     inputFiles = "myfiles1.fastq.gz,myfiles2.fastq.gz")
+    expect_error(
+        catfastq(output = "merged1_R1.fastq.gz",
+             inputFiles = "myfiles1.fastq.gz,myfiles2.fastq.gz")
+    )
 })
 
 test_that("catfastq: correctly formated input works", {
    exitcode <- catfastq(output = "merged1_R1.fastq.gz", inputFiles = allR1)
-   expect_is(exitcode, "vector")
+   expect_is(exitcode, "integer")
 })

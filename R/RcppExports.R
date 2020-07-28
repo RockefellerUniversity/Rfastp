@@ -5,7 +5,7 @@ runFastp <- function(read1 = "", read2 = "", outputFastq = "", unpaired = "", fa
     .Call(`_Rfastp_runFastp`, read1, read2, outputFastq, unpaired, failedOut, merge, mergeOut, phred64, interleaved, fixMGIid, adapterTrimming, adapterSequenceRead1, adapterSequenceRead2, adapterFasta, trimFrontRead1, trimTailRead1, trimFrontRead2, trimTailRead2, maxLengthRead1, maxLengthRead2, forceTrimPolyG, disableTrimPolyG, minLengthPolyG, trimPolyX, minLengthPolyX, cutLowQualFront, cutLowQualTail, cutSlideWindowRight, cutWindowSize, cutMeanQual, cutFrontWindowSize, cutFrontMeanQual, cutTailWindowSize, cutTailMeanQual, cutSlideWindowSize, cutSlideWindowQual, qualityFiltering, qualityFilterPhred, qualityFilterPercent, maxNfilter, averageQualFilter, lengthFiltering, minReadLength, maxReadLength, lowComplexityFiltering, minComplexity, index1Filter, index2Filter, maxIndexMismatch, correctionOverlap, minOverlapLength, maxOverlapMismatch, maxOverlapMismatchPercentage, umi, umiIgnoreSeqNameSpace, umiLoc, umiLength, umiPrefix, umiSkipBaseLength, overrepresentationAnalysis, overrepresentationSampling, splitOutput, splitByLines, thread, verbose)
 }
 
-rcat <- function(output = "", inputFiles, numInFile = 0L) {
+rcat <- function(output = "", inputFiles = as.character( c()), numInFile = 0L) {
     .Call(`_Rfastp_rcat`, output, inputFiles, numInFile)
 }
 

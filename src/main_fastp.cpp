@@ -393,13 +393,13 @@ void appendFile(std::string const& outFile, std::string const& inFile) {
 }
 
 // [[Rcpp::export]]
-int rcat(std::string output="", Rcpp::List inputFiles = List::create(), int numInFile = 0) {
+int rcat(std::string output="", Rcpp::CharacterVector inputFiles = CharacterVector::create(), int numInFile = 0) {
     if (numInFile < 2) {
         Rcpp::stop("Please specify more than 1 input file.");
     }
 
     for (int i=0; i<numInFile; i++) {
-        appendFile(output, inputFiles[i]);
+        appendFile(output, Rcpp::as<std::string>(inputFiles[i]));
     }
     return 0;
 }

@@ -6,7 +6,7 @@ pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",package="Rfastp")
 pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",package="Rfastp")
 pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",package="Rfastp")
 pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",package="Rfastp")
-allR1 <- list(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
+allR1 <- c(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
 
 test_that("malformed input gives error", {
     expect_error(

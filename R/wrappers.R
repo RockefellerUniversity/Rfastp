@@ -3,11 +3,14 @@
 #' concatenate multiple files into a big file.
 #'
 #' @param output output file name [string]
-#' @param inputFiles a list of input file names [list]
+#' @param inputFiles a vector of input file names [vector]
 #' @param append a logical indicating append the files to a file already
 #'      exists.
 #' @param paired a logical indicating split the input files into two halves.
 #'      the first half merged into read1, the second half merged into read2.
+#' @param shuffled a logical indicating split the input file list into two 
+#'      halves. The R1/R2 files are inteleaved in the inputFiles vector. 
+#'     
 #'
 #' @return no returns.
 #' @author Thomas Carroll, Wei Wang
@@ -25,10 +28,12 @@
 #' pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",package="Rfastp")
 #' pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",package="Rfastp")
 #'
-#' allR1 <- list(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
-#' allR2 <- list(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
+#' allR1 <- c(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
+#' allR2 <- c(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
 #'
-#' allreads <- append(allR1, allR2)
+#' allreads <- c(allR1, allR2)
+#' allreads_shuffled <- c(pe001_read1, pe001_read2, pe002_read1, pe002_read2,
+#'                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 #'
 #' # a normal single-end concatenation.
 #'
@@ -38,24 +43,36 @@
 #'
 #' catfastq(output = "merged_paired", inputFiles = allreads, paired=TRUE)
 #'
-#'# append to exists files (paired-end)
+#' # append to exists files (paired-end)
 #'
 #' catfastq(output="append_paired", inputFiles=allreads, append=TRUE, paired=TRUE)
 #'
+#' # input paired-end files are shuffled.
+#'
+#' catfastq(output="shuffled_paired", inputFiles=allreads_shuffled, paired=TRUE, shuffled=TRUE)
 
-
-catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE) {
+catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE, shuffled=FALSE) {
     if (paired) {
+        if (length(inputFiles) %% 2 != 0) {
+            stop("the number of input files is not an even number!")
+        }
         pairsNum <- length(inputFiles)/2
-        r1files <- inputFiles[1:pairsNum]
-        r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+        if (shuffled) {
+            r1files <- inputFiles[(1:pairsNum)*2-1]
+            r2files <- inputFiles[(1:pairsNum)*2]
+        }
+        else {
+            r1files <- inputFiles[1:pairsNum]
+            r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+        }
+
         if (append) {
             exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
             exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"), r2files, pairsNum)
         }
         else {
             if (file.exists(paste0(output, "_R1.fastq.gz")) | 
-		file.exists(paste0(output, "_R2.fastq.gz")) ) {
+                file.exists(paste0(output, "_R2.fastq.gz")) ) {
                 stop("output file exists already! please change it!")
             }
             exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
@@ -83,8 +100,8 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE) {
 #' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
 #' of fastq files.
 #'
-#' @param read1 read1 input file name or comma separated file names. [string]
-#' @param read2 read2 input file name or comma separated file names. [string]
+#' @param read1 read1 input file name(s). [vector]
+#' @param read2 read2 input file name(s). [vector]
 #' @param outputFastq string of /path/prefix for output fastq [string]
 #' @param unpaired for PE input, output file name for reads which the mate
 #'      reads failed to pass the QC [string], default NULL, discard it. [string]
@@ -297,9 +314,9 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
-    multipleInput = grepl(",", read1)    
+    multipleInput = length(read1) > 1   
     if ( multipleInput ) {
-        infilesR1 = as.list(unlist(strsplit(read1,",")))
+        infilesR1 = read1
         ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=T)))
         read1 <- paste0("catInput_", ramstr, "_R1.fastq.gz")
         exitcode <- rcat(output=read1, infilesR1, length(infilesR1))
@@ -315,6 +332,10 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
             exitcode <- rcat(output=read2, infilesR2, length(infilesR1))
         }
     }
+    else if (length(read2) > 1) {
+        stop("please double check the read2 file names, there is only one
+            input file in read1.")
+    }        
 
     if (umi & umiPrefix != "" & !umiNoConnection) {
         umiPrefix <- paste0(umiPrefix, "_")

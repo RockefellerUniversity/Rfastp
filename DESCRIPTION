@@ -6,7 +6,7 @@ Author: Thomas Carroll, Wei Wang
 Maintainer: Thomas Carroll <tc.infomatics@gmail.com>, Wei Wang <periwinkle.david@gmail.com>
 Description: Rfastp is an R wrapper of fastp.
     fastp performs quality control for fastq files. 
-License: MIT + file LICENSE
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0

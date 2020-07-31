@@ -1,4 +1,4 @@
-#' concatenate file in R
+#' concatenate fastq file in R
 #'
 #' concatenate multiple files into a big file.
 #'
@@ -13,7 +13,7 @@
 #'     
 #'
 #' @return no returns.
-#' @author Thomas Carroll, Wei Wang
+#' @author Wei Wang
 #' @export
 #'
 #' @examples
@@ -91,6 +91,92 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE, shuffled=FA
             exitcode <- rcat(output=output, inputFiles, length(inputFiles))
         }
     }
+}
+
+
+#' Summary of Quality Control
+#'
+#' generate a data frame of the QC summary. 
+#'
+#' @param json the output json of function rfastq. [json]
+#'     
+#' @return a data frame.
+#' @author Wei Wang
+#' @export
+#'
+#' @examples
+#'
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#'    thread = 4)
+#' df_summary <- qcSummary(se_json_report)
+#'
+
+qcSummary <- function(json) {
+    if (! "merged_and_filtered" %in% names(json)) {
+        data.frame("Before_QC" = unlist(json$summary$before_filtering), "After_QC" = unlist(json$summary$after_filtering), row.names = names(json$summary$before_filtering)) 
+    }
+    else {
+        data.frame("Before_QC" = unlist(json$summary$before_filtering), "After_QC" = c(unlist(json$summary$after_filtering)[1:7], NA, unlist(json$summary$after_filtering)[8]), row.names = names(json$summary$before_filtering)) 
+    }
+}
+
+
+#' Plot of Base Quality
+#'
+#' generate a data frame of the QC summary. 
+#'
+#' @param json the output json of function rfastq. [json]
+#'     
+#' @return a ggplot2 object.
+#' @author Wei Wang
+#' @import ggplot2 reshape2
+#' @export
+#'
+#' @examples
+#'
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#'    thread = 4)
+#' p1 <- bqPlot(se_json_report)
+#' p1
+
+bqPlot <- function(json) {
+    if ("merged_and_filtered" %in% names(json)) {
+        df1bf <- data.frame(json$read1_before_filtering$quality_curves)
+        df2bf <- data.frame(json$read2_before_filtering$quality_curves)
+	dfmerged <- data.frame(json$merged_and_filtered$quality_curves)
+        df1bf$position <- as.integer(rownames(df1bf))
+        df2bf$position <- as.integer(rownames(df2bf))
+        dfmerged$position <- as.integer(rownames(dfmerged))
+        df1bf$readtype <- factor("Read1 Before QC", levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        df2bf$readtype <- factor("Read2 Before QC", levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        dfmerged$readtype <- factor("Merged After QC", levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        tbl4plot <- rbind(melt(df1bf, c("position", "readtype")), melt(df2bf, c("position", "readtype")), melt(dfmerged, c("position", "readtype"))) 
+    }
+    else if (! "read2_before_filtering" %in% names(json)) {
+        df1bf <- data.frame(json$read1_before_filtering$quality_curves)
+        df1af <- data.frame(json$read1_after_filtering$quality_curves)
+        df1bf$position <- as.integer(rownames(df1bf))
+        df1af$position <- as.integer(rownames(df1af))
+        df1bf$readtype <- factor("Read1 Before QC", levels=c("Read1 Before QC", "Read1 After QC"))
+        df1af$readtype <- factor("Read1 After QC", levels=c("Read1 Before QC", "Read1 After QC"))
+        tbl4plot <- rbind(melt(df1bf, c("position", "readtype")), melt(df1af, c("position", "readtype"))) 
+    }
+    else {
+        df1bf <- data.frame(json$read1_before_filtering$quality_curves)
+        df1af <- data.frame(json$read1_after_filtering$quality_curves)
+        df2bf <- data.frame(json$read2_before_filtering$quality_curves)
+        df2af <- data.frame(json$read2_after_filtering$quality_curves)
+	df1bf$position <- as.integer(rownames(df1bf))
+	df1af$position <- as.integer(rownames(df1af))
+	df2bf$position <- as.integer(rownames(df2bf))
+	df2af$position <- as.integer(rownames(df2af))
+	df1bf$readtype <- factor("Read1 Before QC", levels=c("Read1 Before QC", "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+	df1af$readtype <- factor("Read1 After QC", levels=c("Read1 Before QC", "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+	df2bf$readtype <- factor("Read2 Before QC", levels=c("Read1 Before QC", "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+	df2af$readtype <- factor("Read2 After QC", levels=c("Read1 Before QC", "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+	tbl4plot <- rbind(melt(df1bf, c("position", "readtype")), melt(df1af, c("position", "readtype")), melt(df2bf, c("position", "readtype")), melt(df2af, c("position", "readtype"))) 
+    }
+    ggplot(tbl4plot, aes(x=position, y=value, group=1)) + geom_line(aes(color=variable)) + ylab("Base Quality") + facet_wrap(~ readtype)
 }
 
 

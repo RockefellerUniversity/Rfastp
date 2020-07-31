@@ -114,7 +114,7 @@ clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr
 )
 ```
 
-## Concatenate multiple input files.
+## multiple input files for read1/2 in a vector.
 rfastq can accept multiple input files, and it will concatenate the input files into one and the run fastp.
 ```{r}
 pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",package="Rfastp")
@@ -137,6 +137,19 @@ inputR2files <- c(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
 catfastq(output = "merged2_R2.fastq.gz", inputFiles = inputR2files)
 ```
 
+# Generate report tables/plots
+
+## A data frame for the summary.
+
+```{r}
+dfsummary <- qcSummary(pe_json_report)
+```
+
+## a ggplot2 of base quality.
+```{r}
+p1 <- bqPlot(se_json_report)
+p1
+```
 
 # Miscellaneous helper functions
 usage of rfastp:

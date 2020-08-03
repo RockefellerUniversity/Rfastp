@@ -204,7 +204,7 @@ trimSummary <- function(json) {
 #' p2 <- curvePlot(se_json_report, curves = "content_curves")
 
 curvePlot <- function(json, curves = "quality_curves") {
-    globalVariables(c("position", "value", "variable"))
+    #globalVariables(c("position", "value", "variable"))
     if ("merged_and_filtered" %in% names(json)) {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
         df2bf <- data.frame(json$read2_before_filtering[[curves]])
@@ -256,8 +256,9 @@ curvePlot <- function(json, curves = "quality_curves") {
                       melt(df2bf, c("position", "readtype")),
                       melt(df2af, c("position", "readtype"))) 
     }
-    ggplot(tbl4plot, aes(x=position, y=value, group=1)) + geom_line(aes(
-            color=variable)) + ylab("Base Quality") + facet_wrap(~ readtype)
+    ggplot(tbl4plot, aes_string(x="position", y="value", group=1)) + 
+	    geom_line(aes_string(color="variable")) + ylab("Base Quality") + 
+	    facet_wrap(~ readtype)
 }
 
 

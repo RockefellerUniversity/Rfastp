@@ -1,34 +1,47 @@
-#' concatenate file in R
+#' concatenate fastq file in R
 #'
 #' concatenate multiple files into a big file.
 #'
 #' @param output output file name [string]
-#' @param inputFiles a list of input file names [list]
+#' @param inputFiles a vector of input file names [vector]
 #' @param append a logical indicating append the files to a file already
 #'      exists.
 #' @param paired a logical indicating split the input files into two halves.
 #'      the first half merged into read1, the second half merged into read2.
+#' @param shuffled a logical indicating split the input file list into two 
+#'      halves. The R1/R2 files are inteleaved in the inputFiles vector. 
+#'     
 #'
 #' @return no returns.
-#' @author Thomas Carroll, Wei Wang
+#' @author Wei Wang
 #' @export
 #'
 #' @examples
 #'
-#' pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",package="Rfastp")
-#' pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",package="Rfastp")
-#' pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",package="Rfastp")
-#' pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",package="Rfastp")
+#' pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",
+#'      package="Rfastp")
+#' pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",
+#'      package="Rfastp")
+#' pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",
+#'      package="Rfastp")
+#' pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",
+#'      package="Rfastp")
 #'
-#' pe001_read2 <- system.file("extdata","splited_001_R2.fastq.gz",package="Rfastp")
-#' pe002_read2 <- system.file("extdata","splited_002_R2.fastq.gz",package="Rfastp")
-#' pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",package="Rfastp")
-#' pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",package="Rfastp")
+#' pe001_read2 <- system.file("extdata","splited_001_R2.fastq.gz",
+#'      package="Rfastp")
+#' pe002_read2 <- system.file("extdata","splited_002_R2.fastq.gz",
+#'      package="Rfastp")
+#' pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",
+#'      package="Rfastp")
+#' pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",
+#'      package="Rfastp")
 #'
-#' allR1 <- list(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
-#' allR2 <- list(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
+#' allR1 <- c(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
+#' allR2 <- c(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
 #'
-#' allreads <- append(allR1, allR2)
+#' allreads <- c(allR1, allR2)
+#' allreads_shuffled <- c(pe001_read1, pe001_read2, pe002_read1, pe002_read2,
+#'                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 #'
 #' # a normal single-end concatenation.
 #'
@@ -38,28 +51,47 @@
 #'
 #' catfastq(output = "merged_paired", inputFiles = allreads, paired=TRUE)
 #'
-#'# append to exists files (paired-end)
+#' # append to exists files (paired-end)
 #'
-#' catfastq(output="append_paired", inputFiles=allreads, append=TRUE, paired=TRUE)
+#' catfastq(output="append_paired", inputFiles=allreads, append=TRUE,
+#'      paired=TRUE)
 #'
+#' # input paired-end files are shuffled.
+#'
+#' catfastq(output="shuffled_paired", inputFiles=allreads_shuffled,
+#'      paired=TRUE, shuffled=TRUE)
 
-
-catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE) {
+catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
+        shuffled=FALSE) {
     if (paired) {
+        if (length(inputFiles) %% 2 != 0) {
+            stop("the number of input files is not an even number!")
+        }
         pairsNum <- length(inputFiles)/2
-        r1files <- inputFiles[1:pairsNum]
-        r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+        if (shuffled) {
+            r1files <- inputFiles[(1:pairsNum)*2-1]
+            r2files <- inputFiles[(1:pairsNum)*2]
+        }
+        else {
+            r1files <- inputFiles[1:pairsNum]
+            r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+        }
+
         if (append) {
-            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
-            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"), r2files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
+                 r1files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
+                 r2files, pairsNum)
         }
         else {
             if (file.exists(paste0(output, "_R1.fastq.gz")) | 
-		file.exists(paste0(output, "_R2.fastq.gz")) ) {
+                file.exists(paste0(output, "_R2.fastq.gz")) ) {
                 stop("output file exists already! please change it!")
             }
-            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), r1files, pairsNum)
-            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"), r2files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
+                 r1files, pairsNum)
+            exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
+                 r2files, pairsNum)
         }
 
     }
@@ -77,14 +109,165 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE) {
 }
 
 
+#' Summary of Quality Control
+#'
+#' generate a data frame of the QC summary. 
+#'
+#' @param json the output json of function rfastq. [json]
+#'     
+#' @return a data frame.
+#' @author Wei Wang
+#' @export
+#'
+#' @examples
+#'
+#' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#'    thread = 4)
+#' df_summary <- qcSummary(se_json_report)
+#'
+
+qcSummary <- function(json) {
+    if (! "merged_and_filtered" %in% names(json)) {
+        data.frame("Before_QC" = unlist(json$summary$before_filtering),
+                  "After_QC" = unlist(json$summary$after_filtering), 
+                  row.names = names(json$summary$before_filtering)) 
+    }
+    else {
+        data.frame("Before_QC" = unlist(json$summary$before_filtering),
+                   "After_QC" = c(unlist(json$summary$after_filtering)[1:7],
+                   NA, unlist(json$summary$after_filtering)[8]), 
+                   row.names = names(json$summary$before_filtering)) 
+    }
+}
+
+
+#' Summary of trimming
+#'
+#' generate a data frame of the trim summary. 
+#'
+#' @param json the output json of function rfastq. [json]
+#'     
+#' @return a data frame.
+#' @author Wei Wang
+#' @export
+#'
+#' @examples
+#'
+#' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#'    thread = 4)
+#' trim_summary <- trimSummary(se_json_report)
+#'
+
+trimSummary <- function(json) {
+    if (! "read2_before_filtering" %in% names(json)) {
+        data.frame("Count" = c(unlist(json$filtering_result),
+              unlist(json$adapter_cutting[1:3]),
+              unlist(json$adapter_cutting$read1_adapter_counts)),
+          row.names = c(names(json$filtering_result),
+              names(json$adapter_cutting)[1:3],
+	      names(json$adapter_cutting$read1_adapter_counts)) ) 
+    }
+    else {
+        data.frame("Count" = c(unlist(json$filtering_result),
+              unlist(json$adapter_cutting[1:4]),
+              unlist(json$adapter_cutting$read1_adapter_counts)),
+          row.names = c(names(json$filtering_result),
+             names(json$adapter_cutting)[1:4],
+	     names(json$adapter_cutting$read1_adapter_counts)) ) 
+    }
+}
+
+
+#' Plot of Base Quality and GC Content.
+#'
+#' generate a ggplot2 object of Base Quality/GC content before and after. 
+#'
+#' @param json the output json of function rfastq. [json]
+#' @param curves plots for Base Quality("quality_curves") 
+#'      or GC content("content_curves"). default is "quality_curves"
+#'     
+#' @return a ggplot2 object.
+#' @author Wei Wang
+#' @import ggplot2 reshape2
+#' @export
+#'
+#' @examples
+#'
+#' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#'    thread = 4)
+#' # Base Quality plot is the default output:
+#' p1 <- curvePlot(se_json_report)
+#' p1
+#'
+#' p2 <- curvePlot(se_json_report, curves = "content_curves")
+
+curvePlot <- function(json, curves = "quality_curves") {
+    if ("merged_and_filtered" %in% names(json)) {
+        df1bf <- data.frame(json$read1_before_filtering[[curves]])
+        df2bf <- data.frame(json$read2_before_filtering[[curves]])
+        dfmerged <- data.frame(json$merged_and_filtered[[curves]])
+        df1bf$position <- as.integer(rownames(df1bf))
+        df2bf$position <- as.integer(rownames(df2bf))
+        dfmerged$position <- as.integer(rownames(dfmerged))
+        df1bf$readtype <- factor("Read1 Before QC", 
+            levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        df2bf$readtype <- factor("Read2 Before QC", 
+            levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        dfmerged$readtype <- factor("Merged After QC", 
+            levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
+        tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
+              melt(df2bf, c("position", "readtype")),
+              melt(dfmerged, c("position", "readtype"))) 
+    }
+    else if (! "read2_before_filtering" %in% names(json)) {
+        df1bf <- data.frame(json$read1_before_filtering[[curves]])
+        df1af <- data.frame(json$read1_after_filtering[[curves]])
+        df1bf$position <- as.integer(rownames(df1bf))
+        df1af$position <- as.integer(rownames(df1af))
+        df1bf$readtype <- factor("Read1 Before QC",
+                 levels=c("Read1 Before QC", "Read1 After QC"))
+        df1af$readtype <- factor("Read1 After QC",
+                 levels=c("Read1 Before QC", "Read1 After QC"))
+        tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
+                 melt(df1af, c("position", "readtype"))) 
+    }
+    else {
+        df1bf <- data.frame(json$read1_before_filtering[[curves]])
+        df1af <- data.frame(json$read1_after_filtering[[curves]])
+        df2bf <- data.frame(json$read2_before_filtering[[curves]])
+        df2af <- data.frame(json$read2_after_filtering[[curves]])
+        df1bf$position <- as.integer(rownames(df1bf))
+        df1af$position <- as.integer(rownames(df1af))
+        df2bf$position <- as.integer(rownames(df2bf))
+        df2af$position <- as.integer(rownames(df2af))
+        df1bf$readtype <- factor("Read1 Before QC", levels=c("Read1 Before QC",
+                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+        df1af$readtype <- factor("Read1 After QC", levels=c("Read1 Before QC",
+                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+        df2bf$readtype <- factor("Read2 Before QC", levels=c("Read1 Before QC",
+                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+        df2af$readtype <- factor("Read2 After QC", levels=c("Read1 Before QC",
+                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+        tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
+                      melt(df1af, c("position", "readtype")),
+                      melt(df2bf, c("position", "readtype")),
+                      melt(df2af, c("position", "readtype"))) 
+    }
+    ggplot(tbl4plot, aes(x=position, y=value, group=1)) + geom_line(aes(
+            color=variable)) + ylab("Base Quality") + facet_wrap(~ readtype)
+}
+
 
 #' R wrap of fastp
 #'
 #' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
 #' of fastq files.
 #'
-#' @param read1 read1 input file name or comma separated file names. [string]
-#' @param read2 read2 input file name or comma separated file names. [string]
+#' @param read1 read1 input file name(s). [vector]
+#' @param read2 read2 input file name(s). [vector]
 #' @param outputFastq string of /path/prefix for output fastq [string]
 #' @param unpaired for PE input, output file name for reads which the mate
 #'      reads failed to pass the QC [string], default NULL, discard it. [string]
@@ -297,9 +480,9 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
-    multipleInput = grepl(",", read1)    
+    multipleInput = length(read1) > 1   
     if ( multipleInput ) {
-        infilesR1 = as.list(unlist(strsplit(read1,",")))
+        infilesR1 = read1
         ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=T)))
         read1 <- paste0("catInput_", ramstr, "_R1.fastq.gz")
         exitcode <- rcat(output=read1, infilesR1, length(infilesR1))
@@ -315,6 +498,10 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
             exitcode <- rcat(output=read2, infilesR2, length(infilesR1))
         }
     }
+    else if (length(read2) > 1) {
+        stop("please double check the read2 file names, there is only one
+            input file in read1.")
+    }        
 
     if (umi & umiPrefix != "" & !umiNoConnection) {
         umiPrefix <- paste0(umiPrefix, "_")

@@ -74,9 +74,9 @@ rfastp(
 )
 }
 \arguments{
-\item{read1}{read1 input file name or comma separated file names. [string]}
+\item{read1}{read1 input file name(s). [vector]}
 
-\item{read2}{read2 input file name or comma separated file names. [string]}
+\item{read2}{read2 input file name(s). [vector]}
 
 \item{outputFastq}{string of /path/prefix for output fastq [string]}
 

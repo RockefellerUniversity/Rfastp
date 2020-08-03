@@ -81,13 +81,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcat
-int rcat(std::string output, Rcpp::List inputFiles, int numInFile);
+int rcat(std::string output, Rcpp::CharacterVector inputFiles, int numInFile);
 RcppExport SEXP _Rfastp_rcat(SEXP outputSEXP, SEXP inputFilesSEXP, SEXP numInFileSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type output(outputSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type inputFiles(inputFilesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type inputFiles(inputFilesSEXP);
     Rcpp::traits::input_parameter< int >::type numInFile(numInFileSEXP);
     rcpp_result_gen = Rcpp::wrap(rcat(output, inputFiles, numInFile));
     return rcpp_result_gen;

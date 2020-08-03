@@ -145,10 +145,22 @@ catfastq(output = "merged2_R2.fastq.gz", inputFiles = inputR2files)
 dfsummary <- qcSummary(pe_json_report)
 ```
 
-## a ggplot2 of base quality.
+## a ggplot2 object of base quality plot.
 ```{r}
-p1 <- bqPlot(se_json_report)
+p1 <- curvePlot(se_json_report)
 p1
+```
+
+## a ggplot2 object of GC Content plot.
+```{r}
+p2 <- curvePlot(se_json_report, curve="content_curves")
+p2
+```
+
+## a data frame for the trimming summary.
+
+```{r}
+dfTrim <- trimSummary(pe_json_report)
 ```
 
 # Miscellaneous helper functions

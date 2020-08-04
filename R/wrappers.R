@@ -67,21 +67,21 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
         if (length(inputFiles) %% 2 != 0) {
             stop("the number of input files is not an even number!")
         }
-        pairsNum <- length(inputFiles)/2
         if (shuffled) {
-            r1files <- inputFiles[(1:pairsNum)*2-1]
-            r2files <- inputFiles[(1:pairsNum)*2]
+            r1files <- inputFiles[seq(1, length(inputFiles), 2)]
+            r2files <- inputFiles[seq(2, length(inputFiles), 2)]
         }
         else {
-            r1files <- inputFiles[1:pairsNum]
-            r2files <- inputFiles[(pairsNum+1):(pairsNum*2)]
+            r1files <- inputFiles[seq(1, length(inputFiles)/2)]
+            r2files <- inputFiles[seq(length(inputFiles)/2+1,
+                        length(inputFiles))]
         }
 
         if (append) {
             exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
-                 r1files, pairsNum)
+                r1files, length(inputFiles)/2)
             exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
-                 r2files, pairsNum)
+                r2files, length(inputFiles)/2)
         }
         else {
             if (file.exists(paste0(output, "_R1.fastq.gz")) | 
@@ -89,9 +89,9 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
                 stop("output file exists already! please change it!")
             }
             exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
-                 r1files, pairsNum)
+                r1files, length(inputFiles)/2)
             exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
-                 r2files, pairsNum)
+                r2files, length(inputFiles)/2)
         }
 
     }
@@ -130,14 +130,14 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 qcSummary <- function(json) {
     if (! "merged_and_filtered" %in% names(json)) {
         data.frame("Before_QC" = unlist(json$summary$before_filtering),
-                  "After_QC" = unlist(json$summary$after_filtering), 
-                  row.names = names(json$summary$before_filtering)) 
+            "After_QC" = unlist(json$summary$after_filtering), 
+            row.names = names(json$summary$before_filtering)) 
     }
     else {
         data.frame("Before_QC" = unlist(json$summary$before_filtering),
-                   "After_QC" = c(unlist(json$summary$after_filtering)[1:7],
-                   NA, unlist(json$summary$after_filtering)[8]), 
-                   row.names = names(json$summary$before_filtering)) 
+            "After_QC" = c(unlist(json$summary$after_filtering)[seq(1,7)],
+            NA, unlist(json$summary$after_filtering)[8]), 
+            row.names = names(json$summary$before_filtering)) 
     }
 }
 
@@ -163,19 +163,19 @@ qcSummary <- function(json) {
 trimSummary <- function(json) {
     if (! "read2_before_filtering" %in% names(json)) {
         data.frame("Count" = c(unlist(json$filtering_result),
-              unlist(json$adapter_cutting[1:3]),
-              unlist(json$adapter_cutting$read1_adapter_counts)),
-          row.names = c(names(json$filtering_result),
-              names(json$adapter_cutting)[1:3],
-	      names(json$adapter_cutting$read1_adapter_counts)) ) 
+                unlist(json$adapter_cutting[seq(1,3)]),
+                unlist(json$adapter_cutting$read1_adapter_counts)),
+            row.names = c(names(json$filtering_result),
+                names(json$adapter_cutting)[seq(1,3)],
+                names(json$adapter_cutting$read1_adapter_counts)) ) 
     }
     else {
         data.frame("Count" = c(unlist(json$filtering_result),
-              unlist(json$adapter_cutting[1:4]),
-              unlist(json$adapter_cutting$read1_adapter_counts)),
-          row.names = c(names(json$filtering_result),
-             names(json$adapter_cutting)[1:4],
-	     names(json$adapter_cutting$read1_adapter_counts)) ) 
+                unlist(json$adapter_cutting[seq(1,4)]),
+                unlist(json$adapter_cutting$read1_adapter_counts)),
+            row.names = c(names(json$filtering_result),
+                names(json$adapter_cutting)[seq(1,4)],
+                names(json$adapter_cutting$read1_adapter_counts)) ) 
     }
 }
 
@@ -205,6 +205,7 @@ trimSummary <- function(json) {
 #' p2 <- curvePlot(se_json_report, curves = "content_curves")
 
 curvePlot <- function(json, curves = "quality_curves") {
+    #globalVariables(c("position", "value", "variable"))
     if ("merged_and_filtered" %in% names(json)) {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
         df2bf <- data.frame(json$read2_before_filtering[[curves]])
@@ -219,8 +220,8 @@ curvePlot <- function(json, curves = "quality_curves") {
         dfmerged$readtype <- factor("Merged After QC", 
             levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
-              melt(df2bf, c("position", "readtype")),
-              melt(dfmerged, c("position", "readtype"))) 
+            melt(df2bf, c("position", "readtype")),
+            melt(dfmerged, c("position", "readtype"))) 
     }
     else if (! "read2_before_filtering" %in% names(json)) {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
@@ -228,11 +229,11 @@ curvePlot <- function(json, curves = "quality_curves") {
         df1bf$position <- as.integer(rownames(df1bf))
         df1af$position <- as.integer(rownames(df1af))
         df1bf$readtype <- factor("Read1 Before QC",
-                 levels=c("Read1 Before QC", "Read1 After QC"))
+                levels=c("Read1 Before QC", "Read1 After QC"))
         df1af$readtype <- factor("Read1 After QC",
-                 levels=c("Read1 Before QC", "Read1 After QC"))
+                levels=c("Read1 Before QC", "Read1 After QC"))
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
-                 melt(df1af, c("position", "readtype"))) 
+                melt(df1af, c("position", "readtype"))) 
     }
     else {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
@@ -244,20 +245,21 @@ curvePlot <- function(json, curves = "quality_curves") {
         df2bf$position <- as.integer(rownames(df2bf))
         df2af$position <- as.integer(rownames(df2af))
         df1bf$readtype <- factor("Read1 Before QC", levels=c("Read1 Before QC",
-                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+                    "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
         df1af$readtype <- factor("Read1 After QC", levels=c("Read1 Before QC",
-                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+                    "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
         df2bf$readtype <- factor("Read2 Before QC", levels=c("Read1 Before QC",
-                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+                    "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
         df2af$readtype <- factor("Read2 After QC", levels=c("Read1 Before QC",
-                      "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
+                    "Read1 After QC", "Read2 Before QC", "Read2 After QC"))
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
-                      melt(df1af, c("position", "readtype")),
-                      melt(df2bf, c("position", "readtype")),
-                      melt(df2af, c("position", "readtype"))) 
+                    melt(df1af, c("position", "readtype")),
+                    melt(df2bf, c("position", "readtype")),
+                    melt(df2af, c("position", "readtype"))) 
     }
-    ggplot(tbl4plot, aes(x=position, y=value, group=1)) + geom_line(aes(
-            color=variable)) + ylab("Base Quality") + facet_wrap(~ readtype)
+    ggplot(tbl4plot, aes_string(x="position", y="value", group=1)) + 
+            geom_line(aes_string(color="variable")) + ylab("Base Quality") + 
+            facet_wrap(~ readtype)
 }
 
 
@@ -483,7 +485,7 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     multipleInput = length(read1) > 1   
     if ( multipleInput ) {
         infilesR1 = read1
-        ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=T)))
+        ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=TRUE)))
         read1 <- paste0("catInput_", ramstr, "_R1.fastq.gz")
         exitcode <- rcat(output=read1, infilesR1, length(infilesR1))
         if (read2 != "") {

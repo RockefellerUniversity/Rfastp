@@ -1,8 +1,8 @@
 Package: Rfastp
 Type: Package
 Title: Wraps the fastp toolset in R
-Version: 0.1.0
-Author: Thomas Carroll, Wei Wang
+Version: 1.0.0
+Author: Wei Wang, Ji-Dung Luo, Thomas Carroll
 Maintainer: Thomas Carroll <tc.infomatics@gmail.com>, Wei Wang <periwinkle.david@gmail.com>
 Description: Rfastp is an R wrapper of fastp.
     fastp performs quality control for fastq files. 

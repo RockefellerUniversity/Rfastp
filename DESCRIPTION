@@ -1,11 +1,18 @@
 Package: Rfastp
 Type: Package
 Title: Wrap of fastp toolset in R
-Version: 0.99.0
-Author: Wei Wang, Ji-Dung Luo, Thomas Carroll
-Maintainer: Thomas Carroll <tc.infomatics@gmail.com>, Wei Wang <periwinkle.david@gmail.com>
+Version: 0.99.1
+Authors@R: c(
+  person("Wei", "Wang", email="periwinkle.david@gmail.com", role="aut",
+    comment = c(ORCID = "0000-0002-3216-7118")), 
+  person("Ji-Dung", "Luo", email="jluo@rockefeller.edu", role="ctb"),
+  person("Thomas", "Carroll", email="tc.infomatics@gmail.com", 
+    role = c("cre", "aut")))
 Description: Rfastp is an R wrapper of fastp.
-    fastp performs quality control for fastq files. 
+    fastp performs quality control for fastq files. including low quality bases
+    trimming, polyX trimming, adapter auto-detection and trimming, paired-end
+    reads merging, UMI sequence/id handling. Rfastp can concatenate multiple
+    files and accept multiple files as input.  
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true

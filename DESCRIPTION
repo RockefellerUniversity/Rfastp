@@ -1,7 +1,7 @@
 Package: Rfastp
 Type: Package
 Title: Wrap of fastp toolset in R
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: c(
   person("Wei", "Wang",
     email="periwinkle.david@gmail.com", 
@@ -9,7 +9,7 @@ Authors@R: c(
     comment = c(ORCID = "0000-0002-3216-7118")), 
   person("Ji-Dung", "Luo", 
     email="jluo@rockefeller.edu", 
-    role=c("cbt"),
+    role=c("ctb"),
     comment = c(ORCID = "0000-0003-0150-1440")),
   person("Thomas", "Carroll", 
     email="tc.infomatics@gmail.com", 

@@ -284,27 +284,27 @@ int runFastp(std::string read1="",
         ss << argv[i] << " ";
     }
     command = ss.str();
+*/
 
     time_t t1 = time(NULL);
 
-    bool supportEvaluation = !opt.inputFromSTDIN && opt.in1!="/dev/stdin";
+    bool supportEvaluation = true; 
 
     Evaluator eva(&opt);
-    if(supportEvaluation) {
+//    if(supportEvaluation) {
         eva.evaluateSeqLen();
 
         if(opt.overRepAnalysis.enabled)
             eva.evaluateOverRepSeqs();
-    }
+//    }
     long readNum = 0;
-*/
 
     // using evaluator to guess how many reads in total
-/*    if(opt.shallDetectAdapter(false)) {
-        if(!supportEvaluation)
-            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
-        else {
-            cerr << "Detecting adapter sequence for read1..." << endl;
+    if(opt.shallDetectAdapter(false)) {
+//        if(!supportEvaluation)
+//            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+//        else {
+            Rcpp::Rcerr << "Detecting adapter sequence for read1..." << endl;
             string adapt = eva.evalAdapterAndReadNum(readNum, false);
             if(adapt.length() > 60 )
                 adapt.resize(0, 60);
@@ -312,17 +312,17 @@ int runFastp(std::string read1="",
                 opt.adapter.sequence = adapt;
                 opt.adapter.detectedAdapter1 = adapt;
             } else {
-                cerr << "No adapter detected for read1" << endl;
+                Rcpp::Rcerr << "No adapter detected for read1" << endl;
                 opt.adapter.sequence = "";
             }
-            cerr << endl;
-        }
+            Rcpp::Rcerr << endl;
+//        }
     }
     if(opt.shallDetectAdapter(true)) {
-        if(!supportEvaluation)
-            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
-        else {
-            cerr << "Detecting adapter sequence for read2..." << endl;
+//        if(!supportEvaluation)
+//            cerr << "Adapter auto-detection is disabled for STDIN mode" << endl;
+//        else {
+            Rcpp::Rcerr << "Detecting adapter sequence for read2..." << endl;
             string adapt = eva.evalAdapterAndReadNum(readNum, true);
             if(adapt.length() > 60 )
                 adapt.resize(0, 60);
@@ -330,17 +330,18 @@ int runFastp(std::string read1="",
                 opt.adapter.sequenceR2 = adapt;
                 opt.adapter.detectedAdapter2 = adapt;
             } else {
-                cerr << "No adapter detected for read2" << endl;
+                Rcpp::Rcerr << "No adapter detected for read2" << endl;
                 opt.adapter.sequenceR2 = "";
             }
-            cerr << endl;
-        }
+            Rcpp::Rcerr << endl;
+//        }
     }
 
     opt.validate();
-*/
+
     // using evaluator to guess how many reads in total
-/*    if(opt.split.needEvaluation && supportEvaluation) {
+//    if(opt.split.needEvaluation && supportEvaluation) {
+    if(opt.split.needEvaluation) {
         // if readNum is not 0, means it is already evaluated by other functions
         if(readNum == 0) {
             eva.evaluateReadNum(readNum);
@@ -352,19 +353,18 @@ int runFastp(std::string read1="",
             cerr << "WARNING: the input file has less reads than the number of files to split" << endl;
         }
     }
-*/
     // using evaluator to check if it's two color system
-/*    if(!cmd.exist("trim_poly_g") && !cmd.exist("disable_trim_poly_g") && supportEvaluation) {
+    if(!forceTrimPolyG && !disableTrimPolyG) {
         bool twoColorSystem = eva.isTwoColorSystem();
         if(twoColorSystem){
             opt.polyGTrim.enabled = true;
         }
     }
-*/
+
     Processor p(&opt);
     p.process();
-/*
     time_t t2 = time(NULL);
+/*
 
     cerr << endl << "JSON report: " << opt.jsonFile << endl;
     cerr << "HTML report: " << opt.htmlFile << endl;

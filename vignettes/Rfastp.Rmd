@@ -1,7 +1,7 @@
 
 ---
 title: "Versatile fastq quality control toolkits"
-author: "Thomas Carroll and Wei Wang"
+author: "Wei Wang <periwinkle.david@gmail.com>"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 package: Rfastp
 
@@ -174,7 +174,7 @@ usage of catfastq:
 ?catfastq
 ```
 
-# Acknowledgements
+# Acknowledgments
 Thank you to Ji-Dung Luo for testing/vignette review/critical feedback, Doug Barrows for critical feedback/vignette review and Ziwei Liang for their support.
 # Session info
 

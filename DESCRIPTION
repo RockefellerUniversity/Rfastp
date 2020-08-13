@@ -1,7 +1,7 @@
 Package: Rfastp
 Type: Package
 Title: Wrap of fastp toolset in R
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(
   person("Wei", "Wang",
     email="periwinkle.david@gmail.com", 

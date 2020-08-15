@@ -350,7 +350,7 @@ int runFastp(std::string read1="",
         // one record per file at least
         if(opt.split.size <= 0) {
             opt.split.size = 1;
-            cerr << "WARNING: the input file has less reads than the number of files to split" << endl;
+            Rcpp::Rcerr << "WARNING: the input file has less reads than the number of files to split" << endl;
         }
     }
     // using evaluator to check if it's two color system

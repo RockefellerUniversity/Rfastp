@@ -257,9 +257,9 @@ curvePlot <- function(json, curves = "quality_curves") {
                     melt(df2bf, c("position", "readtype")),
                     melt(df2af, c("position", "readtype"))) 
     }
-    ggplot(tbl4plot, aes_string(x="position", y="value", group=1)) + 
-            geom_line(aes_string(color="variable")) + ylab("Base Quality") + 
-            facet_wrap(~ readtype)
+    ggplot(tbl4plot, aes_string(x="position", y="value", color="variable")) + 
+            geom_line() + ylab(ifelse(curves == "quality_curves", 
+            "Base Quality", "Percentage")) + facet_wrap(~ readtype)
 }
 
 

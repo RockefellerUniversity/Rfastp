@@ -8,9 +8,9 @@
 #'      exists.
 #' @param paired a logical indicating split the input files into two halves.
 #'      the first half merged into read1, the second half merged into read2.
-#' @param shuffled a logical indicating split the input file list into two 
-#'      halves. The R1/R2 files are inteleaved in the inputFiles vector. 
-#'     
+#' @param shuffled a logical indicating split the input file list into two
+#'      halves. The R1/R2 files are inteleaved in the inputFiles vector.
+#'
 #'
 #' @return no returns.
 #' @author Wei Wang
@@ -43,23 +43,25 @@
 #' allreads_shuffled <- c(pe001_read1, pe001_read2, pe002_read1, pe002_read2,
 #'                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 #'
+#' outputPrefix <- tempfile(tmpdir = tempdir())
 #' # a normal single-end concatenation.
 #'
-#' catfastq(output = "merged1_R1.fastq.gz", inputFiles = allR1)
+#' catfastq(output = paste0(outputPrefix, "_R1.fastq.gz"), inputFiles = allR1)
 #'
 #' # a normal paired-end concatenation.
 #'
-#' catfastq(output = "merged_paired", inputFiles = allreads, paired=TRUE)
+#' catfastq(output = paste0(outputPrefix, "merged_paired"),
+#'     inputFiles = allreads, paired=TRUE)
 #'
 #' # append to exists files (paired-end)
 #'
-#' catfastq(output="append_paired", inputFiles=allreads, append=TRUE,
-#'      paired=TRUE)
+#' catfastq(output=paste0(outputPrefix,"append_paired"), inputFiles=allreads,
+#'     append=TRUE, paired=TRUE)
 #'
 #' # input paired-end files are shuffled.
 #'
-#' catfastq(output="shuffled_paired", inputFiles=allreads_shuffled,
-#'      paired=TRUE, shuffled=TRUE)
+#' catfastq(output=paste0(outputPrefix,"_shuffled_paired"),
+#'     inputFiles=allreads_shuffled, paired=TRUE, shuffled=TRUE)
 
 catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
         shuffled=FALSE) {
@@ -78,17 +80,17 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
         }
 
         if (append) {
-            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"),
                 r1files, length(inputFiles)/2)
             exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
                 r2files, length(inputFiles)/2)
         }
         else {
-            if (file.exists(paste0(output, "_R1.fastq.gz")) | 
+            if (file.exists(paste0(output, "_R1.fastq.gz")) |
                 file.exists(paste0(output, "_R2.fastq.gz")) ) {
                 stop("output file exists already! please change it!")
             }
-            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"), 
+            exitcode <- rcat(output=paste0(output, "_R1.fastq.gz"),
                 r1files, length(inputFiles)/2)
             exitcode <- rcat(output=paste0(output, "_R2.fastq.gz"),
                 r2files, length(inputFiles)/2)
@@ -111,18 +113,19 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 
 #' Summary of Quality Control
 #'
-#' generate a data frame of the QC summary. 
+#' generate a data frame of the QC summary.
 #'
 #' @param json the output json of function rfastq. [json]
-#'     
+#'
 #' @return a data frame.
 #' @author Wei Wang
 #' @export
 #'
 #' @examples
 #'
+#' outputPrefix <- tempfile(tmpdir = tempdir())
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
-#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
 #'    thread = 4)
 #' df_summary <- qcSummary(se_json_report)
 #'
@@ -130,32 +133,32 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 qcSummary <- function(json) {
     if (! "merged_and_filtered" %in% names(json)) {
         data.frame("Before_QC" = unlist(json$summary$before_filtering),
-            "After_QC" = unlist(json$summary$after_filtering), 
-            row.names = names(json$summary$before_filtering)) 
+            "After_QC" = unlist(json$summary$after_filtering),
+            row.names = names(json$summary$before_filtering))
     }
     else {
         data.frame("Before_QC" = unlist(json$summary$before_filtering),
             "After_QC" = c(unlist(json$summary$after_filtering)[seq(1,7)],
-            NA, unlist(json$summary$after_filtering)[8]), 
-            row.names = names(json$summary$before_filtering)) 
+            NA, unlist(json$summary$after_filtering)[8]),
+            row.names = names(json$summary$before_filtering))
     }
 }
 
 
 #' Summary of trimming
 #'
-#' generate a data frame of the trim summary. 
+#' generate a data frame of the trim summary.
 #'
 #' @param json the output json of function rfastq. [json]
-#'     
+#'
 #' @return a data frame.
 #' @author Wei Wang
 #' @export
 #'
 #' @examples
-#'
+#' outputPrefix <- tempfile(tmpdir = tempdir())
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
-#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
 #'    thread = 4)
 #' trim_summary <- trimSummary(se_json_report)
 #'
@@ -167,7 +170,7 @@ trimSummary <- function(json) {
                 unlist(json$adapter_cutting$read1_adapter_counts)),
             row.names = c(names(json$filtering_result),
                 names(json$adapter_cutting)[seq(1,3)],
-                names(json$adapter_cutting$read1_adapter_counts)) ) 
+                names(json$adapter_cutting$read1_adapter_counts)) )
     }
     else {
         data.frame("Count" = c(unlist(json$filtering_result),
@@ -175,28 +178,28 @@ trimSummary <- function(json) {
                 unlist(json$adapter_cutting$read1_adapter_counts)),
             row.names = c(names(json$filtering_result),
                 names(json$adapter_cutting)[seq(1,4)],
-                names(json$adapter_cutting$read1_adapter_counts)) ) 
+                names(json$adapter_cutting$read1_adapter_counts)) )
     }
 }
 
 
 #' Plot of Base Quality and GC Content.
 #'
-#' generate a ggplot2 object of Base Quality/GC content before and after. 
+#' generate a ggplot2 object of Base Quality/GC content before and after.
 #'
 #' @param json the output json of function rfastq. [json]
-#' @param curves plots for Base Quality("quality_curves") 
+#' @param curves plots for Base Quality("quality_curves")
 #'      or GC content("content_curves"). default is "quality_curves"
-#'     
+#'
 #' @return a ggplot2 object.
 #' @author Wei Wang
 #' @import ggplot2 reshape2
 #' @export
 #'
 #' @examples
-#'
+#' outputPrefix <- tempfile(tmpdir = tempdir())
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
-#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+#' se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
 #'    thread = 4)
 #' # Base Quality plot is the default output:
 #' p1 <- curvePlot(se_json_report)
@@ -213,15 +216,15 @@ curvePlot <- function(json, curves = "quality_curves") {
         df1bf$position <- as.integer(rownames(df1bf))
         df2bf$position <- as.integer(rownames(df2bf))
         dfmerged$position <- as.integer(rownames(dfmerged))
-        df1bf$readtype <- factor("Read1 Before QC", 
+        df1bf$readtype <- factor("Read1 Before QC",
             levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
-        df2bf$readtype <- factor("Read2 Before QC", 
+        df2bf$readtype <- factor("Read2 Before QC",
             levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
-        dfmerged$readtype <- factor("Merged After QC", 
+        dfmerged$readtype <- factor("Merged After QC",
             levels=c("Read1 Before QC", "Read2 Before QC", "Merged After QC"))
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
             melt(df2bf, c("position", "readtype")),
-            melt(dfmerged, c("position", "readtype"))) 
+            melt(dfmerged, c("position", "readtype")))
     }
     else if (! "read2_before_filtering" %in% names(json)) {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
@@ -233,7 +236,7 @@ curvePlot <- function(json, curves = "quality_curves") {
         df1af$readtype <- factor("Read1 After QC",
                 levels=c("Read1 Before QC", "Read1 After QC"))
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
-                melt(df1af, c("position", "readtype"))) 
+                melt(df1af, c("position", "readtype")))
     }
     else {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
@@ -255,10 +258,10 @@ curvePlot <- function(json, curves = "quality_curves") {
         tbl4plot <- rbind(melt(df1bf, c("position", "readtype")),
                     melt(df1af, c("position", "readtype")),
                     melt(df2bf, c("position", "readtype")),
-                    melt(df2af, c("position", "readtype"))) 
+                    melt(df2af, c("position", "readtype")))
     }
-    ggplot(tbl4plot, aes_string(x="position", y="value", color="variable")) + 
-            geom_line() + ylab(ifelse(curves == "quality_curves", 
+    ggplot(tbl4plot, aes_string(x="position", y="value", color="variable")) +
+            geom_line() + ylab(ifelse(curves == "quality_curves",
             "Base Quality", "Percentage")) + facet_wrap(~ readtype)
 }
 
@@ -297,7 +300,7 @@ curvePlot <- function(json, curves = "quality_curves") {
 #'      same as <adapterSequenceRead1>
 #' @param adapterFasta specify a FASTA file to trim both read1 and read2 (if
 #'      PE) by all the sequences in this FASTA file.
-#' @param trimFrontRead1 trimming how many bases in front for read1, default 
+#' @param trimFrontRead1 trimming how many bases in front for read1, default
 #'      is 0.
 #' @param trimTailRead1 trimming how many bases in tail for read1, default is 0'
 #' @param trimFrontRead2 trimming how many bases in front for read2. If it's not
@@ -355,7 +358,7 @@ curvePlot <- function(json, curves = "quality_curves") {
 #'      unqualified (0~100). Default 40 means 40\%
 #' @param maxNfilter maximum number of N allowed in the sequence. read/pair is
 #'      discarded if failed to pass this filter. Default is 5
-#' @param averageQualFilter if one read's average quality score < 
+#' @param averageQualFilter if one read's average quality score <
 #'      `averageQualFilter`, then this read/pair is discarded. Default 0 means
 #'       no requirement.
 #' @param lengthFiltering A logical indicating whether run lenght filtering.
@@ -429,26 +432,26 @@ curvePlot <- function(json, curves = "quality_curves") {
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 #' pe_read1 <- system.file("extdata","reads1.fastq.gz",package="Rfastp")
 #' pe_read2 <- system.file("extdata","reads2.fastq.gz",package="Rfastp")
-#' output_fastq  <- './rfastp_test'
+#' outputPrefix <- tempfile(tmpdir = tempdir())
 #'
 #'
 #' # a normal single-end file
 #'
-#' se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
-#'    thread = 4)
+#' se_json_report <- rfastp(read1 = se_read1,
+#'     outputFastq=paste0(outputPrefix, "_se"), thread = 4)
 #'
 #'
 #' # merge paired-end data by overlap:
 #'
 #' pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
-#'    outputFastq = './rfastp_pe_test_unpaired',
-#'    mergeOut = './rfastp_pe_test_merged.fastq.gz')
+#'     outputFastq = paste0(outputPrefix, '_unpaired'),
+#'     mergeOut = paste0(outputPrefix, '_merged.fastq.gz'))
 #'
 #'
 #' # a clipr example
 #'
-#' clipr_json_report <- rfastp(read1 = se_read1, 
-#'    outputFastq = './rfastp_test_clipr',
+#' clipr_json_report <- rfastp(read1 = se_read1,
+#'    outputFastq = paste0(outputPrefix, '_clipr'),
 #'    disableTrimPolyG = TRUE,
 #'    cutLowQualFront = TRUE,
 #'    cutFrontWindowSize = 29,
@@ -469,10 +472,10 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     maxLengthRead2=0, forceTrimPolyG=FALSE, disableTrimPolyG=FALSE,
     minLengthPolyG=10, trimPolyX=FALSE, minLengthPolyX=10, cutWindowSize=4,
     cutLowQualTail=FALSE, cutSlideWindowRight=FALSE, cutLowQualFront=FALSE,
-    cutMeanQual=20, cutFrontWindowSize=4, cutFrontMeanQual=20, 
+    cutMeanQual=20, cutFrontWindowSize=4, cutFrontMeanQual=20,
     cutTailWindowSize=4, cutTailMeanQual=20, cutSlideWindowSize=4,
     cutSlideWindowQual=20, qualityFiltering=TRUE, qualityFilterPhred=15,
-    qualityFilterPercent=40, maxNfilter=5, averageQualFilter=0, 
+    qualityFilterPercent=40, maxNfilter=5, averageQualFilter=0,
     lengthFiltering=TRUE, minReadLength=15, maxReadLength=0,
     lowComplexityFiltering=FALSE, minComplexity=30, index1Filter="",
     index2Filter="", maxIndexMismatch=0, correctionOverlap=FALSE,
@@ -482,7 +485,7 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
-    multipleInput = length(read1) > 1   
+    multipleInput = length(read1) > 1
     if ( multipleInput ) {
         infilesR1 = read1
         ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=TRUE)))
@@ -503,7 +506,7 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     else if (length(read2) > 1) {
         stop("please double check the read2 file names, there is only one
             input file in read1.")
-    }        
+    }
 
     if (umi & umiPrefix != "" & !umiNoConnection) {
         umiPrefix <- paste0(umiPrefix, "_")
@@ -511,38 +514,38 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
 
     exitcode <- runFastp(read1=read1, read2=read2, outputFastq=outputFastq,
         unpaired=unpaired, failedOut=failedOut, merge=merge, mergeOut=mergeOut,
-        phred64=phred64, interleaved=interleaved, fixMGIid=fixMGIid, 
-        adapterTrimming=adapterTrimming, 
-        adapterSequenceRead1=adapterSequenceRead1, 
+        phred64=phred64, interleaved=interleaved, fixMGIid=fixMGIid,
+        adapterTrimming=adapterTrimming,
+        adapterSequenceRead1=adapterSequenceRead1,
         adapterSequenceRead2=adapterSequenceRead2,
-        adapterFasta=adapterFasta, trimFrontRead1=trimFrontRead1, 
-        trimTailRead1=trimTailRead1, trimFrontRead2=trimFrontRead2, 
+        adapterFasta=adapterFasta, trimFrontRead1=trimFrontRead1,
+        trimTailRead1=trimTailRead1, trimFrontRead2=trimFrontRead2,
         trimTailRead2=trimTailRead2, maxLengthRead1=maxLengthRead1,
-        maxLengthRead2=maxLengthRead2, forceTrimPolyG=forceTrimPolyG, 
-        disableTrimPolyG=disableTrimPolyG, minLengthPolyG=minLengthPolyG, 
+        maxLengthRead2=maxLengthRead2, forceTrimPolyG=forceTrimPolyG,
+        disableTrimPolyG=disableTrimPolyG, minLengthPolyG=minLengthPolyG,
         trimPolyX=trimPolyX, minLengthPolyX=minLengthPolyX,
-        cutLowQualFront=cutLowQualFront, cutLowQualTail=cutLowQualTail, 
+        cutLowQualFront=cutLowQualFront, cutLowQualTail=cutLowQualTail,
         cutSlideWindowRight=cutSlideWindowRight, cutWindowSize=cutWindowSize,
         cutMeanQual=cutMeanQual, cutFrontWindowSize=cutFrontWindowSize,
         cutFrontMeanQual=cutFrontMeanQual, cutTailWindowSize=cutTailWindowSize,
         cutTailMeanQual=cutTailMeanQual, cutSlideWindowSize=cutSlideWindowSize,
         cutSlideWindowQual=cutSlideWindowQual, maxReadLength=maxReadLength,
         qualityFiltering=qualityFiltering,qualityFilterPhred=qualityFilterPhred,
-        qualityFilterPercent=qualityFilterPercent, maxNfilter=maxNfilter, 
+        qualityFilterPercent=qualityFilterPercent, maxNfilter=maxNfilter,
         averageQualFilter=averageQualFilter,
         lengthFiltering=lengthFiltering, minReadLength=minReadLength,
-        lowComplexityFiltering=lowComplexityFiltering, 
-        minComplexity=minComplexity, index1Filter=index1Filter, 
+        lowComplexityFiltering=lowComplexityFiltering,
+        minComplexity=minComplexity, index1Filter=index1Filter,
         index2Filter=index2Filter, maxIndexMismatch=maxIndexMismatch,
         correctionOverlap=correctionOverlap, minOverlapLength=minOverlapLength,
-        maxOverlapMismatch=maxOverlapMismatch, 
-        maxOverlapMismatchPercentage=maxOverlapMismatchPercentage, 
-        umi=umi, umiLoc=umiLoc, umiLength=umiLength, umiPrefix=umiPrefix, 
+        maxOverlapMismatch=maxOverlapMismatch,
+        maxOverlapMismatchPercentage=maxOverlapMismatchPercentage,
+        umi=umi, umiLoc=umiLoc, umiLength=umiLength, umiPrefix=umiPrefix,
         umiSkipBaseLength=umiSkipBaseLength,
-        umiIgnoreSeqNameSpace=umiIgnoreSeqNameSpace, 
+        umiIgnoreSeqNameSpace=umiIgnoreSeqNameSpace,
         overrepresentationAnalysis=overrepresentationAnalysis,
         overrepresentationSampling=overrepresentationSampling,
-        splitOutput=splitOutput, splitByLines=splitByLines, thread=thread, 
+        splitOutput=splitOutput, splitByLines=splitByLines, thread=thread,
         verbose=verbose)
 
     if (multipleInput) {

@@ -17,7 +17,7 @@ exists.}
 \item{paired}{a logical indicating split the input files into two halves.
 the first half merged into read1, the second half merged into read2.}
 
-\item{shuffled}{a logical indicating split the input file list into two 
+\item{shuffled}{a logical indicating split the input file list into two
 halves. The R1/R2 files are inteleaved in the inputFiles vector.}
 }
 \value{
@@ -53,23 +53,25 @@ allreads <- c(allR1, allR2)
 allreads_shuffled <- c(pe001_read1, pe001_read2, pe002_read1, pe002_read2,
                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 
+outputPrefix <- tempfile(tmpdir = tempdir())
 # a normal single-end concatenation.
 
-catfastq(output = "merged1_R1.fastq.gz", inputFiles = allR1)
+catfastq(output = paste0(outputPrefix, "_R1.fastq.gz"), inputFiles = allR1)
 
 # a normal paired-end concatenation.
 
-catfastq(output = "merged_paired", inputFiles = allreads, paired=TRUE)
+catfastq(output = paste0(outputPrefix, "merged_paired"),
+    inputFiles = allreads, paired=TRUE)
 
 # append to exists files (paired-end)
 
-catfastq(output="append_paired", inputFiles=allreads, append=TRUE,
-     paired=TRUE)
+catfastq(output=paste0(outputPrefix,"append_paired"), inputFiles=allreads,
+    append=TRUE, paired=TRUE)
 
 # input paired-end files are shuffled.
 
-catfastq(output="shuffled_paired", inputFiles=allreads_shuffled,
-     paired=TRUE, shuffled=TRUE)
+catfastq(output=paste0(outputPrefix,"_shuffled_paired"),
+    inputFiles=allreads_shuffled, paired=TRUE, shuffled=TRUE)
 }
 \author{
 Wei Wang

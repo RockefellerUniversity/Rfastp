@@ -64,29 +64,29 @@ fastq file, a pair of paired-end fastq files.
 se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 pe_read1 <- system.file("extdata","reads1.fastq.gz",package="Rfastp")
 pe_read2 <- system.file("extdata","reads2.fastq.gz",package="Rfastp")
-output_fastq  <- './rfastp_test'
+outputPrefix <- tempfile(tmpdir = tempdir())
 ```
 
 ## a normal run for single-end fastq file. 
 Rfastp support multiple threads, set threads number by parameter `thread`.
 ```{r}
-se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
-         thread = 4)
+se_json_report <- rfastp(read1 = se_read1, 
+    outputFastq = paste0(outputPrefix, "_se"), thread = 4)
 ```
 
 ## a normal run for paired-end fastq files and specify the adaptor sequence.
 
 ```{r}
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
-         outputFastq = './rfastp_test_pe')
+         outputFastq = paste0(outputPrefix, "_pe"))
 ```
 
 ## merge paired-end fastq files after QC.
 
 ```{r}
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
-         outputFastq = './rfastp_pe_test_unpaired',
-         mergeOut = './rfastp_pe_test_merged.fastq.gz')
+         outputFastq = paste0(outputPrefix, '_unpaired'),
+         mergeOut = paste0(outputPrefix, "_merged.fastq.gz"))
 ```
 
 ## umi processing
@@ -94,47 +94,60 @@ pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
 the following example will add prefix string before the UMI sequence in the sequence name. An "_" will be added between the prefix string and UMI sequence. The UMI sequences will be inserted into the sequence name before the first space.
 
 ```{r umi}
-umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, outputFastq = './rfastp_test_umi',
-                          umi = TRUE, umiLoc = "read1", umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, umiIgnoreSeqNameSpace = TRUE)
+umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, 
+    outputFastq = paste0(outputPrefix, '_umi'), umi = TRUE, umiLoc = "read1",
+    umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, 
+    umiIgnoreSeqNameSpace = TRUE)
 ```
  
 ## A quality control example with customized cutoffs. 
 Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
 ```{r}
-clipr_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_clipr',
-         disableTrimPolyG = TRUE,
-         cutLowQualFront = TRUE,
-         cutFrontWindowSize = 29,
-         cutFrontMeanQual = 20,
-         cutLowQualTail = TRUE,
-         cutTailWindowSize = 1,
-         cutTailMeanQual = 5,
-         minReadLength = 29,
-         adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
+clipr_json_report <- rfastp(read1 = se_read1, 
+        outputFastq = paste0(outputPrefix, '_clipr'),
+        disableTrimPolyG = TRUE,
+        cutLowQualFront = TRUE,
+        cutFrontWindowSize = 29,
+        cutFrontMeanQual = 20,
+        cutLowQualTail = TRUE,
+        cutTailWindowSize = 1,
+        cutTailMeanQual = 5,
+        minReadLength = 29,
+        adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
 )
 ```
 
 ## multiple input files for read1/2 in a vector.
 rfastq can accept multiple input files, and it will concatenate the input files into one and the run fastp.
 ```{r}
-pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",package="Rfastp")
-pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",package="Rfastp")
-pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",package="Rfastp")
-pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",package="Rfastp")
+pe001_read1 <- system.file("extdata","splited_001_R1.fastq.gz",
+    package="Rfastp")
+pe002_read1 <- system.file("extdata","splited_002_R1.fastq.gz",
+    package="Rfastp")
+pe003_read1 <- system.file("extdata","splited_003_R1.fastq.gz",
+    package="Rfastp")
+pe004_read1 <- system.file("extdata","splited_004_R1.fastq.gz",
+    package="Rfastp")
 inputfiles <- c(pe001_read1, pe002_read1, pe003_read1, pe004_read1)
-cat_rjson_report <- rfastp(read1 = inputfiles, outputFastq = "./merged1")
+cat_rjson_report <- rfastp(read1 = inputfiles, 
+    outputFastq = paste0(outputPrefix, "_merged1"))
 ```
 
 # concatenate multiple fastq files.
 
 ## catfastq concatenate all the input files into a new file.
 ```{r}
-pe001_read2 <- system.file("extdata","splited_001_R2.fastq.gz",package="Rfastp")
-pe002_read2 <- system.file("extdata","splited_002_R2.fastq.gz",package="Rfastp")
-pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",package="Rfastp")
-pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",package="Rfastp")
+pe001_read2 <- system.file("extdata","splited_001_R2.fastq.gz",
+    package="Rfastp")
+pe002_read2 <- system.file("extdata","splited_002_R2.fastq.gz",
+    package="Rfastp")
+pe003_read2 <- system.file("extdata","splited_003_R2.fastq.gz",
+    package="Rfastp")
+pe004_read2 <- system.file("extdata","splited_004_R2.fastq.gz",
+    package="Rfastp")
 inputR2files <- c(pe001_read2, pe002_read2, pe003_read2, pe004_read2)
-catfastq(output = "merged2_R2.fastq.gz", inputFiles = inputR2files)
+catfastq(output = paste0(outputPrefix,"_merged2_R2.fastq.gz"), 
+    inputFiles = inputR2files)
 ```
 
 # Generate report tables/plots
@@ -172,6 +185,21 @@ usage of rfastp:
 usage of catfastq:
 ```{r}
 ?catfastq
+```
+
+usage of qcSummary:
+```{r}
+?qcSummary
+```
+
+usage of trimSummary:
+```{r}
+?trimSummary
+```
+
+usage of curvePlot:
+```{r}
+?curvePlot
 ```
 
 # Acknowledgments

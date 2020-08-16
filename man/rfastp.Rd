@@ -117,7 +117,7 @@ same as <adapterSequenceRead1>}
 \item{adapterFasta}{specify a FASTA file to trim both read1 and read2 (if
 PE) by all the sequences in this FASTA file.}
 
-\item{trimFrontRead1}{trimming how many bases in front for read1, default 
+\item{trimFrontRead1}{trimming how many bases in front for read1, default
 is 0.}
 
 \item{trimTailRead1}{trimming how many bases in tail for read1, default is 0'}
@@ -201,7 +201,7 @@ unqualified (0~100). Default 40 means 40\%}
 \item{maxNfilter}{maximum number of N allowed in the sequence. read/pair is
 discarded if failed to pass this filter. Default is 5}
 
-\item{averageQualFilter}{if one read's average quality score < 
+\item{averageQualFilter}{if one read's average quality score <
 `averageQualFilter`, then this read/pair is discarded. Default 0 means
  no requirement.}
 
@@ -302,26 +302,26 @@ of fastq files.
 se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 pe_read1 <- system.file("extdata","reads1.fastq.gz",package="Rfastp")
 pe_read2 <- system.file("extdata","reads2.fastq.gz",package="Rfastp")
-output_fastq  <- './rfastp_test'
+outputPrefix <- tempfile(tmpdir = tempdir())
 
 
 # a normal single-end file
 
-se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
-   thread = 4)
+se_json_report <- rfastp(read1 = se_read1,
+    outputFastq=paste0(outputPrefix, "_se"), thread = 4)
 
 
 # merge paired-end data by overlap:
 
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
-   outputFastq = './rfastp_pe_test_unpaired',
-   mergeOut = './rfastp_pe_test_merged.fastq.gz')
+    outputFastq = paste0(outputPrefix, '_unpaired'),
+    mergeOut = paste0(outputPrefix, '_merged.fastq.gz'))
 
 
 # a clipr example
 
-clipr_json_report <- rfastp(read1 = se_read1, 
-   outputFastq = './rfastp_test_clipr',
+clipr_json_report <- rfastp(read1 = se_read1,
+   outputFastq = paste0(outputPrefix, '_clipr'),
    disableTrimPolyG = TRUE,
    cutLowQualFront = TRUE,
    cutFrontWindowSize = 29,

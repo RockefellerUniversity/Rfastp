@@ -17,8 +17,9 @@ generate a data frame of the QC summary.
 }
 \examples{
 
+outputPrefix <- tempfile(tmpdir = tempdir())
 se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
-se_json_report <- rfastp(read1 = se_read1, outputFastq = './rfastp_test_se',
+se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
    thread = 4)
 df_summary <- qcSummary(se_json_report)
 

@@ -29,6 +29,6 @@ SystemRequirements: GNU make
 LinkingTo: 
     Rcpp, Rhtslib, zlibbioc
 Imports: 
-    Rcpp, rjson, ggplot2, reshape2
+    Rcpp, rjson, ggplot2, reshape2, DT
 Suggests: BiocStyle, testthat, knitr, rmarkdown
 VignetteBuilder: knitr

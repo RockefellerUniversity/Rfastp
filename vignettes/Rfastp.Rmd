@@ -53,6 +53,7 @@ Once the package is installed, load it into your R session:
 
 ```{r}
 library(Rfastp)
+library(DT)
 ```
 
 
@@ -67,14 +68,14 @@ pe_read2 <- system.file("extdata","reads2.fastq.gz",package="Rfastp")
 outputPrefix <- tempfile(tmpdir = tempdir())
 ```
 
-## a normal run for single-end fastq file. 
+## a normal QC run for single-end fastq file. 
 Rfastp support multiple threads, set threads number by parameter `thread`.
 ```{r}
 se_json_report <- rfastp(read1 = se_read1, 
     outputFastq = paste0(outputPrefix, "_se"), thread = 4)
 ```
 
-## a normal run for paired-end fastq files and specify the adaptor sequence.
+## a normal run for paired-end fastq files.
 
 ```{r}
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
@@ -100,7 +101,7 @@ umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
     umiIgnoreSeqNameSpace = TRUE)
 ```
  
-## A quality control example with customized cutoffs. 
+## A QC example with customized cutoffs and adapter sequence. 
 Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
 ```{r}
 clipr_json_report <- rfastp(read1 = se_read1, 
@@ -156,6 +157,7 @@ catfastq(output = paste0(outputPrefix,"_merged2_R2.fastq.gz"),
 
 ```{r}
 dfsummary <- qcSummary(pe_json_report)
+datatable(dfsummary)
 ```
 
 ## a ggplot2 object of base quality plot.
@@ -174,6 +176,7 @@ p2
 
 ```{r}
 dfTrim <- trimSummary(pe_json_report)
+datatable(dfTrim)
 ```
 
 # Miscellaneous helper functions

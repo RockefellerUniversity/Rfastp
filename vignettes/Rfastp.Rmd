@@ -53,7 +53,6 @@ Once the package is installed, load it into your R session:
 
 ```{r}
 library(Rfastp)
-library(DT)
 ```
 
 
@@ -75,28 +74,36 @@ se_json_report <- rfastp(read1 = se_read1,
     outputFastq = paste0(outputPrefix, "_se"), thread = 4)
 ```
 
-## a normal run for paired-end fastq files.
+## a normal QC run for paired-end fastq files.
 
 ```{r}
 pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
-         outputFastq = paste0(outputPrefix, "_pe"))
+    outputFastq = paste0(outputPrefix, "_pe"))
 ```
 
 ## merge paired-end fastq files after QC.
 
 ```{r}
-pe_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
-         outputFastq = paste0(outputPrefix, '_unpaired'),
-         mergeOut = paste0(outputPrefix, "_merged.fastq.gz"))
+pe_merge_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, merge = TRUE,
+    outputFastq = paste0(outputPrefix, '_unpaired'),
+    mergeOut = paste0(outputPrefix, "_merged.fastq.gz"))
 ```
 
-## umi processing
+## UMI processing
 
+### a normal UMI processing for 10X Single-Cell library.
+```{r}
+umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, 
+    outputFastq = paste0(outputPrefix, '_umi1'), umi = TRUE, umiLoc = "read1",
+    umiLength = 16)
+```
+
+### Set a customized UMI prefix and location in sequence name.
 the following example will add prefix string before the UMI sequence in the sequence name. An "_" will be added between the prefix string and UMI sequence. The UMI sequences will be inserted into the sequence name before the first space.
 
 ```{r umi}
 umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2, 
-    outputFastq = paste0(outputPrefix, '_umi'), umi = TRUE, umiLoc = "read1",
+    outputFastq = paste0(outputPrefix, '_umi2'), umi = TRUE, umiLoc = "read1",
     umiLength = 16, umiPrefix = "#", umiNoConnection = TRUE, 
     umiIgnoreSeqNameSpace = TRUE)
 ```
@@ -105,16 +112,16 @@ umi_json_report <- rfastp(read1 = pe_read1, read2 = pe_read2,
 Trim poor quality bases at 3' end base by base with quality higher than 5; trim poor quality bases at 5' end by a 29bp window with mean quality higher than 20; disable the polyG trimming, specify the adapter sequence for read1.
 ```{r}
 clipr_json_report <- rfastp(read1 = se_read1, 
-        outputFastq = paste0(outputPrefix, '_clipr'),
-        disableTrimPolyG = TRUE,
-        cutLowQualFront = TRUE,
-        cutFrontWindowSize = 29,
-        cutFrontMeanQual = 20,
-        cutLowQualTail = TRUE,
-        cutTailWindowSize = 1,
-        cutTailMeanQual = 5,
-        minReadLength = 29,
-        adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
+    outputFastq = paste0(outputPrefix, '_clipr'),
+    disableTrimPolyG = TRUE,
+    cutLowQualFront = TRUE,
+    cutFrontWindowSize = 29,
+    cutFrontMeanQual = 20,
+    cutLowQualTail = TRUE,
+    cutTailWindowSize = 1,
+    cutTailMeanQual = 5,
+    minReadLength = 29,
+    adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG'
 )
 ```
 
@@ -157,7 +164,6 @@ catfastq(output = paste0(outputPrefix,"_merged2_R2.fastq.gz"),
 
 ```{r}
 dfsummary <- qcSummary(pe_json_report)
-datatable(dfsummary)
 ```
 
 ## a ggplot2 object of base quality plot.
@@ -176,7 +182,6 @@ p2
 
 ```{r}
 dfTrim <- trimSummary(pe_json_report)
-datatable(dfTrim)
 ```
 
 # Miscellaneous helper functions

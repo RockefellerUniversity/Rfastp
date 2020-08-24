@@ -1,6 +1,7 @@
 Package: Rfastp
 Type: Package
-Title: Quality Control and UMI parsing for fastq files.
+Title: Quality Control (Adapter, low quality and polyX trimming) and UMI 
+    Sequence Parsing for Fastq Files.
 Version: 0.99.5
 Authors@R: c(
   person("Wei", "Wang",
@@ -19,7 +20,8 @@ Description: Rfastp is an R wrapper of fastp.
     fastp performs quality control for fastq files. including low quality bases
     trimming, polyX trimming, adapter auto-detection and trimming, paired-end
     reads merging, UMI sequence/id handling. Rfastp can concatenate multiple
-    files and accept multiple files as input.  
+    files into one file (like shell command cat) and accept multiple files as
+    input.  
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true

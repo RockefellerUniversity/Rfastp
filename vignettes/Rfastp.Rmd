@@ -45,6 +45,7 @@ If required, the latest development version of the package can also be installed
 from GitHub.
 
 ```{r, eval = FALSE}
+BiocManager::install("remotes")
 BiocManager::install("RockefellerUniversity/Rfastp")
 ```
 

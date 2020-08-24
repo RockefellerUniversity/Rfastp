@@ -1,6 +1,6 @@
-#' concatenate fastq file in R
+#' Concatenate Fastq Files. 
 #'
-#' concatenate multiple files into a big file.
+#' concatenate multiple fastq files into a single file.
 #'
 #' @param output output file name [string]
 #' @param inputFiles a vector of input file names [vector]
@@ -44,21 +44,21 @@
 #'                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 #'
 #' outputPrefix <- tempfile(tmpdir = tempdir())
-#' # a normal single-end concatenation.
+#' # a normal concatenation for single-end libraries.
 #'
 #' catfastq(output = paste0(outputPrefix, "_R1.fastq.gz"), inputFiles = allR1)
 #'
-#' # a normal paired-end concatenation.
+#' # a normal concatenation for paired-end libraries.
 #'
 #' catfastq(output = paste0(outputPrefix, "merged_paired"),
 #'     inputFiles = allreads, paired=TRUE)
 #'
-#' # append to exists files (paired-end)
+#' # Append to exist files (paired-end)
 #'
 #' catfastq(output=paste0(outputPrefix,"append_paired"), inputFiles=allreads,
 #'     append=TRUE, paired=TRUE)
 #'
-#' # input paired-end files are shuffled.
+#' # Input paired-end files are shuffled.
 #'
 #' catfastq(output=paste0(outputPrefix,"_shuffled_paired"),
 #'     inputFiles=allreads_shuffled, paired=TRUE, shuffled=TRUE)
@@ -115,9 +115,9 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 }
 
 
-#' Summary of Quality Control
+#' Summary of Fastq Quality Control
 #'
-#' generate a data frame of the QC summary.
+#' generate a data frame of the Fastq QC summary.
 #'
 #' @param json the output json of function rfastq. [json]
 #'
@@ -152,9 +152,9 @@ qcSummary <- function(json) {
 }
 
 
-#' Summary of trimming
+#' Summary of Fastq adapter and low quality trimming
 #'
-#' generate a data frame of the trim summary.
+#' generate a data frame of the Fastq trim summary.
 #'
 #' @param json the output json of function rfastq. [json]
 #'
@@ -166,7 +166,7 @@ qcSummary <- function(json) {
 #' outputPrefix <- tempfile(tmpdir = tempdir())
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 #' se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
-#'    thread = 4)
+#'    thread = 4, adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG')
 #' trim_summary <- trimSummary(se_json_report)
 #'
 
@@ -196,7 +196,7 @@ trimSummary <- function(json) {
 
 #' Plot of Base Quality and GC Content.
 #'
-#' generate a ggplot2 object of Base Quality/GC content before and after.
+#' generate a ggplot2 object of Base Quality/GC content before and after QC.
 #'
 #' @param json the output json of function rfastq. [json]
 #' @param curves plots for Base Quality("quality_curves")
@@ -283,8 +283,8 @@ curvePlot <- function(json, curves = "quality_curves") {
 
 #' R wrap of fastp
 #'
-#' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
-#' of fastq files.
+#' Quality control (Cut adapter, low quality trimming, polyX trimming, 
+#' UMI handling, and etc.) of fastq files.
 #'
 #' @param read1 read1 input file name(s). [vector]
 #' @param read2 read2 input file name(s). [vector]

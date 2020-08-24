@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{trimSummary}
 \alias{trimSummary}
-\title{Summary of trimming}
+\title{Summary of Fastq adapter and low quality trimming}
 \usage{
 trimSummary(json)
 }
@@ -13,13 +13,13 @@ trimSummary(json)
 a data frame.
 }
 \description{
-generate a data frame of the trim summary.
+generate a data frame of the Fastq trim summary.
 }
 \examples{
 outputPrefix <- tempfile(tmpdir = tempdir())
 se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
-   thread = 4)
+   thread = 4, adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG')
 trim_summary <- trimSummary(se_json_report)
 
 }

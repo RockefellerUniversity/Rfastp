@@ -291,8 +291,8 @@ sequential number prefix will be added to output name ( 0001.out.fq,
 returns a json object of the report.
 }
 \description{
-Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
-of fastq files.
+Quality control (Cut adapter, low quality trimming, polyX trimming, 
+UMI handling, and etc.) of fastq files.
 }
 \examples{
 

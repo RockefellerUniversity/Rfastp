@@ -130,7 +130,7 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 #' outputPrefix <- tempfile(tmpdir = tempdir())
 #' se_read1 <- system.file("extdata","Fox3_Std_small.fq.gz",package="Rfastp")
 #' se_json_report <- rfastp(read1 = se_read1, outputFastq = outputPrefix,
-#'    thread = 4, adapterSequenceRead1 = 'GTGTCAGTCACTTCCAGCGG')
+#'    thread = 4)
 #' df_summary <- qcSummary(se_json_report)
 #'
 

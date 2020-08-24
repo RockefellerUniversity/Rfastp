@@ -16,7 +16,7 @@ or GC content("content_curves"). default is "quality_curves"}
 a ggplot2 object.
 }
 \description{
-generate a ggplot2 object of Base Quality/GC content before and after.
+generate a ggplot2 object of Base Quality/GC content before and after QC.
 }
 \examples{
 outputPrefix <- tempfile(tmpdir = tempdir())

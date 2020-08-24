@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{catfastq}
 \alias{catfastq}
-\title{concatenate fastq file in R}
+\title{Concatenate Fastq Files.}
 \usage{
 catfastq(output, inputFiles, append = FALSE, paired = FALSE, shuffled = FALSE)
 }
@@ -24,7 +24,7 @@ halves. The R1/R2 files are inteleaved in the inputFiles vector.}
 no returns.
 }
 \description{
-concatenate multiple files into a big file.
+concatenate multiple fastq files into a single file.
 }
 \examples{
 
@@ -54,21 +54,21 @@ allreads_shuffled <- c(pe001_read1, pe001_read2, pe002_read1, pe002_read2,
                pe003_read1, pe003_read2, pe004_read1, pe004_read2)
 
 outputPrefix <- tempfile(tmpdir = tempdir())
-# a normal single-end concatenation.
+# a normal concatenation for single-end libraries.
 
 catfastq(output = paste0(outputPrefix, "_R1.fastq.gz"), inputFiles = allR1)
 
-# a normal paired-end concatenation.
+# a normal concatenation for paired-end libraries.
 
 catfastq(output = paste0(outputPrefix, "merged_paired"),
     inputFiles = allreads, paired=TRUE)
 
-# append to exists files (paired-end)
+# Append to exist files (paired-end)
 
 catfastq(output=paste0(outputPrefix,"append_paired"), inputFiles=allreads,
     append=TRUE, paired=TRUE)
 
-# input paired-end files are shuffled.
+# Input paired-end files are shuffled.
 
 catfastq(output=paste0(outputPrefix,"_shuffled_paired"),
     inputFiles=allreads_shuffled, paired=TRUE, shuffled=TRUE)

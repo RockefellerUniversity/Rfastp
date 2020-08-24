@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{qcSummary}
 \alias{qcSummary}
-\title{Summary of Quality Control}
+\title{Summary of Fastq Quality Control}
 \usage{
 qcSummary(json)
 }
@@ -13,7 +13,7 @@ qcSummary(json)
 a data frame.
 }
 \description{
-generate a data frame of the QC summary.
+generate a data frame of the Fastq QC summary.
 }
 \examples{
 

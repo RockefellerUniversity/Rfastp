@@ -500,16 +500,8 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
-    if (append) {
-        stopifnot( is.character(output), length(output) == 1L, 
-            !file.exists(output), is.character(inputFiles), 
-            all(file.exists(inputFiles)))
-    }
-    else {
-        stopifnot( is.character(output), length(output) == 1L, 
-            file.exists(output), is.character(inputFiles), 
-            all(file.exists(inputFiles)))
-    }
+    stopifnot( is.character(outputFastq), length(outputFastq) == 1L, 
+        is.character(read1), all(file.exists(read1)))
 
     multipleInput = length(read1) > 1
     if ( multipleInput ) {

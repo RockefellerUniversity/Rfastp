@@ -65,6 +65,10 @@
 
 catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
         shuffled=FALSE) {
+
+    stopifnot( is.character(output), length(output) == 1L, 
+        is.character(inputFiles), all(file.exists(inputFiles)))
+
     if (paired) {
         if (length(inputFiles) %% 2 != 0) {
             stop("the number of input files is not an even number!")
@@ -131,6 +135,9 @@ catfastq <- function(output, inputFiles, append=FALSE, paired=FALSE,
 #'
 
 qcSummary <- function(json) {
+
+    stopifnot( "summary" %in% names(json) )
+
     if (! "merged_and_filtered" %in% names(json)) {
         data.frame("Before_QC" = unlist(json$summary$before_filtering),
             "After_QC" = unlist(json$summary$after_filtering),
@@ -164,6 +171,10 @@ qcSummary <- function(json) {
 #'
 
 trimSummary <- function(json) {
+
+    stopifnot( "filtering_result" %in% names(json),
+               "adapter_cutting" %in% names(json) )     
+
     if (! "read2_before_filtering" %in% names(json)) {
         data.frame("Count" = c(unlist(json$filtering_result),
                 unlist(json$adapter_cutting[seq(1,3)]),
@@ -208,6 +219,10 @@ trimSummary <- function(json) {
 #' p2 <- curvePlot(se_json_report, curves = "content_curves")
 
 curvePlot <- function(json, curves = "quality_curves") {
+
+    stopifnot( "read1_before_filtering" %in% names(json),
+               "read1_after_filtering" %in% names(json) )     
+
     #globalVariables(c("position", "value", "variable"))
     if ("merged_and_filtered" %in% names(json)) {
         df1bf <- data.frame(json$read1_before_filtering[[curves]])
@@ -485,14 +500,28 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     overrepresentationAnalysis=FALSE, overrepresentationSampling=20,
     splitOutput=0, splitByLines=0, thread=2, verbose=TRUE) {
 
+    if (append) {
+        stopifnot( is.character(output), length(output) == 1L, 
+            !file.exists(output), is.character(inputFiles), 
+            all(file.exists(inputFiles)))
+    }
+    else {
+        stopifnot( is.character(output), length(output) == 1L, 
+            file.exists(output), is.character(inputFiles), 
+            all(file.exists(inputFiles)))
+    }
+
     multipleInput = length(read1) > 1
     if ( multipleInput ) {
         infilesR1 = read1
         ramstr <-  rawToChar(as.raw(sample(c(65:90,97:122), 5, replace=TRUE)))
         read1 <- paste0("catInput_", ramstr, "_R1.fastq.gz")
+        if (file.exists(read1)) {
+            stop("the tmp concatenated R1 file exists already!")
+        }
         exitcode <- rcat(output=read1, infilesR1, length(infilesR1))
         if (read2 != "") {
-            infilesR2 = as.list(unlist(strsplit(read2,",")))
+            infilesR2 = read2
             if (length(infilesR2) != length(infilesR2)) {
                 stop("the file number of Read1 and Read2 are not identical!")
             }

@@ -1,7 +1,7 @@
 Package: Rfastp
 Type: Package
-Title: Wrap of fastp toolset in R
-Version: 0.99.4
+Title: Quality Control and UMI parsing for fastq files.
+Version: 0.99.5
 Authors@R: c(
   person("Wei", "Wang",
     email="periwinkle.david@gmail.com", 

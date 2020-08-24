@@ -38,7 +38,7 @@ Bioconductor as follows:
 ```{r getPackage, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("Rfastp")
+BiocManager::install("RockefellerUniversity/Rfastp")
 ```
 
 If required, the latest development version of the package can also be installed

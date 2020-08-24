@@ -38,15 +38,14 @@ Bioconductor as follows:
 ```{r getPackage, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("RockefellerUniversity/Rfastp")
+BiocManager::install("Rfastp")
 ```
 
 If required, the latest development version of the package can also be installed
 from GitHub.
 
 ```{r, eval = FALSE}
-install.packages('devtools')
-devtools::install_github(repo = 'RockefellerUniversity/Rfastp')
+BiocManager::install("RockefellerUniversity/Rfastp")
 ```
 
 Once the package is installed, load it into your R session:

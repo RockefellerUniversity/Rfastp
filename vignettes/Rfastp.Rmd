@@ -1,6 +1,6 @@
 
 ---
-title: "Versatile fastq quality control toolkits"
+title: "An Ultra-Fast All-in-One FASTQ preprocessor"
 author: "Wei Wang <periwinkle.david@gmail.com>"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 package: Rfastp

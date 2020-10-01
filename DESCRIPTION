@@ -1,8 +1,8 @@
 Package: Rfastp
 Type: Package
-Title: Quality Control (Adapter, low quality and polyX trimming) and UMI 
-    Sequence Parsing for Fastq Files.
-Version: 0.99.5
+Title: An Ultra-Fast and All-in-One Fastq Preporcessor (Quqlity Control, 
+    Adapter, low quality and polyX trimming) and UMI Sequence Parsing).
+Version: 0.99.6
 Authors@R: c(
   person("Wei", "Wang",
     email="periwinkle.david@gmail.com", 
@@ -16,7 +16,7 @@ Authors@R: c(
     email="tc.infomatics@gmail.com", 
     role = c("cre", "aut"),
     comment = c(ORCID = "0000-0002-0073-1714")))
-Description: Rfastp is an R wrapper of fastp.
+Description: Rfastp is an R wrapper of fastp developed in c++.
     fastp performs quality control for fastq files. including low quality bases
     trimming, polyX trimming, adapter auto-detection and trimming, paired-end
     reads merging, UMI sequence/id handling. Rfastp can concatenate multiple

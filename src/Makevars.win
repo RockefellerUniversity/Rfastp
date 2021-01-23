@@ -1,17 +1,26 @@
-##PKG_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\ "${R_HOME}/bin/R" --vanilla --slave)
+ZLIB_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\ "${R_HOME}/bin/R" --vanilla --slave)
 PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_static")'|\ "${R_HOME}/bin/R" --vanilla --slave)
+
+##ZLIB_CFLAGS+=$(shell echo 'zlibbioc::pkgconfig("PKG_CFLAGS")'|\ 
+#  "${R_HOME}/bin/R" --vanilla --slave)
+##PKG_LIBS+=$(shell echo 'zlibbioc::pkgconfig("PKG_LIBS_shared")'|\ 
+#  "${R_HOME}/bin/R" --vanilla --slave)
 
 RHTSLIB_LIBS=$(shell echo 'Rhtslib::pkgconfig("PKG_LIBS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)
 RHTSLIB_CPPFLAGS=$(shell echo 'Rhtslib::pkgconfig("PKG_CPPFLAGS")'|\
     "${R_HOME}/bin/R" --vanilla --slave)
 
-PKG_LIBS+=$(RHTSLIB_LIBS)
-PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) -I. -fpermissive
+PKG_LIBS+=$(RHTSLIB_LIBS) -lcrypt32
+PKG_CPPFLAGS+=$(RHTSLIB_CPPFLAGS) $(ZLIB_CFLAGS)  -I. -fpermissive
+
+##%.o: %.cpp
+##  $(CXX) $(ZLIB_CFLAGS) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) -c $< -o $@
 
 OBJECTS=\
 ./RcppExports.o \
 ./main_fastp.o \
+./main_gencore.o \
 ./FASTP/adaptertrimmer.o \
 ./FASTP/basecorrector.o \
 ./FASTP/duplicate.o \
@@ -36,4 +45,16 @@ OBJECTS=\
 ./FASTP/umiprocessor.o \
 ./FASTP/unittest.o \
 ./FASTP/writer.o \
-./FASTP/writerthread.o
+./FASTP/writerthread.o \
+./GENCORE/bamutil.o \
+./GENCORE/bed.o \
+./GENCORE/cluster.o \
+./GENCORE/fastareader.o \
+./GENCORE/gencore.o \
+./GENCORE/htmlreporter.o \
+./GENCORE/jsonreporter.o \
+./GENCORE/options.o \
+./GENCORE/pair.o \
+./GENCORE/reference.o \
+./GENCORE/stats.o \
+./GENCORE/unittest.o

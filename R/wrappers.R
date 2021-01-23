@@ -577,3 +577,74 @@ rfastp <- function(read1, read2="", outputFastq, unpaired="",
     }
     return(fromJSON(file = paste0(outputFastq, ".json")))
 }
+
+
+
+#' R wrap of gencore
+#'
+#' Quality control (Cut adapter, low quality trimming, UMI handling, and etc.)
+#' of fastq files.
+#'
+#' @param inBam read1 input file name of sorted bam/sam [string]
+#' @param outBam file name of output bam/sam [string]
+#' @param refFile Path to reference fasta file. [string]
+#' @param bedFile bedfile to specify the capturing region. [string]
+#' @param umiPrefix the prefix for UMI, if it has. None by default.
+#' @param numSupportingReads only output consensus reads/pairs that
+#'     merged by >= `supportingRead` reads/pairs. The value should be 1~10, and
+#'     the default value is 1.
+#' @param majorBaseRatio if the ratio of the major base in a cluster is less 
+#'     than `ratioMajorBase`, it will be further compared to the reference. The
+#'     value should be 0.5~1.0, and the default value is 0.8
+#' @param majorBaseScore if the score of the major base in a cluster is less 
+#'     than `scoreMajorBase`, it will be further compared to the reference. The
+#'     value should be 1~20, and the default value is 6
+#' @param highQual the threshold for a quality score to be considered as high
+#'     qulity. Default 30 means Q30
+#' @param moderateQual the threshold for a quality score to be considered as
+#'     moderate qulity. Default 20 means Q20.
+#' @param lowQual the threshold for a quality score to be considered as low
+#'     qulity. Default 15 means Q15.
+#' @param debug a logical indicating output some debug information to STDERR.
+#' @param coverageSampling the sampling rate for genome scale coverage
+#'     statistics. Default 10000 means 1/10000.
+#' @param quitAfterContig stop when `quitAfterContig` contigs are processed.
+#'     Only used for fast debugging. Default 0 means no limitation.
+#' @param verbose output verbose log information
+#'
+#'
+#' @return returns a json object of the report.
+#' @author Thomas Carroll, Wei Wang
+#' @importFrom rjson fromJSON
+#' @export
+#'
+#' @examples
+#'
+#' # preprare for the input and output files.
+#' # if the output file exists, it will be OVERWRITEN.
+#'
+#' inputbamfile <-  system.file("extdata", "ex1_sorted.bam", package="Rfastp")
+#' outputbamfile <- "ex1_rgencore.bam"
+#' reference <- system.file("extdata", "myreference.fa", package="Rfastp")
+#'
+#' # run rgencore
+#'
+#' rgencore_json_report <- rgencore(inBam=inputbamfile,
+#'    outBam=outputbamfile,
+#'    ref=reference
+#')
+
+rgencore <- function(inBam, outBam, refFile="", bedFile="", umiPrefix="",
+    numSupportingReads=1, majorBaseScore=6, majorBaseRatio=0.8, 
+    quitAfterContig=0, highQual=30, moderateQual=20, lowQual=15, 
+    coverageSampling=10000, debug=FALSE, verbose=TRUE ) {
+        exitcode <- runGencore(inBam=inBam, outBam=outBam, refFile=refFile, 
+        bedFile=bedFile, umiPrefix = umiPrefix, 
+        numSupportingReads = numSupportingReads, 
+        majorBaseScore = majorBaseScore, majorBaseRatio = majorBaseRatio,
+        quitAfterContig = quitAfterContig, highQual = highQual, 
+        moderateQual = moderateQual, lowQual = lowQual,
+        coverageSampling = coverageSampling, debug = debug, verbose = verbose)
+    return(fromJSON(file = paste0(outBam, ".json")))
+}
+

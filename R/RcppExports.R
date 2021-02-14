@@ -9,3 +9,7 @@ rcat <- function(output = "", inputFiles = as.character( c()), numInFile = 0L) {
     .Call(`_Rfastp_rcat`, output, inputFiles, numInFile)
 }
 
+runGencore <- function(inBam = "", outBam = "", refFile = "", bedFile = "", umiPrefix = "", numSupportingReads = 1L, majorBaseScore = 6L, majorBaseRatio = 0.8, quitAfterContig = 0L, highQual = 30L, moderateQual = 20L, lowQual = 15L, coverageSampling = 10000L, debug = FALSE, verbose = TRUE) {
+    .Call(`_Rfastp_runGencore`, inBam, outBam, refFile, bedFile, umiPrefix, numSupportingReads, majorBaseScore, majorBaseRatio, quitAfterContig, highQual, moderateQual, lowQual, coverageSampling, debug, verbose)
+}
+

@@ -29,7 +29,7 @@ RoxygenNote: 7.1.1
 biocViews: QualityControl, Sequencing, Preprocessing, Software
 SystemRequirements: GNU make
 LinkingTo: 
-    Rcpp, Rhtslib, zlibbioc
+    Rcpp, Rhtslib
 Imports: 
     Rcpp, rjson, ggplot2, reshape2
 Suggests: BiocStyle, testthat, knitr, rmarkdown
